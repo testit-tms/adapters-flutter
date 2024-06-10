@@ -1,0 +1,11 @@
+include: package:lints/recommended.yaml
+
+linter:
+  rules:
+    non_constant_identifier_names: false
+    implementation_imports: false
+
+analyzer:
+  language:
+    strict-raw-types: true
+    strict-casts: true

@@ -1,0 +1,16 @@
+name: Label
+
+on:
+  pull_request:
+    types: [ opened, labeled, unlabeled, synchronize ]
+
+jobs:
+  verify:
+    name: Verify
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Verify
+        uses: zwaldowski/match-label-action@v5
+        with:
+          allowed_multiple: enhancement, bug, documentation, tests
