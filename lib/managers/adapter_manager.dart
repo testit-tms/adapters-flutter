@@ -41,6 +41,6 @@ Future<void> addLinksAsync(final List<Link> links) async {
   await updateLinksAsync(links);
 }
 
-Future<void> AddMessageAsync(final String message) async {
+Future<void> addMessageAsync(final String message) async {
   await updateMessageAsync(message);
 }

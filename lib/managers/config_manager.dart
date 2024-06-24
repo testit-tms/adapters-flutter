@@ -102,11 +102,12 @@ void _validateConfig(final MergedConfigModel? config) async {
   if (config.adapterMode == 0 || config.adapterMode == 1) {
     if (config.testRunId == null ||
         !Uuid.isValidUUID(fromString: config.testRunId!)) {
-      throw FormatException('TestRunID is invalid');
+      throw const FormatException('TestRunID is invalid');
     }
   } else if (config.adapterMode == 2) {
     if (config.testRunId != null && config.testRunId!.isNotEmpty) {
-      throw FormatException('TestRunID should be absent in adapter mode 2');
+      throw const FormatException(
+          'TestRunID should be absent in adapter mode 2');
     }
   } else {
     throw FormatException('Invalid adapter mode: ${config.adapterMode}');
@@ -114,20 +115,20 @@ void _validateConfig(final MergedConfigModel? config) async {
 
   if (config.projectId == null ||
       !Uuid.isValidUUID(fromString: config.projectId!)) {
-    throw FormatException('ProjectId is invalid');
+    throw const FormatException('ProjectId is invalid');
   }
 
   if (config.configurationId == null ||
       !Uuid.isValidUUID(fromString: config.configurationId!)) {
-    throw FormatException('ConfigurationId is invalid');
+    throw const FormatException('ConfigurationId is invalid');
   }
 
   if (config.privateToken == null || config.privateToken!.isEmpty) {
-    throw FormatException('PrivateToken is invalid');
+    throw const FormatException('PrivateToken is invalid');
   }
 
   if (config.url == null || !Uri.parse(config.url!).isAbsolute) {
-    throw FormatException('Url is invalid');
+    throw const FormatException('Url is invalid');
   }
 }
 

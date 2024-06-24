@@ -9,7 +9,7 @@ import 'package:adapters_flutter/storages/test_result_storage.dart';
 import 'package:logger/logger.dart';
 import 'package:path/path.dart';
 import 'package:test_api/scaffolding.dart';
-import 'package:test_api/src/backend/invoker.dart';
+import 'package:test_api/src/backend/invoker.dart'; // ignore: implementation_imports
 
 final Logger _logger = Logger();
 
