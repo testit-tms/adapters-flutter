@@ -16,7 +16,7 @@ final Logger _logger = Logger();
 Future<void> testAsync(final String description, final dynamic Function() body,
     {final String? externalId,
     final String? title,
-    final List<String>? labels,
+    final List<String>? tags,
     final List<Link>? links,
     final List<String>? workItemsIds,
     final String? testOn,
@@ -35,10 +35,10 @@ Future<void> testAsync(final String description, final dynamic Function() body,
   test(description,
       testOn: testOn,
       timeout: timeout,
-      tags: labels,
+      tags: tags,
       onPlatform: onPlatform,
       retry: retry, () async {
-    await createEmptyResultAsync();
+    await createEmptyTestResultAsync();
     final localResult = TestResultModel();
     final startedOn = DateTime.now();
 
@@ -55,7 +55,7 @@ Future<void> testAsync(final String description, final dynamic Function() body,
       localResult.classname = _getClassName();
       localResult.description = description;
       localResult.externalId = externalId ?? '';
-      localResult.labels = labels ?? [];
+      localResult.labels = tags ?? [];
       localResult.links = links ?? [];
       localResult.title = title ?? '';
       localResult.workItemIds = workItemsIds ?? [];

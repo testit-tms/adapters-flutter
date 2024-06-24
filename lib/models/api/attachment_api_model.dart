@@ -11,16 +11,16 @@ final class AttachmentPutModel {
 }
 
 final class AttachmentPutModelAutoTestStepResultsModel {
-  final Outcome? outcome;
-  final String? title;
-  final String? description;
-  final String? info;
-  final DateTime? startedOn;
-  final DateTime? completedOn;
-  final int? duration;
-  final List<AttachmentPutModelAutoTestStepResultsModel>? stepResults;
-  final List<AttachmentPutModel>? attachments;
-  final Map<String, String>? parameters;
+  Outcome? outcome;
+  String? title;
+  String? description;
+  String? info;
+  DateTime? startedOn;
+  DateTime? completedOn;
+  int? duration;
+  List<AttachmentPutModelAutoTestStepResultsModel> stepResults = [];
+  List<AttachmentPutModel> attachments = [];
+  Map<String, String>? parameters;
 
   Map<String, dynamic> toJson() => {
         'outcome': outcome?.name,
@@ -34,18 +34,6 @@ final class AttachmentPutModelAutoTestStepResultsModel {
         'attachments': attachments,
         'parameters': parameters,
       };
-
-  const AttachmentPutModelAutoTestStepResultsModel(
-      this.outcome,
-      this.title,
-      this.description,
-      this.info,
-      this.startedOn,
-      this.completedOn,
-      this.duration,
-      this.stepResults,
-      this.attachments,
-      this.parameters);
 }
 
 final class AttachmentResponseModel {

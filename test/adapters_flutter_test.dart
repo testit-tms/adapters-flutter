@@ -5,6 +5,7 @@ void main() async {
   await testAsync('calculate', externalId: 'lalalala', workItemsIds: ['45812'],
       () async {
     //await addAttachmentAsync('avatar.png');
+
     await stepAsync('example step title', () async {
       await getConfigAsync();
       await getConfigAsync();
@@ -16,10 +17,12 @@ void main() async {
   });
 
   await testAsync('calculate2',
-      externalId: 'fdgdfgdfgdf', workItemsIds: ['45812'], () async {
+      externalId: 'fdgdfgdfgdf',
+      tags: ['tag1'],
+      workItemsIds: ['45812'], () async {
     await stepAsync('example step title', () async {
       await getConfigAsync();
-      await getConfigAsync();
+      //await addAttachmentAsync('avatar.png');
     });
 
     await stepAsync('failed step', () async {

@@ -4,27 +4,31 @@ import 'package:adapters_flutter/storages/test_result_storage.dart';
 
 Future<void> stepAsync(final String title, final dynamic Function() body,
     {final String? description}) async {
+  await createEmptyStepAsync();
+
+  final localStep = AttachmentPutModelAutoTestStepResultsModel();
   final startedOn = DateTime.now();
-  var outcome = Outcome.passed;
 
   try {
     await body.call();
+    localStep.outcome = Outcome.passed;
   } catch (_) {
-    outcome = Outcome.failed;
+    localStep.outcome = Outcome.failed;
     rethrow;
   } finally {
     final completedOn = DateTime.now();
 
-    // todo: setup, teardown
-    final step = AttachmentPutModelAutoTestStepResultsModel(
-        outcome,
-        title,
-        description ?? '',
-        null,
-        startedOn,
-        completedOn,
-        completedOn.difference(startedOn).inMilliseconds, [], [], {});
+    localStep.title = title;
+    localStep.description = description ?? '';
+    localStep.info = null;
+    localStep.startedOn = startedOn;
+    localStep.completedOn = completedOn;
+    localStep.duration = completedOn.difference(startedOn).inMilliseconds;
+    localStep.stepResults = [];
+    localStep.attachments = [];
+    localStep.parameters = {};
 
-    await updateStepAsync(step);
+    await updateCurrentStepAsync(localStep);
+    // todo: setup, teardown
   }
 }

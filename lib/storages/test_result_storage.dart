@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:adapters_flutter/models/api/attachment_api_model.dart';
@@ -9,7 +10,17 @@ import 'package:test_api/src/backend/invoker.dart'; // ignore: implementation_im
 final _lock = Lock();
 final _testResults = <int, TestResultModel>{};
 
-Future<void> createEmptyResultAsync() async {
+Future<void> createEmptyStepAsync() async {
+  await _lock.synchronized(() {
+    _testResults.update(_getTestId(), (value) {
+      value.steps.add(AttachmentPutModelAutoTestStepResultsModel());
+
+      return value;
+    }, ifAbsent: () => TestResultModel());
+  });
+}
+
+Future<void> createEmptyTestResultAsync() async {
   await _lock.synchronized(() {
     final key = _getTestId();
 
@@ -27,17 +38,21 @@ Future<TestResultModel> removeTestResultAsync() async {
   });
 }
 
-Future<void> updateAttachmentAsync(final AttachmentPutModel attachment) async {
-  await _lock.synchronized(() {
-    _testResults.update(_getTestId(), (value) {
-      value.attachments.add(attachment);
+Future<void> updateTestResultAttachmentsAsync(
+    final AttachmentPutModel attachment) async {
+  await _lock.synchronized(() async {
+    final currentStep = await _getCurrentStepAsync();
 
-      return value;
-    }, ifAbsent: () => TestResultModel());
+    if (currentStep == null) {
+      await _updateTestResultAttachmentsAsync(attachment);
+    } else {
+      // TODO: not working - await _updateCurrentStepAttachmentsAsync(attachment);
+      await _updateTestResultAttachmentsAsync(attachment);
+    }
   });
 }
 
-Future<void> updateLinksAsync(final List<Link> links) async {
+Future<void> updateTestResultLinksAsync(final List<Link> links) async {
   await _lock.synchronized(() {
     _testResults.update(_getTestId(), (value) {
       value.links.addAll(links);
@@ -47,7 +62,7 @@ Future<void> updateLinksAsync(final List<Link> links) async {
   });
 }
 
-Future<void> updateMessageAsync(final String message) async {
+Future<void> updateTestResultMessageAsync(final String message) async {
   await _lock.synchronized(() {
     _testResults.update(_getTestId(), (value) {
       if (message.isNotEmpty) {
@@ -61,14 +76,21 @@ Future<void> updateMessageAsync(final String message) async {
   });
 }
 
-Future<void> updateStepAsync(
-    final AttachmentPutModelAutoTestStepResultsModel newStep) async {
-  await _lock.synchronized(() {
-    _testResults.update(_getTestId(), (value) {
-      value.steps.add(newStep);
+Future<void> updateCurrentStepAsync(
+    final AttachmentPutModelAutoTestStepResultsModel newValue) async {
+  await _lock.synchronized(() async {
+    final currentStep = await _getCurrentStepAsync();
 
-      return value;
-    }, ifAbsent: () => TestResultModel());
+    currentStep?.outcome = newValue.outcome;
+    currentStep?.title = newValue.title;
+    currentStep?.description = newValue.description;
+    currentStep?.info = newValue.info;
+    currentStep?.startedOn = newValue.startedOn;
+    currentStep?.completedOn = newValue.completedOn;
+    currentStep?.duration = newValue.duration;
+    currentStep?.stepResults = newValue.stepResults;
+    currentStep?.attachments = newValue.attachments;
+    currentStep?.parameters = newValue.parameters;
   });
 }
 
@@ -103,6 +125,53 @@ Future<void> updateTestResultAsync(final TestResultModel newValue) async {
   });
 }
 
+Future<AttachmentPutModelAutoTestStepResultsModel?>
+    _getCurrentStepAsync() async {
+  final key = _getTestId();
+  AttachmentPutModelAutoTestStepResultsModel? lastStep;
+
+  if (_testResults.containsKey(key)) {
+    lastStep = _testResults[key]?.steps.lastOrNull;
+
+    if (lastStep != null) {
+      lastStep = _getLastChildStep(lastStep);
+    }
+  }
+
+  final currentStep =
+      lastStep != null && lastStep.completedOn == null ? lastStep : null;
+
+  return currentStep;
+}
+
+AttachmentPutModelAutoTestStepResultsModel _getLastChildStep(
+    final AttachmentPutModelAutoTestStepResultsModel step) {
+  final childSteps = step.stepResults;
+
+  if (childSteps.isNotEmpty) {
+    final lastChildStep = _getLastChildStep(childSteps.last);
+
+    return lastChildStep;
+  }
+
+  return step;
+}
+
 int _getTestId() {
   return Invoker.current?.liveTest.test.hashCode ?? 0;
+}
+
+Future<void> _updateCurrentStepAttachmentsAsync(
+    final AttachmentPutModel attachment) async {
+  final currentStep = await _getCurrentStepAsync();
+  currentStep?.attachments.add(attachment);
+}
+
+Future<void> _updateTestResultAttachmentsAsync(
+    final AttachmentPutModel attachment) async {
+  _testResults.update(_getTestId(), (value) {
+    value.attachments.add(attachment);
+
+    return value;
+  }, ifAbsent: () => TestResultModel());
 }
