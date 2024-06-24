@@ -22,7 +22,6 @@ Future<void> testAsync(final String description, final dynamic Function() body,
     final String? testOn,
     final Timeout? timeout,
     final String? skip,
-    final List<String>? tags,
     final Map<String, dynamic>? onPlatform,
     final int? retry}) async {
   final config = await getConfigAsync();
@@ -36,7 +35,7 @@ Future<void> testAsync(final String description, final dynamic Function() body,
   test(description,
       testOn: testOn,
       timeout: timeout,
-      tags: tags,
+      tags: labels,
       onPlatform: onPlatform,
       retry: retry, () async {
     await createEmptyResultAsync();
