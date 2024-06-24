@@ -14,8 +14,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - uses: dart-lang/setup-dart@v1
+      - name: Install
+        run: dart pub get
+
       - name: Publish
-        uses: dart-lang/setup-dart@v1
-        run: |
-          pub get
-          dart pub publish --force
+        run: dart pub publish --force
