@@ -11,12 +11,18 @@ final _lock = Lock();
 final _testResults = <int, TestResultModel>{};
 
 Future<void> createEmptyStepAsync() async {
-  await _lock.synchronized(() {
-    _testResults.update(_getTestId(), (value) {
-      value.steps.add(AttachmentPutModelAutoTestStepResultsModel());
+  await _lock.synchronized(() async {
+    final currentStep = await _getCurrentStepAsync();
 
-      return value;
-    }, ifAbsent: () => TestResultModel());
+    if (currentStep == null) {
+      _testResults.update(_getTestId(), (value) {
+        value.steps.add(AttachmentPutModelAutoTestStepResultsModel());
+
+        return value;
+      }, ifAbsent: () => TestResultModel());
+    } else {
+      currentStep.stepResults.add(AttachmentPutModelAutoTestStepResultsModel());
+    }
   });
 }
 
@@ -88,7 +94,6 @@ Future<void> updateCurrentStepAsync(
     currentStep?.startedOn = newValue.startedOn;
     currentStep?.completedOn = newValue.completedOn;
     currentStep?.duration = newValue.duration;
-    currentStep?.stepResults = newValue.stepResults;
     currentStep?.attachments = newValue.attachments;
     currentStep?.parameters = newValue.parameters;
   });
@@ -128,33 +133,36 @@ Future<void> updateTestResultAsync(final TestResultModel newValue) async {
 Future<AttachmentPutModelAutoTestStepResultsModel?>
     _getCurrentStepAsync() async {
   final key = _getTestId();
-  AttachmentPutModelAutoTestStepResultsModel? lastStep;
+  AttachmentPutModelAutoTestStepResultsModel? currentStep;
 
   if (_testResults.containsKey(key)) {
-    lastStep = _testResults[key]?.steps.lastOrNull;
-
-    if (lastStep != null) {
-      lastStep = _getLastChildStep(lastStep);
-    }
+    currentStep = _getLastNotFinishedStep(_testResults[key]?.steps);
   }
-
-  final currentStep =
-      lastStep != null && lastStep.completedOn == null ? lastStep : null;
 
   return currentStep;
 }
 
-AttachmentPutModelAutoTestStepResultsModel _getLastChildStep(
-    final AttachmentPutModelAutoTestStepResultsModel step) {
-  final childSteps = step.stepResults;
+AttachmentPutModelAutoTestStepResultsModel? _getLastNotFinishedStep(
+    final List<AttachmentPutModelAutoTestStepResultsModel?>? steps) {
+  AttachmentPutModelAutoTestStepResultsModel? currentStep;
 
-  if (childSteps.isNotEmpty) {
-    final lastChildStep = _getLastChildStep(childSteps.last);
+  if (steps != null && steps.isNotEmpty) {
+    for (final step in steps.reversed) {
+      if (step != null) {
+        if (step.stepResults.isNotEmpty) {
+          currentStep = _getLastNotFinishedStep(step.stepResults);
+        }
 
-    return lastChildStep;
+        if (currentStep == null && step.completedOn == null) {
+          currentStep = step;
+
+          break;
+        }
+      }
+    }
   }
 
-  return step;
+  return currentStep;
 }
 
 int _getTestId() {
