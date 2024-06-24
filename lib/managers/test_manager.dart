@@ -6,10 +6,10 @@ import 'package:adapters_flutter/managers/config_manager.dart';
 import 'package:adapters_flutter/models/api/link_api_model.dart';
 import 'package:adapters_flutter/models/test_result.dart';
 import 'package:adapters_flutter/storages/test_result_storage.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:logger/logger.dart';
 import 'package:path/path.dart';
-import 'package:test_api/scaffolding.dart';
-import 'package:test_api/src/backend/invoker.dart'; // ignore: implementation_imports
+import 'package:test_api/src/backend/invoker.dart'; // ignore: depend_on_referenced_packages, implementation_imports
 
 final Logger _logger = Logger();
 
@@ -101,4 +101,11 @@ String? _getClassName() {
   }
 
   return suiteName;
+}
+
+void newTest() {
+  testWidgets('MyWidget has a title and message', (tester) async {
+// Create the widget by telling the tester to build it.
+    // await tester.pumpWidget(const MyWidget(title: 'T', message: 'M'));
+  });
 }

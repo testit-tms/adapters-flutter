@@ -5,7 +5,7 @@ import 'package:adapters_flutter/models/api/attachment_api_model.dart';
 import 'package:adapters_flutter/models/api/link_api_model.dart';
 import 'package:adapters_flutter/models/test_result.dart';
 import 'package:synchronized/synchronized.dart';
-import 'package:test_api/src/backend/invoker.dart'; // ignore: implementation_imports
+import 'package:test_api/src/backend/invoker.dart'; // ignore: depend_on_referenced_packages, implementation_imports
 
 final _lock = Lock();
 final _testResults = <int, TestResultModel>{};
