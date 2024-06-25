@@ -52,8 +52,7 @@ Future<void> updateTestResultAttachmentsAsync(
     if (currentStep == null) {
       await _updateTestResultAttachmentsAsync(attachment);
     } else {
-      // TODO: not working - await _updateCurrentStepAttachmentsAsync(attachment);
-      await _updateTestResultAttachmentsAsync(attachment);
+      await _updateCurrentStepAttachmentsAsync(attachment);
     }
   });
 }
@@ -94,8 +93,6 @@ Future<void> updateCurrentStepAsync(
     currentStep?.startedOn = newValue.startedOn;
     currentStep?.completedOn = newValue.completedOn;
     currentStep?.duration = newValue.duration;
-    currentStep?.attachments = newValue.attachments;
-    currentStep?.parameters = newValue.parameters;
   });
 }
 

@@ -20,7 +20,7 @@ final class AttachmentPutModelAutoTestStepResultsModel {
   int? duration;
   List<AttachmentPutModelAutoTestStepResultsModel> stepResults = [];
   List<AttachmentPutModel> attachments = [];
-  Map<String, String>? parameters;
+  Map<String, String>? parameters = {};
 
   Map<String, dynamic> toJson() => {
         'outcome': outcome?.name,

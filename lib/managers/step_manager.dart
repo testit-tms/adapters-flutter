@@ -24,9 +24,6 @@ Future<void> stepAsync(final String title, final dynamic Function() body,
     localStep.startedOn = startedOn;
     localStep.completedOn = completedOn;
     localStep.duration = completedOn.difference(startedOn).inMilliseconds;
-    localStep.stepResults = [];
-    localStep.attachments = [];
-    localStep.parameters = {};
 
     await updateCurrentStepAsync(localStep);
     // todo: setup, teardown
