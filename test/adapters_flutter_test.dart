@@ -4,7 +4,7 @@ import 'package:adapters_flutter/managers/config_manager.dart';
 import 'package:adapters_flutter/models/api/link_api_model.dart';
 
 void main() async {
-  await testAsync('calculate', externalId: 'lalalala', workItemsIds: ['45812'],
+  await testAsync('calculate', externalId: 'lalalala', workItemsIds: ['45835'],
       () async {
     await addAttachmentAsync('avatar.png');
 
@@ -23,7 +23,7 @@ void main() async {
       title: 'title',
       tags: ['tag1'],
       links: [const Link('title', 'url', 'description', LinkType.blockedBy)],
-      workItemsIds: ['45812'], () async {
+      workItemsIds: ['45835'], () async {
     await stepAsync('first', () async {
       await getConfigAsync();
     });
