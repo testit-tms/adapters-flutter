@@ -1,5 +1,5 @@
 import 'package:adapters_flutter/models/config/merged_config_model.dart';
-import 'package:adapters_flutter/models/test_result.dart';
+import 'package:adapters_flutter/models/test_result_model.dart';
 import 'package:adapters_flutter/services/api/autotest_api_service.dart';
 import 'package:adapters_flutter/services/api/test_run_api_service.dart';
 import 'package:synchronized/synchronized.dart';

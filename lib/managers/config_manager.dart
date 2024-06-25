@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:adapters_flutter/models/config/env_config_model.dart';
 import 'package:adapters_flutter/models/config/file_config_model.dart';
 import 'package:adapters_flutter/models/config/merged_config_model.dart';
+import 'package:adapters_flutter/models/exception_model.dart';
 import 'package:adapters_flutter/services/config/env_config_service.dart';
 import 'package:adapters_flutter/services/config/file_config_service.dart';
 import 'package:path/path.dart' as path;
@@ -96,39 +97,39 @@ MergedConfigModel _mergeConfigs(
 
 void _validateConfig(final MergedConfigModel? config) async {
   if (config == null) {
-    throw ArgumentError('Config is null');
+    throw const TmsConfigException('Config is null');
   }
 
   if (config.adapterMode == 0 || config.adapterMode == 1) {
     if (config.testRunId == null ||
         !Uuid.isValidUUID(fromString: config.testRunId!)) {
-      throw const FormatException('TestRunID is invalid');
+      throw const TmsConfigException('TestRunID is invalid');
     }
   } else if (config.adapterMode == 2) {
     if (config.testRunId != null && config.testRunId!.isNotEmpty) {
-      throw const FormatException(
+      throw const TmsConfigException(
           'TestRunID should be absent in adapter mode 2');
     }
   } else {
-    throw FormatException('Invalid adapter mode: ${config.adapterMode}');
+    throw TmsConfigException('Invalid adapter mode: ${config.adapterMode}');
   }
 
   if (config.projectId == null ||
       !Uuid.isValidUUID(fromString: config.projectId!)) {
-    throw const FormatException('ProjectId is invalid');
+    throw const TmsConfigException('ProjectId is invalid');
   }
 
   if (config.configurationId == null ||
       !Uuid.isValidUUID(fromString: config.configurationId!)) {
-    throw const FormatException('ConfigurationId is invalid');
+    throw const TmsConfigException('ConfigurationId is invalid');
   }
 
   if (config.privateToken == null || config.privateToken!.isEmpty) {
-    throw const FormatException('PrivateToken is invalid');
+    throw const TmsConfigException('PrivateToken is invalid');
   }
 
   if (config.url == null || !Uri.parse(config.url!).isAbsolute) {
-    throw const FormatException('Url is invalid');
+    throw const TmsConfigException('Url is invalid');
   }
 }
 

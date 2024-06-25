@@ -3,7 +3,7 @@ import 'package:adapters_flutter/models/api/autotest_api_model.dart';
 import 'package:adapters_flutter/models/api/label_api_model.dart';
 import 'package:adapters_flutter/models/api/link_api_model.dart';
 import 'package:adapters_flutter/models/config/merged_config_model.dart';
-import 'package:adapters_flutter/models/test_result.dart';
+import 'package:adapters_flutter/models/test_result_model.dart';
 
 Future<AutoTestResultsForTestRunModel> toAutoTestResultsForTestRunModelAsync(
     final MergedConfigModel config, final TestResultModel testResult) async {

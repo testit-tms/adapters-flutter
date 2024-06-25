@@ -5,7 +5,8 @@ import 'package:adapters_flutter/converters/test_result_converter.dart';
 import 'package:adapters_flutter/models/api/autotest_api_model.dart';
 import 'package:adapters_flutter/models/api/workitem_api_model.dart';
 import 'package:adapters_flutter/models/config/merged_config_model.dart';
-import 'package:adapters_flutter/models/test_result.dart';
+import 'package:adapters_flutter/models/exception_model.dart';
+import 'package:adapters_flutter/models/test_result_model.dart';
 import 'package:http/http.dart';
 import 'package:logger/logger.dart';
 
@@ -37,7 +38,7 @@ Future<AutotestFullModel?> createAutotestAsync(
     final response = await Response.fromStream(streamedResponse);
 
     if (response.statusCode < 200 || response.statusCode > 299) {
-      throw HttpException(
+      throw TmsApiException(
           'Status code: ${response.statusCode}, Reason: ${response.reasonPhrase}');
     }
 
@@ -85,7 +86,7 @@ Future<AutotestFullModel?> getAutotestByExternalIdAsync(
     final response = await Response.fromStream(streamedResponse);
 
     if (response.statusCode < 200 || response.statusCode > 299) {
-      throw HttpException(
+      throw TmsApiException(
           'Status code: ${response.statusCode}, Reason: ${response.reasonPhrase}');
     }
 
@@ -118,7 +119,7 @@ Future<bool> tryLinkAutoTestToWorkItemAsync(final MergedConfigModel config,
       final response = await request.send();
 
       if (response.statusCode < 200 || response.statusCode > 299) {
-        throw HttpException(
+        throw TmsApiException(
             'Status code: ${response.statusCode}, Reason: ${response.reasonPhrase}');
       }
     } catch (exception, stacktrace) {
@@ -150,7 +151,7 @@ Future<void> updateAutotestAsync(
     final response = await request.send();
 
     if (response.statusCode < 200 || response.statusCode > 299) {
-      throw HttpException(
+      throw TmsApiException(
           'Status code: ${response.statusCode}, Reason: ${response.reasonPhrase}');
     }
   } catch (exception, stacktrace) {

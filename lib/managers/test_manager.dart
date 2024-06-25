@@ -4,7 +4,7 @@ import 'package:adapters_flutter/enums/outcome_enum.dart';
 import 'package:adapters_flutter/managers/api_manager_.dart';
 import 'package:adapters_flutter/managers/config_manager.dart';
 import 'package:adapters_flutter/models/api/link_api_model.dart';
-import 'package:adapters_flutter/models/test_result.dart';
+import 'package:adapters_flutter/models/test_result_model.dart';
 import 'package:adapters_flutter/storages/test_result_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:logger/logger.dart';

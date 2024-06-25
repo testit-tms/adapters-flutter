@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:adapters_flutter/models/api/attachment_api_model.dart';
 import 'package:adapters_flutter/models/api/link_api_model.dart';
-import 'package:adapters_flutter/models/test_result.dart';
+import 'package:adapters_flutter/models/test_result_model.dart';
 import 'package:synchronized/synchronized.dart';
 import 'package:test_api/src/backend/invoker.dart'; // ignore: depend_on_referenced_packages, implementation_imports
 
