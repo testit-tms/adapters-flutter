@@ -5,8 +5,8 @@ import 'package:adapters_flutter/models/api/link_api_model.dart';
 import 'package:adapters_flutter/models/config/merged_config_model.dart';
 import 'package:adapters_flutter/models/test_result_model.dart';
 
-Future<AutoTestResultsForTestRunModel> toAutoTestResultsForTestRunModelAsync(
-    final MergedConfigModel config, final TestResultModel testResult) async {
+AutoTestResultsForTestRunModel toAutoTestResultsForTestRunModel(
+    final MergedConfigModel config, final TestResultModel testResult) {
   final model = AutoTestResultsForTestRunModel(
       testResult.outcome?.name,
       config.configurationId,
@@ -31,8 +31,8 @@ Future<AutoTestResultsForTestRunModel> toAutoTestResultsForTestRunModelAsync(
   return model;
 }
 
-Future<CreateAutotestRequestModel> toCreateAutotestRequestModelAsync(
-    final MergedConfigModel config, final TestResultModel testResult) async {
+CreateAutotestRequestModel toCreateAutotestRequestModel(
+    final MergedConfigModel config, final TestResultModel testResult) {
   final model = CreateAutotestRequestModel(
       null,
       null,
@@ -58,8 +58,8 @@ Future<CreateAutotestRequestModel> toCreateAutotestRequestModelAsync(
   return model;
 }
 
-Future<UpdateAutotestRequestModel> toUpdateAutotestRequestModelAsync(
-    final MergedConfigModel config, final TestResultModel testResult) async {
+UpdateAutotestRequestModel toUpdateAutotestRequestModel(
+    final MergedConfigModel config, final TestResultModel testResult) {
   final model = UpdateAutotestRequestModel(
       null,
       null,

@@ -20,7 +20,7 @@ Future<MergedConfigModel> getConfigAsync() async {
       final envConfig = await getConfigFromEnvAsync();
 
       _config = _mergeConfigs(fileConfig, envConfig);
-      await validateConfigAsync(_config);
+      validateConfig(_config);
     }
   });
 

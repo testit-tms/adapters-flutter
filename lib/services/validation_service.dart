@@ -2,7 +2,7 @@ import 'package:adapters_flutter/models/config/merged_config_model.dart';
 import 'package:adapters_flutter/models/exception_model.dart';
 import 'package:uuid/uuid.dart';
 
-Future<void> validateConfigAsync(final MergedConfigModel? config) async {
+void validateConfig(final MergedConfigModel? config) {
   if (config == null) {
     throw const TmsConfigException('Config is null');
   }

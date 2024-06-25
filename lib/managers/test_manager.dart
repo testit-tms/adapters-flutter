@@ -102,10 +102,3 @@ String? _getClassName() {
 
   return suiteName;
 }
-
-void newTest() {
-  testWidgets('MyWidget has a title and message', (tester) async {
-// Create the widget by telling the tester to build it.
-    // await tester.pumpWidget(const MyWidget(title: 'T', message: 'M'));
-  });
-}

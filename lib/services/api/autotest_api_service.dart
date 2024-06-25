@@ -27,8 +27,7 @@ Future<AutotestFullModel?> createAutotestAsync(
     final request =
         Request('POST', Uri.parse('${config.url}/api/v2/autoTests'));
 
-    final requestBody =
-        await toCreateAutotestRequestModelAsync(config, testResult);
+    final requestBody = toCreateAutotestRequestModel(config, testResult);
     requestBody.shouldCreateWorkItem =
         config.automaticCreationTestCases ?? false;
     request.body = json.encode(requestBody);
@@ -143,8 +142,7 @@ Future<void> updateAutotestAsync(
     };
 
     final request = Request('PUT', Uri.parse('${config.url}/api/v2/autoTests'));
-    final requestBody =
-        await toUpdateAutotestRequestModelAsync(config, testResult);
+    final requestBody = toUpdateAutotestRequestModel(config, testResult);
     request.body = json.encode(requestBody);
     request.headers.addAll(headers);
 

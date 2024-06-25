@@ -12,7 +12,7 @@ final _testResults = <int, TestResultModel>{};
 
 Future<void> createEmptyStepAsync() async {
   await _lock.synchronized(() async {
-    final currentStep = await _getCurrentStepAsync();
+    final currentStep = _getCurrentStep();
 
     if (currentStep == null) {
       _testResults.update(_getTestId(), (value) {
@@ -47,12 +47,12 @@ Future<TestResultModel> removeTestResultAsync() async {
 Future<void> updateTestResultAttachmentsAsync(
     final AttachmentPutModel attachment) async {
   await _lock.synchronized(() async {
-    final currentStep = await _getCurrentStepAsync();
+    final currentStep = _getCurrentStep();
 
     if (currentStep == null) {
-      await _updateTestResultAttachmentsAsync(attachment);
+      _updateTestResultAttachments(attachment);
     } else {
-      await _updateCurrentStepAttachmentsAsync(attachment);
+      _updateCurrentStepAttachments(attachment);
     }
   });
 }
@@ -84,7 +84,7 @@ Future<void> updateTestResultMessageAsync(final String message) async {
 Future<void> updateCurrentStepAsync(
     final AutoTestStepResultsModel newValue) async {
   await _lock.synchronized(() async {
-    final currentStep = await _getCurrentStepAsync();
+    final currentStep = _getCurrentStep();
 
     currentStep?.outcome = newValue.outcome;
     currentStep?.title = newValue.title;
@@ -127,7 +127,7 @@ Future<void> updateTestResultAsync(final TestResultModel newValue) async {
   });
 }
 
-Future<AutoTestStepResultsModel?> _getCurrentStepAsync() async {
+AutoTestStepResultsModel? _getCurrentStep() {
   final key = _getTestId();
   AutoTestStepResultsModel? currentStep;
 
@@ -171,14 +171,12 @@ int _getTestId() {
   return Invoker.current?.liveTest.test.hashCode ?? 0;
 }
 
-Future<void> _updateCurrentStepAttachmentsAsync(
-    final AttachmentPutModel attachment) async {
-  final currentStep = await _getCurrentStepAsync();
+void _updateCurrentStepAttachments(final AttachmentPutModel attachment) async {
+  final currentStep = _getCurrentStep();
   currentStep?.attachments.add(attachment);
 }
 
-Future<void> _updateTestResultAttachmentsAsync(
-    final AttachmentPutModel attachment) async {
+void _updateTestResultAttachments(final AttachmentPutModel attachment) {
   _testResults.update(_getTestId(), (value) {
     value.attachments.add(attachment);
 
