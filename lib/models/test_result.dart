@@ -24,6 +24,6 @@ final class TestResultModel {
   DateTime? completedOn;
   int? duration;
   List<AttachmentPutModel> attachments = [];
-  Map<String, String>? parameters;
-  Map<String, String>? properties;
+  Map<String, String> parameters = {};
+  Map<String, String> properties = {};
 }
