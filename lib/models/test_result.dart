@@ -5,9 +5,9 @@ import 'package:adapters_flutter/models/api/link_api_model.dart';
 final class TestResultModel {
   String? namespace;
   String? classname;
-  List<AttachmentPutModelAutoTestStepResultsModel> steps = [];
-  List<AttachmentPutModelAutoTestStepResultsModel> setup = [];
-  List<AttachmentPutModelAutoTestStepResultsModel> teardown = [];
+  List<AutoTestStepResultsModel> steps = [];
+  List<AutoTestStepResultsModel> setup = [];
+  List<AutoTestStepResultsModel> teardown = [];
   String? externalId;
   String? name;
   String? title;

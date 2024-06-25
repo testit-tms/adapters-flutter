@@ -26,11 +26,8 @@ final class StepShortModel {
   final String? description;
   final List<StepShortModel>? steps;
 
-  Map<String, dynamic> toJson() => {
-        'title': title,
-        'description': description,
-        'steps': steps,
-      };
+  Map<String, dynamic> toJson() =>
+      {'title': title, 'description': description, 'steps': steps};
 
   const StepShortModel(this.title, this.description, this.steps);
 }

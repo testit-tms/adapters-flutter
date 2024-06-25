@@ -24,6 +24,6 @@ final class LinkPostModel {
         'url': url,
         'description': description,
         'type': type?.name,
-        'hasInfo': hasInfo,
+        'hasInfo': hasInfo
       };
 }

@@ -5,12 +5,10 @@ final class AttachmentPutModel {
 
   const AttachmentPutModel(this.id);
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-      };
+  Map<String, dynamic> toJson() => {'id': id};
 }
 
-final class AttachmentPutModelAutoTestStepResultsModel {
+final class AutoTestStepResultsModel {
   Outcome? outcome;
   String? title;
   String? description;
@@ -18,7 +16,7 @@ final class AttachmentPutModelAutoTestStepResultsModel {
   DateTime? startedOn;
   DateTime? completedOn;
   int? duration;
-  List<AttachmentPutModelAutoTestStepResultsModel> stepResults = [];
+  List<AutoTestStepResultsModel> stepResults = [];
   List<AttachmentPutModel> attachments = [];
   Map<String, String>? parameters = {};
 
@@ -32,7 +30,7 @@ final class AttachmentPutModelAutoTestStepResultsModel {
         'duration': duration,
         'stepResults': stepResults,
         'attachments': attachments,
-        'parameters': parameters,
+        'parameters': parameters
       };
 }
 

@@ -16,12 +16,12 @@ Future<void> createEmptyStepAsync() async {
 
     if (currentStep == null) {
       _testResults.update(_getTestId(), (value) {
-        value.steps.add(AttachmentPutModelAutoTestStepResultsModel());
+        value.steps.add(AutoTestStepResultsModel());
 
         return value;
       }, ifAbsent: () => TestResultModel());
     } else {
-      currentStep.stepResults.add(AttachmentPutModelAutoTestStepResultsModel());
+      currentStep.stepResults.add(AutoTestStepResultsModel());
     }
   });
 }
@@ -82,7 +82,7 @@ Future<void> updateTestResultMessageAsync(final String message) async {
 }
 
 Future<void> updateCurrentStepAsync(
-    final AttachmentPutModelAutoTestStepResultsModel newValue) async {
+    final AutoTestStepResultsModel newValue) async {
   await _lock.synchronized(() async {
     final currentStep = await _getCurrentStepAsync();
 
@@ -127,39 +127,44 @@ Future<void> updateTestResultAsync(final TestResultModel newValue) async {
   });
 }
 
-Future<AttachmentPutModelAutoTestStepResultsModel?>
-    _getCurrentStepAsync() async {
+Future<AutoTestStepResultsModel?> _getCurrentStepAsync() async {
   final key = _getTestId();
-  AttachmentPutModelAutoTestStepResultsModel? currentStep;
+  AutoTestStepResultsModel? currentStep;
 
   if (_testResults.containsKey(key)) {
-    currentStep = _getLastNotFinishedStep(_testResults[key]?.steps);
+    currentStep = _getLastNotFinishedChildStep(_testResults[key]?.steps);
   }
 
   return currentStep;
 }
 
-AttachmentPutModelAutoTestStepResultsModel? _getLastNotFinishedStep(
-    final List<AttachmentPutModelAutoTestStepResultsModel?>? steps) {
-  AttachmentPutModelAutoTestStepResultsModel? currentStep;
+AutoTestStepResultsModel? _getLastNotFinishedChildStep(
+    final List<AutoTestStepResultsModel?>? steps) {
+  AutoTestStepResultsModel? targetStep;
 
-  if (steps != null && steps.isNotEmpty) {
-    for (final step in steps.reversed) {
-      if (step != null) {
-        if (step.stepResults.isNotEmpty) {
-          currentStep = _getLastNotFinishedStep(step.stepResults);
-        }
+  if (steps == null || steps.isEmpty) {
+    return targetStep;
+  }
 
-        if (currentStep == null && step.completedOn == null) {
-          currentStep = step;
+  for (final step in steps.reversed) {
+    if (step == null) {
+      continue;
+    }
 
-          break;
-        }
-      }
+    targetStep = _getLastNotFinishedChildStep(step.stepResults);
+
+    if (targetStep != null) {
+      break;
+    }
+
+    if (step.completedOn == null) {
+      targetStep = step;
+
+      break;
     }
   }
 
-  return currentStep;
+  return targetStep;
 }
 
 int _getTestId() {

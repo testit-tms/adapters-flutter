@@ -27,7 +27,7 @@ Future<MergedConfigModel> getConfigAsync() async {
   return _config as MergedConfigModel;
 }
 
-Future<void> updateTestRunIdAsync(String testRunId) async {
+Future<void> updateTestRunIdAsync(final String testRunId) async {
   (await getConfigAsync()).testRunId = testRunId;
 }
 
@@ -132,7 +132,7 @@ void _validateConfig(final MergedConfigModel? config) async {
   }
 }
 
-MergedConfigModel _updateUrl(MergedConfigModel config) {
+MergedConfigModel _updateUrl(final MergedConfigModel config) {
   if (config.url?.endsWith('/') ?? false) {
     config.url = config.url!.substring(0, config.url!.length - 1);
   }

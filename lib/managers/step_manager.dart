@@ -6,7 +6,7 @@ Future<void> stepAsync(final String title, final dynamic Function() body,
     {final String? description}) async {
   await createEmptyStepAsync();
 
-  final localStep = AttachmentPutModelAutoTestStepResultsModel();
+  final localStep = AutoTestStepResultsModel();
   final startedOn = DateTime.now();
 
   try {

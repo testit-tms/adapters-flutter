@@ -6,7 +6,7 @@ import 'package:adapters_flutter/models/api/link_api_model.dart';
 void main() async {
   await testAsync('calculate', externalId: 'lalalala', workItemsIds: ['45812'],
       () async {
-    //await addAttachmentAsync('avatar.png');
+    await addAttachmentAsync('avatar.png');
 
     await stepAsync('example step title', () async {
       await getConfigAsync();
@@ -24,25 +24,25 @@ void main() async {
       tags: ['tag1'],
       links: [const Link('title', 'url', 'description', LinkType.blockedBy)],
       workItemsIds: ['45812'], () async {
-    await stepAsync('1 step', () async {
+    await stepAsync('first', () async {
       await getConfigAsync();
     });
 
-    await stepAsync('2 step', () async {
+    await stepAsync('second', () async {
       await getConfigAsync();
     });
 
-    await stepAsync('3 step', () async {
+    await stepAsync('third', () async {
       await getConfigAsync();
 
-      await stepAsync('3.1 step', () async {
+      await stepAsync('third child', () async {
         await getConfigAsync();
       });
 
-      //await addAttachmentAsync('avatar.png');
+      await addAttachmentAsync('avatar.png');
     });
 
-    await stepAsync('4 step', () async {
+    await stepAsync('fourth', () async {
       throw Exception('example exception');
     });
   });
