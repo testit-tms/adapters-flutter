@@ -13,7 +13,7 @@ import 'package:test_api/src/backend/invoker.dart'; // ignore: depend_on_referen
 
 final Logger _logger = Logger();
 
-Future<void> testAsync(final String description, final dynamic Function() body,
+Future<void> tmsTest(final String description, final dynamic Function() body,
     {final String? externalId,
     final String? title,
     final List<String>? tags,

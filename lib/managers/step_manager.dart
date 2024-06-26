@@ -2,7 +2,7 @@ import 'package:adapters_flutter/enums/outcome_enum.dart';
 import 'package:adapters_flutter/models/api/attachment_api_model.dart';
 import 'package:adapters_flutter/storages/test_result_storage.dart';
 
-Future<void> stepAsync(final String title, final dynamic Function() body,
+Future<void> step(final String title, final dynamic Function() body,
     {final String? description}) async {
   await createEmptyStepAsync();
 

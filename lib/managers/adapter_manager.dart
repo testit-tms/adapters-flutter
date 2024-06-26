@@ -10,7 +10,7 @@ import 'package:logger/logger.dart';
 
 final Logger _logger = Logger();
 
-Future<void> addAttachmentAsync(final String filePath) async {
+Future<void> addAttachment(final String filePath) async {
   final file = File(filePath).absolute;
 
   if (await file.exists()) {
@@ -22,13 +22,13 @@ Future<void> addAttachmentAsync(final String filePath) async {
   }
 }
 
-Future<void> addAttachmentsAsync(final List<String> filesPaths) async {
+Future<void> addAttachments(final List<String> filesPaths) async {
   for (final filePath in filesPaths) {
-    await addAttachmentAsync(filePath);
+    await addAttachment(filePath);
   }
 }
 
-Future<void> addLinkAsync(final String url,
+Future<void> addLink(final String url,
     {final String? title,
     final String? description,
     final LinkType? type}) async {
@@ -36,10 +36,10 @@ Future<void> addLinkAsync(final String url,
   await updateTestResultLinksAsync([link]);
 }
 
-Future<void> addLinksAsync(final List<Link> links) async {
+Future<void> addLinks(final List<Link> links) async {
   await updateTestResultLinksAsync(links);
 }
 
-Future<void> addMessageAsync(final String message) async {
+Future<void> addMessage(final String message) async {
   await updateTestResultMessageAsync(message);
 }
