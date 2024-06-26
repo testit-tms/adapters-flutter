@@ -66,10 +66,11 @@ Description of metadata:
 
 Description of methods:
 
-* `tms.AddLinks` - add links to the autotest result.
-* `tms.AddAttachments` - add attachments to the autotest result.
-* `tms.AddAtachmentsFromString` - add attachments from string to the autotest result.
-* `tms.AddMessage` - add message to the autotest result.
+* `addAttachment` - add single attachment to the autotest result.
+* `addAttachments` - add attachments to the autotest result.
+* `addLinks` - add single link to the autotest result.
+* `addLinks` - add links to the autotest result.
+* `addMessage` - add message to the autotest result.
 
 ### Examples
 
@@ -77,19 +78,48 @@ Description of methods:
 
 ```dart
 import 'package:adapters_flutter/adapters_flutter.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() async {
-  await testAsync('calculate', externalId: '1234', workItemsIds: ['45712'],
-          () async {
-        await stepAsync('example step title', () async {
-          await getConfigAsync();
-          await getConfigAsync();
-        });
+  setUpAll(() {
+    print('setUpAll');
+  });
 
-        await stepAsync('failed step', () async {
-          throw Exception('example exception');
-        });
-      });
+  setUp(() {
+    print('setUp');
+  });
+
+  await tmsTest(
+          'example test',
+          externalId: 'example_test',
+          title: 'example_title',
+          tags: ['example_tag'],
+          links: [Link('link_title', 'https://www.example.org/', 'link_description', LinkType.issue)],
+          workItemsIds: ['45835'], () async {
+
+    await step('success step', () => expect(0, 0));
+
+    await step('success step with attachment', () async => await addAttachment('avatar.png'));
+
+    await step('success step with message', () async => await addMessage('example message'));
+
+    await step('success step with link', () async => await addLink('https://www.example.org/'));
+
+    await step('success step with body', () {
+      const actual = 0;
+      expect(actual, 0);
+    });
+
+    await step('failed step', () => throw Exception('example exception'));
+  });
+
+  tearDown(() {
+    print('tearDown');
+  });
+
+  tearDownAll(() {
+    print('tearDownAll');
+  });
 }
 ```
 
