@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:adapters_flutter/models/api/attachment_api_model.dart';
 import 'package:adapters_flutter/models/config/merged_config_model.dart';
+import 'package:adapters_flutter/models/exception_model.dart';
 import 'package:http/http.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:logger/logger.dart';
@@ -40,7 +41,7 @@ Future<AttachmentResponseModel?> createAttachmentsAsync(
     final response = await Response.fromStream(streamedResponse);
 
     if (response.statusCode < 200 || response.statusCode > 299) {
-      throw HttpException(
+      throw TmsApiException(
           'Status code: ${response.statusCode}, Reason: ${response.reasonPhrase}');
     }
 

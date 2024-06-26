@@ -1,15 +1,32 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:adapters_flutter/models/api/attachment_api_model.dart';
 import 'package:adapters_flutter/models/api/link_api_model.dart';
-import 'package:adapters_flutter/models/test_result.dart';
+import 'package:adapters_flutter/models/test_result_model.dart';
 import 'package:synchronized/synchronized.dart';
-import 'package:test_api/src/backend/invoker.dart';
+import 'package:test_api/src/backend/invoker.dart'; // ignore: depend_on_referenced_packages, implementation_imports
 
 final _lock = Lock();
 final _testResults = <int, TestResultModel>{};
 
-Future<void> createEmptyResultAsync() async {
+Future<void> createEmptyStepAsync() async {
+  await _lock.synchronized(() async {
+    final currentStep = _getCurrentStep();
+
+    if (currentStep == null) {
+      _testResults.update(_getTestId(), (value) {
+        value.steps.add(AutoTestStepResultsModel());
+
+        return value;
+      }, ifAbsent: () => TestResultModel());
+    } else {
+      currentStep.stepResults.add(AutoTestStepResultsModel());
+    }
+  });
+}
+
+Future<void> createEmptyTestResultAsync() async {
   await _lock.synchronized(() {
     final key = _getTestId();
 
@@ -27,17 +44,20 @@ Future<TestResultModel> removeTestResultAsync() async {
   });
 }
 
-Future<void> updateAttachmentAsync(final AttachmentPutModel attachment) async {
-  await _lock.synchronized(() {
-    _testResults.update(_getTestId(), (value) {
-      value.attachments.add(attachment);
+Future<void> updateTestResultAttachmentsAsync(
+    final AttachmentPutModel attachment) async {
+  await _lock.synchronized(() async {
+    final currentStep = _getCurrentStep();
 
-      return value;
-    }, ifAbsent: () => TestResultModel());
+    if (currentStep == null) {
+      _updateTestResultAttachments(attachment);
+    } else {
+      _updateCurrentStepAttachments(attachment);
+    }
   });
 }
 
-Future<void> updateLinksAsync(final List<Link> links) async {
+Future<void> updateTestResultLinksAsync(final List<Link> links) async {
   await _lock.synchronized(() {
     _testResults.update(_getTestId(), (value) {
       value.links.addAll(links);
@@ -47,7 +67,7 @@ Future<void> updateLinksAsync(final List<Link> links) async {
   });
 }
 
-Future<void> updateMessageAsync(final String message) async {
+Future<void> updateTestResultMessageAsync(final String message) async {
   await _lock.synchronized(() {
     _testResults.update(_getTestId(), (value) {
       if (message.isNotEmpty) {
@@ -61,14 +81,18 @@ Future<void> updateMessageAsync(final String message) async {
   });
 }
 
-Future<void> updateStepAsync(
-    final AttachmentPutModelAutoTestStepResultsModel newStep) async {
-  await _lock.synchronized(() {
-    _testResults.update(_getTestId(), (value) {
-      value.steps.add(newStep);
+Future<void> updateCurrentStepAsync(
+    final AutoTestStepResultsModel newValue) async {
+  await _lock.synchronized(() async {
+    final currentStep = _getCurrentStep();
 
-      return value;
-    }, ifAbsent: () => TestResultModel());
+    currentStep?.outcome = newValue.outcome;
+    currentStep?.title = newValue.title;
+    currentStep?.description = newValue.description;
+    currentStep?.info = newValue.info;
+    currentStep?.startedOn = newValue.startedOn;
+    currentStep?.completedOn = newValue.completedOn;
+    currentStep?.duration = newValue.duration;
   });
 }
 
@@ -103,6 +127,59 @@ Future<void> updateTestResultAsync(final TestResultModel newValue) async {
   });
 }
 
+AutoTestStepResultsModel? _getCurrentStep() {
+  final key = _getTestId();
+  AutoTestStepResultsModel? currentStep;
+
+  if (_testResults.containsKey(key)) {
+    currentStep = _getLastNotFinishedChildStep(_testResults[key]?.steps);
+  }
+
+  return currentStep;
+}
+
+AutoTestStepResultsModel? _getLastNotFinishedChildStep(
+    final List<AutoTestStepResultsModel?>? steps) {
+  AutoTestStepResultsModel? targetStep;
+
+  if (steps == null || steps.isEmpty) {
+    return targetStep;
+  }
+
+  for (final step in steps.reversed) {
+    if (step == null) {
+      continue;
+    }
+
+    targetStep = _getLastNotFinishedChildStep(step.stepResults);
+
+    if (targetStep != null) {
+      break;
+    }
+
+    if (step.completedOn == null) {
+      targetStep = step;
+
+      break;
+    }
+  }
+
+  return targetStep;
+}
+
 int _getTestId() {
   return Invoker.current?.liveTest.test.hashCode ?? 0;
+}
+
+void _updateCurrentStepAttachments(final AttachmentPutModel attachment) async {
+  final currentStep = _getCurrentStep();
+  currentStep?.attachments.add(attachment);
+}
+
+void _updateTestResultAttachments(final AttachmentPutModel attachment) {
+  _testResults.update(_getTestId(), (value) {
+    value.attachments.add(attachment);
+
+    return value;
+  }, ifAbsent: () => TestResultModel());
 }

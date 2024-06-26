@@ -18,6 +18,6 @@ final class CreateEmptyTestRunRequestModel {
         'description': description,
         'launchSource': launchSource,
         'attachments': attachments,
-        'links': links,
+        'links': links
       };
 }

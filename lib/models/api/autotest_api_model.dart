@@ -7,93 +7,15 @@ import 'package:adapters_flutter/models/api/link_api_model.dart';
 import 'package:adapters_flutter/models/api/step_api_model.dart';
 
 final class AutotestFullModel {
-  final int? globalId;
-  final bool? isDeleted;
-  final bool? mustBeApproved;
   final String? id;
-  final DateTime? createdDate;
-  final DateTime? modifiedDate;
-  final String? createdById;
-  final String? modifiedById;
-  final String? lastTestRunId;
-  final String? lastTestRunName;
-  final String? lastTestResultId;
-  final String? lastTestResultOutcome;
-  final int? stabilityPercentage;
-  final String? externalId;
-  final List<Link>? links;
-  final String? projectId;
-  final String? name;
-  final String? namespace;
-  final String? classname;
-  final List<StepShortModel>? steps;
-  final List<StepShortModel>? setup;
-  final List<StepShortModel>? teardown;
-  final String? title;
-  final String? description;
-  final List<LabelFullModel>? labels;
   final bool? isFlaky;
-  final String? externalKey;
 
   factory AutotestFullModel.fromJson(Map<String, dynamic> json) {
     return AutotestFullModel(
-        int.parse(json['globalId'].toString()),
-        bool.parse(json['isDeleted'].toString()),
-        bool.parse(json['mustBeApproved'].toString()),
-        json['id'].toString(),
-        DateTime.parse(json['createdDate'].toString()),
-        DateTime.parse(json['modifiedDate'].toString()),
-        json['createdById'].toString(),
-        json['modifiedById'].toString(),
-        json['lastTestRunId'].toString(),
-        json['lastTestRunName']?.toString(),
-        json['lastTestResultId'].toString(),
-        json['lastTestResultOutcome'].toString(),
-        int.parse(json['stabilityPercentage']?.toString() ?? '0'),
-        json['externalId'].toString(),
-        (json['links'] as List).cast<Link>(),
-        json['projectId'].toString(),
-        json['name'].toString(),
-        json['namespace'].toString(),
-        json['classname'].toString(),
-        (json['steps'] as List).cast<StepShortModel>(),
-        (json['setup'] as List).cast<StepShortModel>(),
-        (json['teardown'] as List).cast<StepShortModel>(),
-        json['title'].toString(),
-        json['description'].toString(),
-        (json['labels'] as List).cast<LabelFullModel>(),
-        bool.parse(json['isFlaky'].toString()),
-        json['externalKey'].toString());
+        json['id'].toString(), bool.parse(json['isFlaky'].toString()));
   }
 
-  const AutotestFullModel(
-      this.globalId,
-      this.isDeleted,
-      this.mustBeApproved,
-      this.id,
-      this.createdDate,
-      this.modifiedDate,
-      this.createdById,
-      this.modifiedById,
-      this.lastTestRunId,
-      this.lastTestRunName,
-      this.lastTestResultId,
-      this.lastTestResultOutcome,
-      this.stabilityPercentage,
-      this.externalId,
-      this.links,
-      this.projectId,
-      this.name,
-      this.namespace,
-      this.classname,
-      this.steps,
-      this.setup,
-      this.teardown,
-      this.title,
-      this.description,
-      this.labels,
-      this.isFlaky,
-      this.externalKey);
+  const AutotestFullModel(this.id, this.isFlaky);
 }
 
 final class AutoTestRelatedToTestResult {
@@ -122,9 +44,9 @@ final class AutoTestResultsForTestRunModel {
   final List<AttachmentPutModel>? attachments;
   final Map<String, String>? parameters;
   final Map<String, String>? properties;
-  final List<AttachmentPutModelAutoTestStepResultsModel>? stepResults;
-  final List<AttachmentPutModelAutoTestStepResultsModel>? setupResults;
-  final List<AttachmentPutModelAutoTestStepResultsModel>? teardownResults;
+  final List<AutoTestStepResultsModel>? stepResults;
+  final List<AutoTestStepResultsModel>? setupResults;
+  final List<AutoTestStepResultsModel>? teardownResults;
 
   Map<String, dynamic> toJson() => {
         'outcome': outcome,
@@ -142,7 +64,7 @@ final class AutoTestResultsForTestRunModel {
         'properties': properties,
         'stepResults': stepResults,
         'setupResults': setupResults,
-        'teardownResults': teardownResults,
+        'teardownResults': teardownResults
       };
 
   const AutoTestResultsForTestRunModel(
@@ -200,7 +122,7 @@ final class CreateAutotestRequestModel {
         'description': description,
         'labels': labels,
         'isFlaky': isFlaky,
-        'externalKey': externalKey,
+        'externalKey': externalKey
       };
 
   CreateAutotestRequestModel(
@@ -257,7 +179,7 @@ final class UpdateAutotestRequestModel {
         'description': description,
         'labels': labels,
         'isFlaky': isFlaky,
-        'externalKey': externalKey,
+        'externalKey': externalKey
       };
 
   const UpdateAutotestRequestModel(

@@ -10,37 +10,36 @@ import 'package:logger/logger.dart';
 
 final Logger _logger = Logger();
 
-Future<void> addAttachmentAsync(final String filePath) async {
+Future<void> addAttachment(final String filePath) async {
   final file = File(filePath).absolute;
 
   if (await file.exists()) {
     final config = await getConfigAsync();
     final attachment = await createAttachmentsAsync(config, file);
-    // todo: switch test or step attachment
-    updateAttachmentAsync(toAttachmentPutModel(attachment));
+    await updateTestResultAttachmentsAsync(toAttachmentPutModel(attachment));
   } else {
     _logger.i('Attachment file $filePath not exists');
   }
 }
 
-Future<void> addAttachmentsAsync(final List<String> filesPaths) async {
+Future<void> addAttachments(final List<String> filesPaths) async {
   for (final filePath in filesPaths) {
-    await addAttachmentAsync(filePath);
+    await addAttachment(filePath);
   }
 }
 
-Future<void> addLinkAsync(final String url,
+Future<void> addLink(final String url,
     {final String? title,
     final String? description,
     final LinkType? type}) async {
   final link = Link(url, title, description, type);
-  await updateLinksAsync([link]);
+  await updateTestResultLinksAsync([link]);
 }
 
-Future<void> addLinksAsync(final List<Link> links) async {
-  await updateLinksAsync(links);
+Future<void> addLinks(final List<Link> links) async {
+  await updateTestResultLinksAsync(links);
 }
 
-Future<void> AddMessageAsync(final String message) async {
-  await updateMessageAsync(message);
+Future<void> addMessage(final String message) async {
+  await updateTestResultMessageAsync(message);
 }

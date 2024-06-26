@@ -3,7 +3,5 @@ final class WorkItemLinkRequestModel {
 
   const WorkItemLinkRequestModel(this.id);
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-      };
+  Map<String, dynamic> toJson() => {'id': id};
 }

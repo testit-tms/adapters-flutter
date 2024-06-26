@@ -4,25 +4,24 @@ import 'package:adapters_flutter/enums/outcome_enum.dart';
 import 'package:adapters_flutter/managers/api_manager_.dart';
 import 'package:adapters_flutter/managers/config_manager.dart';
 import 'package:adapters_flutter/models/api/link_api_model.dart';
-import 'package:adapters_flutter/models/test_result.dart';
+import 'package:adapters_flutter/models/test_result_model.dart';
 import 'package:adapters_flutter/storages/test_result_storage.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:logger/logger.dart';
 import 'package:path/path.dart';
-import 'package:test_api/scaffolding.dart';
-import 'package:test_api/src/backend/invoker.dart';
+import 'package:test_api/src/backend/invoker.dart'; // ignore: depend_on_referenced_packages, implementation_imports
 
 final Logger _logger = Logger();
 
-Future<void> testAsync(final String description, final dynamic Function() body,
+Future<void> tmsTest(final String description, final dynamic Function() body,
     {final String? externalId,
     final String? title,
-    final List<String>? labels,
+    final List<String>? tags,
     final List<Link>? links,
     final List<String>? workItemsIds,
     final String? testOn,
     final Timeout? timeout,
     final String? skip,
-    final List<String>? tags,
     final Map<String, dynamic>? onPlatform,
     final int? retry}) async {
   final config = await getConfigAsync();
@@ -39,7 +38,7 @@ Future<void> testAsync(final String description, final dynamic Function() body,
       tags: tags,
       onPlatform: onPlatform,
       retry: retry, () async {
-    await createEmptyResultAsync();
+    await createEmptyTestResultAsync();
     final localResult = TestResultModel();
     final startedOn = DateTime.now();
 
@@ -56,7 +55,7 @@ Future<void> testAsync(final String description, final dynamic Function() body,
       localResult.classname = _getClassName();
       localResult.description = description;
       localResult.externalId = externalId ?? '';
-      localResult.labels = labels ?? [];
+      localResult.labels = tags ?? [];
       localResult.links = links ?? [];
       localResult.title = title ?? '';
       localResult.workItemIds = workItemsIds ?? [];

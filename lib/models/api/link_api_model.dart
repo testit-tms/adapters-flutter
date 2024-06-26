@@ -23,7 +23,7 @@ final class LinkPostModel {
         'title': title,
         'url': url,
         'description': description,
-        'type': type,
-        'hasInfo': hasInfo,
+        'type': type?.name,
+        'hasInfo': hasInfo
       };
 }

@@ -6,7 +6,8 @@ import 'package:adapters_flutter/managers/config_manager.dart';
 import 'package:adapters_flutter/models/api/autotest_api_model.dart';
 import 'package:adapters_flutter/models/api/test_run_api_model.dart';
 import 'package:adapters_flutter/models/config/merged_config_model.dart';
-import 'package:adapters_flutter/models/test_result.dart';
+import 'package:adapters_flutter/models/exception_model.dart';
+import 'package:adapters_flutter/models/test_result_model.dart';
 import 'package:http/http.dart';
 import 'package:logger/logger.dart';
 
@@ -32,7 +33,7 @@ Future<void> createEmptyTestRunAsync(final MergedConfigModel config) async {
     final response = await Response.fromStream(streamedResponse);
 
     if (response.statusCode < 200 || response.statusCode > 299) {
-      throw HttpException(
+      throw TmsApiException(
           'Status code: ${response.statusCode}, Reason: ${response.reasonPhrase}');
     }
 
@@ -65,7 +66,7 @@ Future<List<String>> getTestsFromTestRunAsync(
     final response = await Response.fromStream(streamedResponse);
 
     if (response.statusCode < 200 || response.statusCode > 299) {
-      throw HttpException(
+      throw TmsApiException(
           'Status code: ${response.statusCode}, Reason: ${response.reasonPhrase}');
     }
 
@@ -108,15 +109,14 @@ Future<void> submitResultToTestRunAsync(
         'POST',
         Uri.parse(
             '${config.url}/api/v2/testRuns/${config.testRunId}/testResults'));
-    final requestBody =
-        await toAutoTestResultsForTestRunModelAsync(config, testResult);
+    final requestBody = toAutoTestResultsForTestRunModel(config, testResult);
     request.body = json.encode([requestBody]);
     request.headers.addAll(headers);
 
     final response = await request.send();
 
     if (response.statusCode < 200 || response.statusCode > 299) {
-      throw HttpException(
+      throw TmsApiException(
           'Status code: ${response.statusCode}, Reason: ${response.reasonPhrase}');
     }
   } catch (exception, stacktrace) {
