@@ -109,7 +109,8 @@ Future<void> submitResultToTestRunAsync(
         'POST',
         Uri.parse(
             '${config.url}/api/v2/testRuns/${config.testRunId}/testResults'));
-    final requestBody = toAutoTestResultsForTestRunModel(config, testResult);
+    final requestBody =
+        toAutoTestResultsForTestRunModel(config.configurationId, testResult);
     request.body = json.encode([requestBody]);
     request.headers.addAll(headers);
 

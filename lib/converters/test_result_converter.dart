@@ -2,14 +2,13 @@ import 'package:adapters_flutter/converters/step_converter.dart';
 import 'package:adapters_flutter/models/api/autotest_api_model.dart';
 import 'package:adapters_flutter/models/api/label_api_model.dart';
 import 'package:adapters_flutter/models/api/link_api_model.dart';
-import 'package:adapters_flutter/models/config/merged_config_model.dart';
 import 'package:adapters_flutter/models/test_result_model.dart';
 
 AutoTestResultsForTestRunModel toAutoTestResultsForTestRunModel(
-    final MergedConfigModel config, final TestResultModel testResult) {
+    final String? configurationId, final TestResultModel testResult) {
   final model = AutoTestResultsForTestRunModel(
       testResult.outcome?.name,
-      config.configurationId,
+      configurationId,
       testResult.links
           .map((link) =>
               LinkPostModel(link.title, link.url, link.description, link.type))
@@ -32,7 +31,7 @@ AutoTestResultsForTestRunModel toAutoTestResultsForTestRunModel(
 }
 
 CreateAutotestRequestModel toCreateAutotestRequestModel(
-    final MergedConfigModel config, final TestResultModel testResult) {
+    final String? projectId, final TestResultModel testResult) {
   final model = CreateAutotestRequestModel(
       null,
       null,
@@ -42,7 +41,7 @@ CreateAutotestRequestModel toCreateAutotestRequestModel(
           .map((link) =>
               LinkPostModel(link.title, link.url, link.description, link.type))
           .toList(),
-      config.projectId,
+      projectId,
       testResult.name,
       testResult.namespace,
       testResult.classname,
@@ -59,7 +58,7 @@ CreateAutotestRequestModel toCreateAutotestRequestModel(
 }
 
 UpdateAutotestRequestModel toUpdateAutotestRequestModel(
-    final MergedConfigModel config, final TestResultModel testResult) {
+    final String? projectId, final TestResultModel testResult) {
   final model = UpdateAutotestRequestModel(
       null,
       null,
@@ -68,7 +67,7 @@ UpdateAutotestRequestModel toUpdateAutotestRequestModel(
           .map((link) =>
               LinkPostModel(link.title, link.url, link.description, link.type))
           .toList(),
-      config.projectId,
+      projectId,
       testResult.name,
       testResult.namespace,
       testResult.classname,

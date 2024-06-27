@@ -15,21 +15,21 @@ final Logger _logger = Logger();
 
 void tmsTest(final String description, final dynamic Function() body,
     {final String? externalId,
-    final String? title,
-    final List<String>? tags,
     final List<Link>? links,
-    final List<String>? workItemsIds,
+    final Map<String, dynamic>? onPlatform,
+    final int? retry,
+    final String? skip,
+    final List<String>? tags,
     final String? testOn,
     final Timeout? timeout,
-    final String? skip,
-    final Map<String, dynamic>? onPlatform,
-    final int? retry}) {
+    final String? title,
+    final List<String>? workItemsIds}) {
   test(description,
-      testOn: testOn,
-      timeout: timeout,
-      tags: tags,
       onPlatform: onPlatform,
-      retry: retry, () async {
+      retry: retry,
+      tags: tags,
+      testOn: testOn,
+      timeout: timeout, () async {
     final config = await getConfigAsync();
 
     if (!await checkTestNeedsToBeRunAsync(config, externalId)) {
