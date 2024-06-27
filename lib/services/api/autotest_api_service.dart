@@ -100,8 +100,8 @@ Future<AutotestFullModel?> getAutotestByExternalIdAsync(
   return autotest;
 }
 
-Future<bool> tryLinkAutoTestToWorkItemAsync(final MergedConfigModel config,
-    final String? autotestId, final List<String> workItemIds) async {
+Future<bool> tryLinkAutoTestToWorkItemAsync(final String? autotestId,
+    final MergedConfigModel config, final List<String> workItemIds) async {
   for (final String workItemId in workItemIds) {
     try {
       final headers = {

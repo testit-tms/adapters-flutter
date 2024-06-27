@@ -37,7 +37,7 @@ Future<void> processTestResultAsync(
 
   if (testResult.workItemIds.isNotEmpty) {
     if (!await tryLinkAutoTestToWorkItemAsync(
-        config, autotest?.id, testResult.workItemIds)) {
+        autotest?.id, config, testResult.workItemIds)) {
       return;
     }
   }

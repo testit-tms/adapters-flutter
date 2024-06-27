@@ -1,1 +1,1 @@
-enum Outcome { passed, failed, blocked, skipped }
+enum Outcome { blocked, failed, passed, skipped }

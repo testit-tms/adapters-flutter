@@ -29,10 +29,10 @@ Future<void> addAttachments(final List<String> filesPaths) async {
 }
 
 Future<void> addLink(final String url,
-    {final String? title,
-    final String? description,
+    {final String? description,
+    final String? title,
     final LinkType? type}) async {
-  final link = Link(url, title, description, type);
+  final link = Link(description, title, type, url);
   await updateTestResultLinksAsync([link]);
 }
 

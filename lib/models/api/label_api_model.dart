@@ -1,8 +1,8 @@
 final class LabelFullModel {
-  final String? name;
   final int? globalId;
+  final String? name;
 
-  const LabelFullModel(this.name, this.globalId);
+  const LabelFullModel(this.globalId, this.name);
 }
 
 final class LabelPostModel {

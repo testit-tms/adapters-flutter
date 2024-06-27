@@ -14,12 +14,12 @@ void main() {
     tmsTest('example test',
         externalId: 'example_externalId',
         links: [
-          const Link('link_title', 'https://www.example.org/',
-              'link_description', LinkType.issue)
+          const Link('link_description', 'link_title', LinkType.issue,
+              'https://www.example.org/')
         ],
         tags: ['example_tag'],
         title: 'example_title',
-        workItemsIds: ['45835'], () async {
+        workItemsIds: ['45876'], () async {
       await step('success step', () => expect(0, 0));
       await step('success step with attachment',
           () async => await addAttachment('avatar.png'));

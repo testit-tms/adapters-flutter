@@ -7,25 +7,25 @@ import 'package:adapters_flutter/models/test_result_model.dart';
 AutoTestResultsForTestRunModel toAutoTestResultsForTestRunModel(
     final String? configurationId, final TestResultModel testResult) {
   final model = AutoTestResultsForTestRunModel(
-      testResult.outcome?.name,
+      testResult.attachments,
+      testResult.externalId,
+      testResult.completedOn?.toUtc().toString(),
       configurationId,
+      testResult.duration,
+      null,
       testResult.links
           .map((link) =>
-              LinkPostModel(link.title, link.url, link.description, link.type))
+              LinkPostModel(link.description, link.title, link.type, link.url))
           .toList(),
-      null,
-      testResult.externalId,
       testResult.message,
-      testResult.traces,
-      testResult.startedOn?.toUtc().toString(),
-      testResult.completedOn?.toUtc().toString(),
-      testResult.duration,
-      testResult.attachments,
+      testResult.outcome?.name,
       testResult.parameters,
       testResult.properties,
-      testResult.steps,
       testResult.setup,
-      testResult.teardown);
+      testResult.startedOn?.toUtc().toString(),
+      testResult.steps,
+      testResult.teardown,
+      testResult.traces);
 
   return model;
 }
@@ -34,24 +34,24 @@ CreateAutotestRequestModel toCreateAutotestRequestModel(
     final String? projectId, final TestResultModel testResult) {
   final model = CreateAutotestRequestModel(
       null,
-      null,
-      null,
+      testResult.classname,
+      testResult.description,
       testResult.externalId,
+      null,
+      null,
+      testResult.labels.map((name) => LabelPostModel(name)).toList(),
       testResult.links
           .map((link) =>
-              LinkPostModel(link.title, link.url, link.description, link.type))
+              LinkPostModel(link.description, link.title, link.type, link.url))
           .toList(),
-      projectId,
       testResult.name,
       testResult.namespace,
-      testResult.classname,
-      testResult.steps.map((s) => toStepApiModel(s)).toList(),
+      projectId,
       testResult.setup.map((s) => toStepApiModel(s)).toList(),
+      null,
+      testResult.steps.map((s) => toStepApiModel(s)).toList(),
       testResult.teardown.map((s) => toStepApiModel(s)).toList(),
       testResult.title,
-      testResult.description,
-      testResult.labels.map((name) => LabelPostModel(name)).toList(),
-      null,
       null);
 
   return model;
@@ -60,24 +60,24 @@ CreateAutotestRequestModel toCreateAutotestRequestModel(
 UpdateAutotestRequestModel toUpdateAutotestRequestModel(
     final String? projectId, final TestResultModel testResult) {
   final model = UpdateAutotestRequestModel(
-      null,
-      null,
+      testResult.classname,
+      testResult.description,
       testResult.externalId,
+      null,
+      null,
+      testResult.isFlaky,
+      testResult.labels.map((name) => LabelPostModel(name)).toList(),
       testResult.links
           .map((link) =>
-              LinkPostModel(link.title, link.url, link.description, link.type))
+              LinkPostModel(link.description, link.title, link.type, link.url))
           .toList(),
-      projectId,
       testResult.name,
       testResult.namespace,
-      testResult.classname,
-      testResult.steps.map((s) => toStepApiModel(s)).toList(),
+      projectId,
       testResult.setup.map((s) => toStepApiModel(s)).toList(),
+      testResult.steps.map((s) => toStepApiModel(s)).toList(),
       testResult.teardown.map((s) => toStepApiModel(s)).toList(),
       testResult.title,
-      testResult.description,
-      testResult.labels.map((name) => LabelPostModel(name)).toList(),
-      testResult.isFlaky,
       null);
 
   return model;

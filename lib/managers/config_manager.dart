@@ -19,7 +19,7 @@ Future<MergedConfigModel> getConfigAsync() async {
       final fileConfig = await getConfigFromFileAsync(filePath);
       final envConfig = await getConfigFromEnvAsync();
 
-      _config = _mergeConfigs(fileConfig, envConfig);
+      _config = _mergeConfigs(envConfig, fileConfig);
       validateConfig(_config);
     }
   });
@@ -32,7 +32,7 @@ Future<void> updateTestRunIdAsync(final String testRunId) async {
 }
 
 MergedConfigModel _mergeConfigs(
-    final FileConfigModel fileConfig, final EnvConfigModel envConfig) {
+    final EnvConfigModel envConfig, final FileConfigModel fileConfig) {
   var config = MergedConfigModel();
 
   if (envConfig.url == null || envConfig.url!.isEmpty) {

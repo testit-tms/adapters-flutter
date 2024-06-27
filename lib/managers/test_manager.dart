@@ -93,11 +93,19 @@ void tmsTest(final String description, final dynamic Function() body,
 }
 
 String? _getClassName() {
-  final suiteName = Invoker.current?.liveTest.suite.group.name;
+  final liveTest = Invoker.current?.liveTest;
+  final groupName = liveTest?.groups
+      .where((group) => group.name.isNotEmpty)
+      .firstOrNull
+      ?.name;
 
-  if (suiteName?.isEmpty ?? false) {
-    return null;
+  if (groupName == null) {
+    final suiteName = liveTest?.suite.group.name;
+
+    if (suiteName != null && suiteName.isNotEmpty) {
+      return suiteName;
+    }
   }
 
-  return suiteName;
+  return groupName;
 }

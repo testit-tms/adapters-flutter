@@ -31,172 +31,172 @@ final class AutoTestRelatedToTestResult {
 }
 
 final class AutoTestResultsForTestRunModel {
-  final String? outcome;
-  final String? configurationId;
-  final List<LinkPostModel>? links;
-  final List<FailureCategory>? failureReasonNames;
-  final String? autoTestExternalId;
-  final String? message;
-  final String? traces;
-  final String? startedOn;
-  final String? completedOn;
-  final int? duration;
   final List<AttachmentPutModel>? attachments;
+  final String? autoTestExternalId;
+  final String? completedOn;
+  final String? configurationId;
+  final int? duration;
+  final List<FailureCategory>? failureReasonNames;
+  final List<LinkPostModel>? links;
+  final String? message;
+  final String? outcome;
   final Map<String, String>? parameters;
   final Map<String, String>? properties;
-  final List<AutoTestStepResultsModel>? stepResults;
   final List<AutoTestStepResultsModel>? setupResults;
+  final String? startedOn;
+  final List<AutoTestStepResultsModel>? stepResults;
   final List<AutoTestStepResultsModel>? teardownResults;
+  final String? traces;
 
   Map<String, dynamic> toJson() => {
-        'outcome': outcome,
-        'configurationId': configurationId,
-        'links': links,
-        'failureReasonNames': failureReasonNames,
-        'autoTestExternalId': autoTestExternalId,
-        'message': message,
-        'traces': traces,
-        'startedOn': startedOn,
-        'completedOn': completedOn,
-        'duration': duration,
         'attachments': attachments,
+        'autoTestExternalId': autoTestExternalId,
+        'completedOn': completedOn,
+        'configurationId': configurationId,
+        'duration': duration,
+        'failureReasonNames': failureReasonNames,
+        'links': links,
+        'message': message,
+        'outcome': outcome,
         'parameters': parameters,
         'properties': properties,
-        'stepResults': stepResults,
         'setupResults': setupResults,
-        'teardownResults': teardownResults
+        'startedOn': startedOn,
+        'stepResults': stepResults,
+        'teardownResults': teardownResults,
+        'traces': traces
       };
 
   const AutoTestResultsForTestRunModel(
-      this.outcome,
-      this.configurationId,
-      this.links,
-      this.failureReasonNames,
-      this.autoTestExternalId,
-      this.message,
-      this.traces,
-      this.startedOn,
-      this.completedOn,
-      this.duration,
       this.attachments,
+      this.autoTestExternalId,
+      this.completedOn,
+      this.configurationId,
+      this.duration,
+      this.failureReasonNames,
+      this.links,
+      this.message,
+      this.outcome,
       this.parameters,
       this.properties,
-      this.stepResults,
       this.setupResults,
-      this.teardownResults);
+      this.startedOn,
+      this.stepResults,
+      this.teardownResults,
+      this.traces);
 }
 
 final class CreateAutotestRequestModel {
-  final List<String>? workItemIdsForLinkWithAutoTest;
-  bool? shouldCreateWorkItem;
   final Map<String, Object>? attributes;
+  final String? classname;
+  final String? description;
   final String? externalId;
+  final String? externalKey;
+  final bool? isFlaky;
+  final List<LabelPostModel>? labels;
   final List<LinkPostModel>? links;
-  final String? projectId;
   final String? name;
   final String? namespace;
-  final String? classname;
-  final List<StepShortModel>? steps;
+  final String? projectId;
   final List<StepShortModel>? setup;
+  bool? shouldCreateWorkItem;
+  final List<StepShortModel>? steps;
   final List<StepShortModel>? teardown;
   final String? title;
-  final String? description;
-  final List<LabelPostModel>? labels;
-  final bool? isFlaky;
-  final String? externalKey;
+  final List<String>? workItemIdsForLinkWithAutoTest;
 
   Map<String, dynamic> toJson() => {
-        'workItemIdsForLinkWithAutoTest': workItemIdsForLinkWithAutoTest,
-        'shouldCreateWorkItem': shouldCreateWorkItem,
         'attributes': attributes,
+        'classname': classname,
+        'description': description,
         'externalId': externalId,
+        'externalKey': externalKey,
+        'isFlaky': isFlaky,
+        'labels': labels,
         'links': links,
-        'projectId': projectId,
         'name': name,
         'namespace': namespace,
-        'classname': classname,
-        'steps': steps,
+        'projectId': projectId,
         'setup': setup,
+        'shouldCreateWorkItem': shouldCreateWorkItem,
+        'steps': steps,
         'teardown': teardown,
         'title': title,
-        'description': description,
-        'labels': labels,
-        'isFlaky': isFlaky,
-        'externalKey': externalKey
+        'workItemIdsForLinkWithAutoTest': workItemIdsForLinkWithAutoTest
       };
 
   CreateAutotestRequestModel(
-      this.workItemIdsForLinkWithAutoTest,
-      this.shouldCreateWorkItem,
       this.attributes,
+      this.classname,
+      this.description,
       this.externalId,
+      this.externalKey,
+      this.isFlaky,
+      this.labels,
       this.links,
-      this.projectId,
       this.name,
       this.namespace,
-      this.classname,
-      this.steps,
+      this.projectId,
       this.setup,
+      this.shouldCreateWorkItem,
+      this.steps,
       this.teardown,
       this.title,
-      this.description,
-      this.labels,
-      this.isFlaky,
-      this.externalKey);
+      this.workItemIdsForLinkWithAutoTest);
 }
 
 final class UpdateAutotestRequestModel {
-  final String? id;
-  final List<String>? workItemIdsForLinkWithAutoTest;
+  final String? classname;
+  final String? description;
   final String? externalId;
+  final String? externalKey;
+  final String? id;
+  final bool? isFlaky;
+  final List<LabelPostModel>? labels;
   final List<LinkPostModel>? links;
-  final String? projectId;
   final String? name;
   final String? namespace;
-  final String? classname;
-  final List<StepShortModel>? steps;
+  final String? projectId;
   final List<StepShortModel>? setup;
+  final List<StepShortModel>? steps;
   final List<StepShortModel>? teardown;
   final String? title;
-  final String? description;
-  final List<LabelPostModel>? labels;
-  final bool? isFlaky;
-  final String? externalKey;
+  final List<String>? workItemIdsForLinkWithAutoTest;
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'workItemIdsForLinkWithAutoTest': workItemIdsForLinkWithAutoTest,
+        'classname': classname,
+        'description': description,
         'externalId': externalId,
+        'externalKey': externalKey,
+        'id': id,
+        'isFlaky': isFlaky,
+        'labels': labels,
         'links': links,
-        'projectId': projectId,
         'name': name,
         'namespace': namespace,
-        'classname': classname,
-        'steps': steps,
+        'projectId': projectId,
         'setup': setup,
+        'steps': steps,
         'teardown': teardown,
         'title': title,
-        'description': description,
-        'labels': labels,
-        'isFlaky': isFlaky,
-        'externalKey': externalKey
+        'workItemIdsForLinkWithAutoTest': workItemIdsForLinkWithAutoTest
       };
 
   const UpdateAutotestRequestModel(
-      this.id,
-      this.workItemIdsForLinkWithAutoTest,
+      this.classname,
+      this.description,
       this.externalId,
+      this.externalKey,
+      this.id,
+      this.isFlaky,
+      this.labels,
       this.links,
-      this.projectId,
       this.name,
       this.namespace,
-      this.classname,
-      this.steps,
+      this.projectId,
       this.setup,
+      this.steps,
       this.teardown,
       this.title,
-      this.description,
-      this.labels,
-      this.isFlaky,
-      this.externalKey);
+      this.workItemIdsForLinkWithAutoTest);
 }

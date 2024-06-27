@@ -1,33 +1,33 @@
 final class StepAutoTestResultModel {
-  final String? title;
-  final String? description;
-  final DateTime? startedOn;
-  final DateTime? completedOn;
-  final int? duration;
   final List<String>? attachments;
-  final Map<String, String>? parameters;
-  final List<StepAutoTestResultModel>? steps;
+  final DateTime? completedOn;
+  final String? description;
+  final int? duration;
   final String? outcome;
+  final Map<String, String>? parameters;
+  final DateTime? startedOn;
+  final List<StepAutoTestResultModel>? steps;
+  final String? title;
 
   const StepAutoTestResultModel(
-      this.title,
-      this.description,
-      this.startedOn,
-      this.completedOn,
-      this.duration,
       this.attachments,
+      this.completedOn,
+      this.description,
+      this.duration,
+      this.outcome,
       this.parameters,
+      this.startedOn,
       this.steps,
-      this.outcome);
+      this.title);
 }
 
 final class StepShortModel {
-  final String? title;
   final String? description;
   final List<StepShortModel>? steps;
+  final String? title;
 
   Map<String, dynamic> toJson() =>
-      {'title': title, 'description': description, 'steps': steps};
+      {'description': description, 'steps': steps, 'title': title};
 
-  const StepShortModel(this.title, this.description, this.steps);
+  const StepShortModel(this.description, this.steps, this.title);
 }
