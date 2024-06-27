@@ -79,46 +79,57 @@ Description of methods:
 ```dart
 import 'package:adapters_flutter/adapters_flutter.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:logger/logger.dart';
 
-void main() async {
+final Logger _logger = Logger();
+
+void main() {
   setUpAll(() {
-    print('setUpAll');
+    _logger.i('setUpAll');
   });
 
   setUp(() {
-    print('setUp');
+    _logger.i('setUp');
   });
 
-  await tmsTest(
-          'example test',
+  tmsTest('example test',
           externalId: 'example_test',
           title: 'example_title',
-          tags: ['example_tag'],
-          links: [Link('link_title', 'https://www.example.org/', 'link_description', LinkType.issue)],
-          workItemsIds: ['45835'], () async {
+          tags: [
+            'example_tag'
+          ],
+          links: [
+            const Link('link_title', 'https://www.example.org/', 'link_description',
+                    LinkType.issue)
+          ],
+          workItemsIds: [
+            '45835'
+          ], () async {
+            await step('success step', () => expect(0, 0));
 
-    await step('success step', () => expect(0, 0));
+            await step('success step with attachment',
+                            () async => await addAttachment('avatar.png'));
 
-    await step('success step with attachment', () async => await addAttachment('avatar.png'));
+            await step('success step with message',
+                            () async => await addMessage('example message'));
 
-    await step('success step with message', () async => await addMessage('example message'));
+            await step('success step with link',
+                            () async => await addLink('https://www.example.org/'));
 
-    await step('success step with link', () async => await addLink('https://www.example.org/'));
+            await step('success step with body', () {
+              const actual = 0;
+              expect(actual, 0);
+            });
 
-    await step('success step with body', () {
-      const actual = 0;
-      expect(actual, 0);
-    });
-
-    await step('failed step', () => throw Exception('example exception'));
-  });
+            await step('failed step', () => throw Exception('example exception'));
+          });
 
   tearDown(() {
-    print('tearDown');
+    _logger.i('tearDown');
   });
 
   tearDownAll(() {
-    print('tearDownAll');
+    _logger.i('tearDownAll');
   });
 }
 ```

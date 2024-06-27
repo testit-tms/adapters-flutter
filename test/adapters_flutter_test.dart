@@ -2,17 +2,20 @@ import 'package:adapters_flutter/adapters_flutter.dart';
 import 'package:adapters_flutter/enums/link_type_enum.dart';
 import 'package:adapters_flutter/models/api/link_api_model.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:logger/logger.dart';
 
-void main() async {
+final Logger _logger = Logger();
+
+void main() {
   setUpAll(() {
-    print('setUpAll');
+    _logger.i('setUpAll');
   });
 
   setUp(() {
-    print('setUp');
+    _logger.i('setUp');
   });
 
-  await tmsTest('example test',
+  tmsTest('example test',
       externalId: 'example_test',
       title: 'example_title',
       tags: [
@@ -45,10 +48,10 @@ void main() async {
   });
 
   tearDown(() {
-    print('tearDown');
+    _logger.i('tearDown');
   });
 
   tearDownAll(() {
-    print('tearDownAll');
+    _logger.i('tearDownAll');
   });
 }

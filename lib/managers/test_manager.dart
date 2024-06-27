@@ -13,7 +13,7 @@ import 'package:test_api/src/backend/invoker.dart'; // ignore: depend_on_referen
 
 final Logger _logger = Logger();
 
-Future<void> tmsTest(final String description, final dynamic Function() body,
+void tmsTest(final String description, final dynamic Function() body,
     {final String? externalId,
     final String? title,
     final List<String>? tags,
@@ -23,21 +23,20 @@ Future<void> tmsTest(final String description, final dynamic Function() body,
     final Timeout? timeout,
     final String? skip,
     final Map<String, dynamic>? onPlatform,
-    final int? retry}) async {
-  final config = await getConfigAsync();
-
-  if (!await checkTestNeedsToBeRunAsync(config, externalId)) {
-    return;
-  }
-
-  await tryCreateTestRunOnceAsync(config);
-
+    final int? retry}) {
   test(description,
       testOn: testOn,
       timeout: timeout,
       tags: tags,
       onPlatform: onPlatform,
       retry: retry, () async {
+    final config = await getConfigAsync();
+
+    if (!await checkTestNeedsToBeRunAsync(config, externalId)) {
+      return;
+    }
+
+    await tryCreateTestRunOnceAsync(config);
     await createEmptyTestResultAsync();
     final localResult = TestResultModel();
     final startedOn = DateTime.now();
