@@ -6,7 +6,7 @@ final class Link {
   final LinkType? type;
   final String? url;
 
-  const Link(this.description, this.title, this.type, this.url);
+  Link(this.description, this.title, this.type, this.url);
 }
 
 final class LinkPostModel {

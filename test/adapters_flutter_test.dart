@@ -14,7 +14,7 @@ void main() {
     tmsTest('example test',
         externalId: 'example_externalId',
         links: [
-          const Link('link_description', 'link_title', LinkType.issue,
+          Link('link_description', 'link_title', LinkType.issue,
               'https://www.example.org/')
         ],
         tags: ['example_tag'],
