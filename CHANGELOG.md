@@ -9,6 +9,10 @@ The format is based on Keep a Changelog and this project adheres to Semantic Ver
 
 - make tmsTest sync.
 
+### Fixed
+
+- test result classname.
+
 ## [1.0.0] - 2024-06-26
 
 ### Changed
