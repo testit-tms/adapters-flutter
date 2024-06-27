@@ -13,31 +13,30 @@ import 'package:test_api/src/backend/invoker.dart'; // ignore: depend_on_referen
 
 final Logger _logger = Logger();
 
-Future<void> tmsTest(final String description, final dynamic Function() body,
+void tmsTest(final String description, final dynamic Function() body,
     {final String? externalId,
-    final String? title,
-    final List<String>? tags,
     final List<Link>? links,
-    final List<String>? workItemsIds,
+    final Map<String, dynamic>? onPlatform,
+    final int? retry,
+    final String? skip,
+    final List<String>? tags,
     final String? testOn,
     final Timeout? timeout,
-    final String? skip,
-    final Map<String, dynamic>? onPlatform,
-    final int? retry}) async {
-  final config = await getConfigAsync();
-
-  if (!await checkTestNeedsToBeRunAsync(config, externalId)) {
-    return;
-  }
-
-  await tryCreateTestRunOnceAsync(config);
-
+    final String? title,
+    final List<String>? workItemsIds}) {
   test(description,
-      testOn: testOn,
-      timeout: timeout,
-      tags: tags,
       onPlatform: onPlatform,
-      retry: retry, () async {
+      retry: retry,
+      tags: tags,
+      testOn: testOn,
+      timeout: timeout, () async {
+    final config = await getConfigAsync();
+
+    if (!await checkTestNeedsToBeRunAsync(config, externalId)) {
+      return;
+    }
+
+    await tryCreateTestRunOnceAsync(config);
     await createEmptyTestResultAsync();
     final localResult = TestResultModel();
     final startedOn = DateTime.now();
@@ -94,11 +93,19 @@ Future<void> tmsTest(final String description, final dynamic Function() body,
 }
 
 String? _getClassName() {
-  final suiteName = Invoker.current?.liveTest.suite.group.name;
+  final liveTest = Invoker.current?.liveTest;
+  final groupName = liveTest?.groups
+      .where((group) => group.name.isNotEmpty)
+      .firstOrNull
+      ?.name;
 
-  if (suiteName?.isEmpty ?? false) {
-    return null;
+  if (groupName == null) {
+    final suiteName = liveTest?.suite.group.name;
+
+    if (suiteName != null && suiteName.isNotEmpty) {
+      return suiteName;
+    }
   }
 
-  return suiteName;
+  return groupName;
 }

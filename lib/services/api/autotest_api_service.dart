@@ -27,7 +27,8 @@ Future<AutotestFullModel?> createAutotestAsync(
     final request =
         Request('POST', Uri.parse('${config.url}/api/v2/autoTests'));
 
-    final requestBody = toCreateAutotestRequestModel(config, testResult);
+    final requestBody =
+        toCreateAutotestRequestModel(config.projectId, testResult);
     requestBody.shouldCreateWorkItem =
         config.automaticCreationTestCases ?? false;
     request.body = json.encode(requestBody);
@@ -99,8 +100,8 @@ Future<AutotestFullModel?> getAutotestByExternalIdAsync(
   return autotest;
 }
 
-Future<bool> tryLinkAutoTestToWorkItemAsync(final MergedConfigModel config,
-    final String? autotestId, final List<String> workItemIds) async {
+Future<bool> tryLinkAutoTestToWorkItemAsync(final String? autotestId,
+    final MergedConfigModel config, final List<String> workItemIds) async {
   for (final String workItemId in workItemIds) {
     try {
       final headers = {
@@ -142,7 +143,8 @@ Future<void> updateAutotestAsync(
     };
 
     final request = Request('PUT', Uri.parse('${config.url}/api/v2/autoTests'));
-    final requestBody = toUpdateAutotestRequestModel(config, testResult);
+    final requestBody =
+        toUpdateAutotestRequestModel(config.projectId, testResult);
     request.body = json.encode(requestBody);
     request.headers.addAll(headers);
 

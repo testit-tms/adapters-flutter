@@ -1,1 +1,1 @@
-enum LinkType { related, blockedBy, defect, issue, requirement, repository }
+enum LinkType { blockedBy, defect, issue, related, repository, requirement }

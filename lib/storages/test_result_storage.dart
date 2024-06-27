@@ -44,43 +44,6 @@ Future<TestResultModel> removeTestResultAsync() async {
   });
 }
 
-Future<void> updateTestResultAttachmentsAsync(
-    final AttachmentPutModel attachment) async {
-  await _lock.synchronized(() async {
-    final currentStep = _getCurrentStep();
-
-    if (currentStep == null) {
-      _updateTestResultAttachments(attachment);
-    } else {
-      _updateCurrentStepAttachments(attachment);
-    }
-  });
-}
-
-Future<void> updateTestResultLinksAsync(final List<Link> links) async {
-  await _lock.synchronized(() {
-    _testResults.update(_getTestId(), (value) {
-      value.links.addAll(links);
-
-      return value;
-    }, ifAbsent: () => TestResultModel());
-  });
-}
-
-Future<void> updateTestResultMessageAsync(final String message) async {
-  await _lock.synchronized(() {
-    _testResults.update(_getTestId(), (value) {
-      if (message.isNotEmpty) {
-        value.message = value.message?.isEmpty ?? true
-            ? '$message${Platform.lineTerminator}'
-            : '${value.message}${Platform.lineTerminator}$message';
-      }
-
-      return value;
-    }, ifAbsent: () => TestResultModel());
-  });
-}
-
 Future<void> updateCurrentStepAsync(
     final AutoTestStepResultsModel newValue) async {
   await _lock.synchronized(() async {
@@ -121,6 +84,43 @@ Future<void> updateTestResultAsync(final TestResultModel newValue) async {
       value.startedOn = newValue.startedOn;
       value.completedOn = newValue.completedOn;
       value.duration = newValue.duration;
+
+      return value;
+    }, ifAbsent: () => TestResultModel());
+  });
+}
+
+Future<void> updateTestResultAttachmentsAsync(
+    final AttachmentPutModel attachment) async {
+  await _lock.synchronized(() async {
+    final currentStep = _getCurrentStep();
+
+    if (currentStep == null) {
+      _updateTestResultAttachments(attachment);
+    } else {
+      _updateCurrentStepAttachments(attachment);
+    }
+  });
+}
+
+Future<void> updateTestResultLinksAsync(final List<Link> links) async {
+  await _lock.synchronized(() {
+    _testResults.update(_getTestId(), (value) {
+      value.links.addAll(links);
+
+      return value;
+    }, ifAbsent: () => TestResultModel());
+  });
+}
+
+Future<void> updateTestResultMessageAsync(final String message) async {
+  await _lock.synchronized(() {
+    _testResults.update(_getTestId(), (value) {
+      if (message.isNotEmpty) {
+        value.message = value.message?.isEmpty ?? true
+            ? '$message${Platform.lineTerminator}'
+            : '${value.message}${Platform.lineTerminator}$message';
+      }
 
       return value;
     }, ifAbsent: () => TestResultModel());

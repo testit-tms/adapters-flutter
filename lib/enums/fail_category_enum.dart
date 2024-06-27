@@ -1,7 +1,7 @@
 enum FailureCategory {
   infrastructureDefect,
-  productDefect,
-  testDefect,
+  noAnalytics,
   noDefect,
-  noAnalytics
+  productDefect,
+  testDefect
 }

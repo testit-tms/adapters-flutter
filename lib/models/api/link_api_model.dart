@@ -1,29 +1,29 @@
 import 'package:adapters_flutter/enums/link_type_enum.dart';
 
 final class Link {
-  final String? title;
-  final String? url;
   final String? description;
+  final String? title;
   final LinkType? type;
+  final String? url;
 
-  const Link(this.title, this.url, this.description, this.type);
+  Link(this.description, this.title, this.type, this.url);
 }
 
 final class LinkPostModel {
-  final String? title;
-  final String? url;
   final String? description;
-  final LinkType? type;
   final bool? hasInfo;
+  final String? title;
+  final LinkType? type;
+  final String? url;
 
-  const LinkPostModel(this.title, this.url, this.description, this.type,
+  const LinkPostModel(this.description, this.title, this.type, this.url,
       {this.hasInfo = false});
 
   Map<String, dynamic> toJson() => {
-        'title': title,
-        'url': url,
         'description': description,
+        'hasInfo': hasInfo,
+        'title': title,
         'type': type?.name,
-        'hasInfo': hasInfo
+        'url': url
       };
 }

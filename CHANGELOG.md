@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.  
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
 
+## [1.1.0] - 2024-06-27
+
+### Changed
+
+- make tmsTest sync.
+
+### Fixed
+
+- test result classname.
+
 ## [1.0.0] - 2024-06-26
 
 ### Changed

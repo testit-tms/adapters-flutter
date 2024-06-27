@@ -2,22 +2,22 @@ import 'package:adapters_flutter/models/api/attachment_api_model.dart';
 import 'package:adapters_flutter/models/api/link_api_model.dart';
 
 final class CreateEmptyTestRunRequestModel {
-  final String? projectId;
-  final String? name;
+  final List<AttachmentPutModel>? attachments;
   final String? description;
   final String? launchSource;
-  final List<AttachmentPutModel>? attachments;
   final List<LinkPostModel>? links;
+  final String? name;
+  final String? projectId;
 
   const CreateEmptyTestRunRequestModel(this.projectId, this.name,
-      {this.description, this.launchSource, this.attachments, this.links});
+      {this.attachments, this.description, this.launchSource, this.links});
 
   Map<String, dynamic> toJson() => {
-        'projectId': projectId,
-        'name': name,
+        'attachments': attachments,
         'description': description,
         'launchSource': launchSource,
-        'attachments': attachments,
-        'links': links
+        'links': links,
+        'name': name,
+        'projectId': projectId
       };
 }
