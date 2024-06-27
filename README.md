@@ -33,19 +33,18 @@ flutter pub add adapters_flutter
 
 #### File
 
-Create **tms.config.json** file in the project directory:
+Create **testit.properties** file in the project root directory:
 
-```json
-{
-  "url": "URL",
-  "privateToken": "USER_PRIVATE_TOKEN",
-  "projectId": "PROJECT_ID",
-  "configurationId": "CONFIGURATION_ID",
-  "testRunId": "TEST_RUN_ID",
-  "automaticCreationTestCases": false,
-  "certValidation": true,
-  "adapterMode": 0
-}
+```properties
+adapterMode={%ADAPTER_MODE%}
+automaticCreationTestCases={%AUTOMATIC_CREATION_TESTCASES%}
+certValidation={%CERTIFICATE_VALIDATION%}
+configurationId={%CONFIGURATION_ID%}
+privateToken={%USER_PRIVATE_TOKEN%}
+projectId={%PROJECT_ID%}
+testRunId={%TEST_RUN_ID%}
+testRunName={%TEST_RUN_NAME%}
+url={%URL%}
 ```
 
 ### Metadata of autotest
