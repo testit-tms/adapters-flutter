@@ -1,3 +1,5 @@
+#!/usr/bin/env dart
+
 final class WorkItemLinkRequestModel {
   final String? id;
 

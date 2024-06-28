@@ -6,11 +6,10 @@ on:
 
 jobs:
   update:
-    name: Update
     runs-on: ubuntu-latest
     steps:
 
-      - name: Verify
+      - name: Update
         uses: release-drafter/release-drafter@v6
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

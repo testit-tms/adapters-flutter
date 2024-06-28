@@ -1,3 +1,5 @@
+#!/usr/bin/env dart
+
 import 'dart:io';
 
 final class TmsApiException extends HttpException {

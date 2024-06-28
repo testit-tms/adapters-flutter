@@ -1,3 +1,5 @@
+#!/usr/bin/env dart
+
 enum FailureCategory {
   infrastructureDefect,
   noAnalytics,

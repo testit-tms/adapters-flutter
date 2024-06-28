@@ -1,3 +1,5 @@
+#!/usr/bin/env dart
+
 import 'dart:async';
 import 'dart:io';
 
@@ -49,30 +51,26 @@ Future<void> updateCurrentStepAsync(
   await _lock.synchronized(() async {
     final currentStep = _getCurrentStep();
 
-    currentStep?.outcome = newValue.outcome;
-    currentStep?.title = newValue.title;
-    currentStep?.description = newValue.description;
-    currentStep?.info = newValue.info;
-    currentStep?.startedOn = newValue.startedOn;
     currentStep?.completedOn = newValue.completedOn;
+    currentStep?.description = newValue.description;
     currentStep?.duration = newValue.duration;
+    currentStep?.info = newValue.info;
+    currentStep?.outcome = newValue.outcome;
+    currentStep?.startedOn = newValue.startedOn;
+    currentStep?.title = newValue.title;
   });
 }
 
 Future<void> updateTestResultAsync(final TestResultModel newValue) async {
   await _lock.synchronized(() {
     _testResults.update(_getTestId(), (value) {
-      value.methodName = newValue.methodName;
-      value.name = newValue.name;
-      value.namespace = newValue.namespace;
       value.classname = newValue.classname;
+      value.completedOn = newValue.completedOn;
       value.description = newValue.description;
+      value.duration = newValue.duration;
       value.externalId = newValue.externalId;
       value.labels = newValue.labels;
       value.links = newValue.links;
-      value.title = newValue.title;
-      value.workItemIds = newValue.workItemIds;
-      value.outcome = newValue.outcome;
 
       if (newValue.message?.isNotEmpty ?? false) {
         value.message = value.message?.isEmpty ?? true
@@ -80,10 +78,14 @@ Future<void> updateTestResultAsync(final TestResultModel newValue) async {
             : '${value.message}${Platform.lineTerminator}${newValue.message}';
       }
 
-      value.traces = newValue.traces;
+      value.methodName = newValue.methodName;
+      value.name = newValue.name;
+      value.namespace = newValue.namespace;
+      value.outcome = newValue.outcome;
       value.startedOn = newValue.startedOn;
-      value.completedOn = newValue.completedOn;
-      value.duration = newValue.duration;
+      value.title = newValue.title;
+      value.traces = newValue.traces;
+      value.workItemIds = newValue.workItemIds;
 
       return value;
     }, ifAbsent: () => TestResultModel());

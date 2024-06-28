@@ -1,3 +1,5 @@
+#!/usr/bin/env dart
+
 import 'dart:io';
 
 import 'package:adapters_flutter/models/config/env_config_model.dart';
@@ -9,15 +11,28 @@ Future<EnvConfigModel> getConfigFromEnvAsync() async {
   final filePath = environment['TMS_CONFIG_FILE'];
   final config = await getConfigFromFileAsync(filePath);
 
-  final adapterMode = environment['TMS_ADAPTER_MODE'];
-  if (adapterMode != null &&
-      (int.parse(adapterMode) >= 0 || int.parse(adapterMode) <= 2)) {
-    config.adapterMode = int.parse(adapterMode);
+  final adapterMode = int.tryParse(environment['TMS_ADAPTER_MODE'] ?? '');
+  if (adapterMode != null && adapterMode >= 0 && adapterMode <= 2) {
+    config.adapterMode = adapterMode;
   }
 
-  final url = environment['TMS_URL'];
-  if (url != null && Uri.parse(url).isAbsolute) {
-    config.url = url;
+  final automaticCreationTestCases =
+      environment['TMS_AUTOMATIC_CREATION_TEST_CASES'];
+  config.automaticCreationTestCases = automaticCreationTestCases != null &&
+          automaticCreationTestCases.toLowerCase() == 'true'
+      ? true
+      : false;
+
+  final certValidation = environment['TMS_CERT_VALIDATION'];
+  config.certValidation =
+      certValidation != null && certValidation.toLowerCase() == 'false'
+          ? false
+          : true;
+
+  final configurationId = environment['TMS_CONFIGURATION_ID'];
+  if (configurationId != null &&
+      Uuid.isValidUUID(fromString: configurationId)) {
+    config.configurationId = configurationId;
   }
 
   final privateToken = environment['TMS_PRIVATE_TOKEN'];
@@ -30,12 +45,6 @@ Future<EnvConfigModel> getConfigFromEnvAsync() async {
     config.projectId = projectId;
   }
 
-  final configurationId = environment['TMS_CONFIGURATION_ID'];
-  if (configurationId != null &&
-      Uuid.isValidUUID(fromString: configurationId)) {
-    config.configurationId = configurationId;
-  }
-
   final testRunId = environment['TMS_TEST_RUN_ID'];
   if (testRunId != null && Uuid.isValidUUID(fromString: testRunId)) {
     config.testRunId = testRunId;
@@ -46,20 +55,9 @@ Future<EnvConfigModel> getConfigFromEnvAsync() async {
     config.testRunName = testRunName;
   }
 
-  final automaticCreationTestCases =
-      environment['TMS_AUTOMATIC_CREATION_TEST_CASES'];
-  if (automaticCreationTestCases != null &&
-      automaticCreationTestCases.toLowerCase() == 'true') {
-    config.automaticCreationTestCases = true;
-  } else {
-    config.automaticCreationTestCases = false;
-  }
-
-  final certValidation = environment['TMS_CERT_VALIDATION'];
-  if (certValidation != null && certValidation.toLowerCase() == 'false') {
-    config.certValidation = false;
-  } else {
-    config.certValidation = true;
+  final url = environment['TMS_URL'];
+  if (url != null && (Uri.tryParse(url)?.isAbsolute ?? false)) {
+    config.url = url;
   }
 
   return config as EnvConfigModel;

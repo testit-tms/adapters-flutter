@@ -1,3 +1,5 @@
+#!/usr/bin/env dart
+
 import 'dart:io';
 
 import 'package:adapters_flutter/enums/outcome_enum.dart';
@@ -48,37 +50,37 @@ void tmsTest(final String description, final dynamic Function() body,
     try {
       final liveTest = Invoker.current?.liveTest;
 
-      localResult.methodName = liveTest?.test.name ?? '';
-      localResult.name = liveTest?.test.name ?? '';
-      localResult.namespace =
-          basenameWithoutExtension(liveTest?.suite.path ?? '');
       localResult.classname = _getClassName();
       localResult.description = description;
       localResult.externalId = externalId ?? '';
       localResult.labels = tags ?? [];
       localResult.links = links ?? [];
+      localResult.methodName = liveTest?.test.name ?? '';
+      localResult.name = liveTest?.test.name ?? '';
+      localResult.namespace =
+          basenameWithoutExtension(liveTest?.suite.path ?? '');
       localResult.title = title ?? '';
       localResult.workItemIds = workItemsIds ?? [];
 
       if (skip != null && skip.isNotEmpty) {
-        localResult.outcome = Outcome.skipped;
         localResult.message = skip;
+        localResult.outcome = Outcome.skipped;
       } else {
         await body.call();
         localResult.outcome = Outcome.passed;
       }
     } on Exception catch (e, s) {
-      localResult.outcome = Outcome.failed;
       localResult.message = e.toString();
+      localResult.outcome = Outcome.failed;
       localResult.traces = s.toString();
 
       exception = e;
       stacktrace = s;
     } finally {
       final completedOn = DateTime.now();
-      localResult.startedOn = startedOn;
       localResult.completedOn = completedOn;
       localResult.duration = completedOn.difference(startedOn).inMilliseconds;
+      localResult.startedOn = startedOn;
 
       await updateTestResultAsync(localResult);
       final testResult = await removeTestResultAsync();
@@ -95,16 +97,17 @@ void tmsTest(final String description, final dynamic Function() body,
 
 String? _getClassName() {
   final liveTest = Invoker.current?.liveTest;
+
   final groupName = liveTest?.groups
       .where((group) => group.name.isNotEmpty)
       .firstOrNull
       ?.name;
 
   if (groupName == null) {
-    final suiteName = liveTest?.suite.group.name;
+    final suiteGroupName = liveTest?.suite.group.name;
 
-    if (suiteName != null && suiteName.isNotEmpty) {
-      return suiteName;
+    if (suiteGroupName != null && suiteGroupName.isNotEmpty) {
+      return suiteGroupName;
     }
   }
 

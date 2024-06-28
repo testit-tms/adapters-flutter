@@ -1,3 +1,5 @@
+#!/usr/bin/env dart
+
 import 'package:adapters_flutter/enums/outcome_enum.dart';
 import 'package:adapters_flutter/models/api/attachment_api_model.dart';
 import 'package:adapters_flutter/storages/test_result_storage.dart';
@@ -18,12 +20,12 @@ Future<void> step(final String title, final dynamic Function() body,
   } finally {
     final completedOn = DateTime.now();
 
-    localStep.title = title;
+    localStep.completedOn = completedOn;
     localStep.description = description ?? '';
+    localStep.duration = completedOn.difference(startedOn).inMilliseconds;
     localStep.info = null;
     localStep.startedOn = startedOn;
-    localStep.completedOn = completedOn;
-    localStep.duration = completedOn.difference(startedOn).inMilliseconds;
+    localStep.title = title;
 
     await updateCurrentStepAsync(localStep);
     // todo: setup, teardown

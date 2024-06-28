@@ -1,3 +1,5 @@
+#!/usr/bin/env dart
+
 import 'dart:convert';
 import 'dart:io';
 
@@ -21,11 +23,11 @@ Future<AutotestFullModel?> createAutotestAsync(
       'accept': 'application/json',
       'Content-Type': 'application/json',
       'Authorization': 'PrivateToken ${config.privateToken}',
-      'host': Uri.parse(config.url!).host
+      'host': Uri.tryParse(config.url!)?.host ?? ''
     };
 
-    final request =
-        Request('POST', Uri.parse('${config.url}/api/v2/autoTests'));
+    final request = Request(
+        'POST', Uri.tryParse('${config.url}/api/v2/autoTests') ?? Uri());
 
     final requestBody =
         toCreateAutotestRequestModel(config.projectId, testResult);
@@ -60,13 +62,14 @@ Future<AutotestFullModel?> getAutotestByExternalIdAsync(
       'accept': 'application/json',
       'Content-Type': 'application/json',
       'Authorization': 'PrivateToken ${config.privateToken}',
-      'host': Uri.parse(config.url!).host
+      'host': Uri.tryParse(config.url!)?.host ?? ''
     };
 
     final request = Request(
         'POST',
-        Uri.parse(
-            '${config.url}/api/v2/autoTests/search?SearchField=externalId&SearchValue=$externalId'));
+        Uri.tryParse(
+                '${config.url}/api/v2/autoTests/search?SearchField=externalId&SearchValue=$externalId') ??
+            Uri());
 
     request.body = json.encode({
       'filter': {
@@ -108,11 +111,14 @@ Future<bool> tryLinkAutoTestToWorkItemAsync(final String? autotestId,
         'accept': '*/*',
         'Content-Type': 'application/json',
         'Authorization': 'PrivateToken ${config.privateToken}',
-        'host': Uri.parse(config.url!).host
+        'host': Uri.tryParse(config.url!)?.host ?? ''
       };
 
-      final request = Request('POST',
-          Uri.parse('${config.url}/api/v2/autoTests/$autotestId/workItems'));
+      final request = Request(
+          'POST',
+          Uri.tryParse(
+                  '${config.url}/api/v2/autoTests/$autotestId/workItems') ??
+              Uri());
       request.body = json.encode(WorkItemLinkRequestModel(workItemId));
       request.headers.addAll(headers);
 
@@ -139,10 +145,11 @@ Future<void> updateAutotestAsync(
       'accept': '*/*',
       'Content-Type': 'application/json',
       'Authorization': 'PrivateToken ${config.privateToken}',
-      'host': Uri.parse(config.url!).host
+      'host': Uri.tryParse(config.url!)?.host ?? ''
     };
 
-    final request = Request('PUT', Uri.parse('${config.url}/api/v2/autoTests'));
+    final request =
+        Request('PUT', Uri.tryParse('${config.url}/api/v2/autoTests') ?? Uri());
     final requestBody =
         toUpdateAutotestRequestModel(config.projectId, testResult);
     request.body = json.encode(requestBody);

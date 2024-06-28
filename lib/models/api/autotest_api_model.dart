@@ -1,3 +1,5 @@
+#!/usr/bin/env dart
+
 import 'dart:core';
 
 import 'package:adapters_flutter/enums/fail_category_enum.dart';
@@ -12,7 +14,7 @@ final class AutotestFullModel {
 
   factory AutotestFullModel.fromJson(Map<String, dynamic> json) {
     return AutotestFullModel(
-        json['id'].toString(), bool.parse(json['isFlaky'].toString()));
+        json['id'].toString(), bool.tryParse(json['isFlaky'].toString()));
   }
 
   const AutotestFullModel(this.id, this.isFlaky);
@@ -24,7 +26,7 @@ final class AutoTestRelatedToTestResult {
 
   factory AutoTestRelatedToTestResult.fromJson(Map<String, dynamic> json) {
     return AutoTestRelatedToTestResult(json['externalId'].toString(),
-        bool.parse(json['isDeleted'].toString()));
+        bool.tryParse(json['isDeleted'].toString()));
   }
 
   const AutoTestRelatedToTestResult(this.externalId, this.isDeleted);

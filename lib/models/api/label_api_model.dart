@@ -1,3 +1,5 @@
+#!/usr/bin/env dart
+
 final class LabelFullModel {
   final int? globalId;
   final String? name;

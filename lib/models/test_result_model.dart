@@ -1,3 +1,5 @@
+#!/usr/bin/env dart
+
 import 'package:adapters_flutter/enums/outcome_enum.dart';
 import 'package:adapters_flutter/models/api/attachment_api_model.dart';
 import 'package:adapters_flutter/models/api/link_api_model.dart';
