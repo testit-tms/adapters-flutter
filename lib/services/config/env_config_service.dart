@@ -13,25 +13,22 @@ Future<EnvConfigModel> getConfigFromEnvAsync() async {
 
   final adapterMode = environment['TMS_ADAPTER_MODE'];
   if (adapterMode != null &&
-      (int.parse(adapterMode) >= 0 || int.parse(adapterMode) <= 2)) {
+      (int.parse(adapterMode) >= 0 && int.parse(adapterMode) <= 2)) {
     config.adapterMode = int.parse(adapterMode);
   }
 
   final automaticCreationTestCases =
       environment['TMS_AUTOMATIC_CREATION_TEST_CASES'];
-  if (automaticCreationTestCases != null &&
-      automaticCreationTestCases.toLowerCase() == 'true') {
-    config.automaticCreationTestCases = true;
-  } else {
-    config.automaticCreationTestCases = false;
-  }
+  config.automaticCreationTestCases = automaticCreationTestCases != null &&
+          automaticCreationTestCases.toLowerCase() == 'true'
+      ? true
+      : false;
 
   final certValidation = environment['TMS_CERT_VALIDATION'];
-  if (certValidation != null && certValidation.toLowerCase() == 'false') {
-    config.certValidation = false;
-  } else {
-    config.certValidation = true;
-  }
+  config.certValidation =
+      certValidation != null && certValidation.toLowerCase() == 'false'
+          ? false
+          : true;
 
   final configurationId = environment['TMS_CONFIGURATION_ID'];
   if (configurationId != null &&

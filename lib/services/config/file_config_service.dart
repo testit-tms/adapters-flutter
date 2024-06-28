@@ -20,25 +20,22 @@ Future<FileConfigModel> getConfigFromFileAsync(final String? filePath) async {
   final props = Properties.fromFile(filePath);
 
   final adapterMode = props.getInt('adapterMode', defval: 0);
-  if (adapterMode != null && (adapterMode >= 0 || adapterMode <= 2)) {
+  if (adapterMode != null && (adapterMode >= 0 && adapterMode <= 2)) {
     fileConfig.adapterMode = adapterMode;
   }
 
   final automaticCreationTestCases =
       props.get('automaticCreationTestCases', defval: null);
-  if (automaticCreationTestCases != null &&
-      automaticCreationTestCases.toLowerCase() == 'true') {
-    fileConfig.automaticCreationTestCases = true;
-  } else {
-    fileConfig.automaticCreationTestCases = false;
-  }
+  fileConfig.automaticCreationTestCases = automaticCreationTestCases != null &&
+          automaticCreationTestCases.toLowerCase() == 'true'
+      ? true
+      : false;
 
   final certValidation = props.get('certValidation', defval: null);
-  if (certValidation != null && certValidation.toLowerCase() == 'false') {
-    fileConfig.certValidation = false;
-  } else {
-    fileConfig.certValidation = true;
-  }
+  fileConfig.certValidation =
+      certValidation != null && certValidation.toLowerCase() == 'false'
+          ? false
+          : true;
 
   final configurationId = props.get('configurationId', defval: null);
   if (configurationId != null &&

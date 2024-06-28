@@ -8,16 +8,19 @@ Future<CliConfigModel> getConfigFromCliAsync() async {
   const filePath = String.fromEnvironment("tmsConfigFile");
   final config = await getConfigFromFileAsync(filePath);
 
-  const adapterMode = int.fromEnvironment("tmsAdapterMode");
-  if (adapterMode >= 0 || adapterMode <= 2) {
-    config.adapterMode = adapterMode;
+  const adapterMode = String.fromEnvironment("tmsAdapterMode");
+  if ((int.parse(adapterMode) >= 0 && int.parse(adapterMode) <= 2)) {
+    config.adapterMode = int.parse(adapterMode);
   }
 
+  const automaticCreationTestCases =
+      String.fromEnvironment("tmsAutomaticCreationTestCases");
   config.automaticCreationTestCases =
-      const bool.fromEnvironment("tmsAutomaticCreationTestCases");
+      automaticCreationTestCases.toLowerCase() == 'true' ? true : false;
 
+  const certValidation = String.fromEnvironment("tmsCertValidation");
   config.certValidation =
-      const bool.fromEnvironment("tmsCertValidation", defaultValue: true);
+      certValidation.toLowerCase() == 'false' ? false : true;
 
   const configurationId = String.fromEnvironment("tmsConfigurationId");
   if (Uuid.isValidUUID(fromString: configurationId)) {
