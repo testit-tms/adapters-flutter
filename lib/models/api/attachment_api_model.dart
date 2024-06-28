@@ -50,13 +50,13 @@ final class AttachmentResponseModel {
   factory AttachmentResponseModel.fromJson(Map<String, dynamic> json) {
     return AttachmentResponseModel(
         json['createdById'].toString(),
-        DateTime.parse(json['createdDate'].toString()),
+        DateTime.tryParse(json['createdDate'].toString()),
         json['fileId'].toString(),
         json['id'].toString(),
         json['modifiedById'].toString(),
-        DateTime.parse(json['modifiedDate'].toString()),
+        DateTime.tryParse(json['modifiedDate'].toString()),
         json['name'].toString(),
-        double.parse(json['size'].toString()),
+        double.tryParse(json['size'].toString()),
         json['type'].toString());
   }
 

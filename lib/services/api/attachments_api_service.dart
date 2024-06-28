@@ -23,11 +23,11 @@ Future<AttachmentResponseModel?> createAttachmentsAsync(
       'accept': 'application/json',
       'Content-Type': 'multipart/form-data',
       'Authorization': 'PrivateToken ${config.privateToken}',
-      'host': Uri.parse(config.url!).host
+      'host': Uri.tryParse(config.url!)?.host ?? ''
     };
 
-    final request =
-        MultipartRequest('POST', Uri.parse('${config.url}/api/v2/attachments'));
+    final request = MultipartRequest(
+        'POST', Uri.tryParse('${config.url}/api/v2/attachments') ?? Uri());
 
     final fileBytes = await file.readAsBytes();
     final fileName = basename(file.path);

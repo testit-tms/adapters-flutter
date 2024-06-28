@@ -11,10 +11,9 @@ Future<EnvConfigModel> getConfigFromEnvAsync() async {
   final filePath = environment['TMS_CONFIG_FILE'];
   final config = await getConfigFromFileAsync(filePath);
 
-  final adapterMode = environment['TMS_ADAPTER_MODE'];
-  if (adapterMode != null &&
-      (int.parse(adapterMode) >= 0 && int.parse(adapterMode) <= 2)) {
-    config.adapterMode = int.parse(adapterMode);
+  final adapterMode = int.tryParse(environment['TMS_ADAPTER_MODE'] ?? '');
+  if (adapterMode != null && adapterMode >= 0 && adapterMode <= 2) {
+    config.adapterMode = adapterMode;
   }
 
   final automaticCreationTestCases =
@@ -57,7 +56,7 @@ Future<EnvConfigModel> getConfigFromEnvAsync() async {
   }
 
   final url = environment['TMS_URL'];
-  if (url != null && Uri.parse(url).isAbsolute) {
+  if (url != null && (Uri.tryParse(url)?.isAbsolute ?? false)) {
     config.url = url;
   }
 

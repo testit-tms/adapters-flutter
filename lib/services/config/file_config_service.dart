@@ -70,7 +70,7 @@ Future<FileConfigModel> getConfigFromFileAsync(final String? filePath) async {
   }
 
   final url = props.get('url', defval: null);
-  if (url != null && Uri.parse(url).isAbsolute) {
+  if (url != null && (Uri.tryParse(url)?.isAbsolute ?? false)) {
     fileConfig.url = url;
   }
 

@@ -43,7 +43,7 @@ void validateConfig(final MergedConfigModel? config) {
     }
   }
 
-  if (config.url == null || !Uri.parse(config.url!).isAbsolute) {
+  if (config.url == null || !(Uri.tryParse(config.url!)?.isAbsolute ?? false)) {
     throw TmsConfigException('Url is invalid: ${config.url}');
   }
 }

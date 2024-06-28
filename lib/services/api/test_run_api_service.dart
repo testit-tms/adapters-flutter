@@ -21,10 +21,11 @@ Future<void> createEmptyTestRunAsync(final MergedConfigModel config) async {
       'accept': 'application/json',
       'Content-Type': 'application/json',
       'Authorization': 'PrivateToken ${config.privateToken}',
-      'host': Uri.parse(config.url!).host
+      'host': Uri.tryParse(config.url!)?.host ?? ''
     };
 
-    final request = Request('POST', Uri.parse('${config.url}/api/v2/testRuns'));
+    final request =
+        Request('POST', Uri.tryParse('${config.url}/api/v2/testRuns') ?? Uri());
     request.body = json.encode(CreateEmptyTestRunRequestModel(
       config.projectId,
       config.testRunName,
@@ -57,11 +58,13 @@ Future<List<String>> getTestsFromTestRunAsync(
       'accept': 'application/json',
       'Content-Type': 'application/json',
       'Authorization': 'PrivateToken ${config.privateToken}',
-      'host': Uri.parse(config.url!).host
+      'host': Uri.tryParse(config.url!)?.host ?? ''
     };
 
     final request = Request(
-        'GET', Uri.parse('${config.url}/api/v2/testRuns/${config.testRunId}'));
+        'GET',
+        Uri.tryParse('${config.url}/api/v2/testRuns/${config.testRunId}') ??
+            Uri());
     request.headers.addAll(headers);
 
     final streamedResponse = await request.send();
@@ -104,13 +107,14 @@ Future<void> submitResultToTestRunAsync(
       'accept': 'application/json',
       'Content-Type': 'application/json',
       'Authorization': 'PrivateToken ${config.privateToken}',
-      'host': Uri.parse(config.url!).host
+      'host': Uri.tryParse(config.url!)?.host ?? ''
     };
 
     final request = Request(
         'POST',
-        Uri.parse(
-            '${config.url}/api/v2/testRuns/${config.testRunId}/testResults'));
+        Uri.tryParse(
+                '${config.url}/api/v2/testRuns/${config.testRunId}/testResults') ??
+            Uri());
     final requestBody =
         toAutoTestResultsForTestRunModel(config.configurationId, testResult);
     request.body = json.encode([requestBody]);
