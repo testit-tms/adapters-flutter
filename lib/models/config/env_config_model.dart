@@ -1,3 +1,5 @@
+#!/usr/bin/env dart
+
 class EnvConfigModel {
   int? adapterMode;
   bool? automaticCreationTestCases;

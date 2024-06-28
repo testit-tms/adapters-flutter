@@ -1,3 +1,5 @@
+#!/usr/bin/env dart
+
 import 'package:adapters_flutter/enums/outcome_enum.dart';
 
 final class AttachmentPutModel {

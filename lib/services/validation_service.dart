@@ -1,3 +1,5 @@
+#!/usr/bin/env dart
+
 import 'package:adapters_flutter/models/config/merged_config_model.dart';
 import 'package:adapters_flutter/models/exception_model.dart';
 import 'package:uuid/uuid.dart';

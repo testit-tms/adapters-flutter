@@ -1,3 +1,5 @@
+#!/usr/bin/env dart
+
 import 'package:adapters_flutter/enums/link_type_enum.dart';
 
 final class Link {

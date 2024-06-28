@@ -1,3 +1,5 @@
+#!/usr/bin/env dart
+
 import 'dart:core';
 
 import 'package:adapters_flutter/enums/fail_category_enum.dart';

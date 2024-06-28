@@ -1,3 +1,5 @@
+#!/usr/bin/env dart
+
 final class StepAutoTestResultModel {
   final List<String>? attachments;
   final DateTime? completedOn;

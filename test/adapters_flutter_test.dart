@@ -1,3 +1,5 @@
+#!/usr/bin/env dart
+
 import 'package:adapters_flutter/adapters_flutter.dart';
 import 'package:adapters_flutter/enums/link_type_enum.dart';
 import 'package:adapters_flutter/models/api/link_api_model.dart';

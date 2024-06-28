@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.  
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
 
+## [1.2.0] - 2024-06-28
+
+### Added
+
+- check github action.
+- unit tests.
+
 ## [1.1.1] - 2024-06-27
 
 ### Fixed
