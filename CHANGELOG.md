@@ -11,6 +11,11 @@ The format is based on Keep a Changelog and this project adheres to Semantic Ver
 - check github action.
 - unit tests.
 
+### Fixed
+
+- unsafe types cast.
+- adapter mode validation.
+
 ## [1.1.1] - 2024-06-27
 
 ### Fixed
