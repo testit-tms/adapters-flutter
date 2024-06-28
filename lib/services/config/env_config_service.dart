@@ -15,37 +15,6 @@ Future<EnvConfigModel> getConfigFromEnvAsync() async {
     config.adapterMode = int.parse(adapterMode);
   }
 
-  final url = environment['TMS_URL'];
-  if (url != null && Uri.parse(url).isAbsolute) {
-    config.url = url;
-  }
-
-  final privateToken = environment['TMS_PRIVATE_TOKEN'];
-  if (privateToken != null && privateToken.isNotEmpty) {
-    config.privateToken = privateToken;
-  }
-
-  final projectId = environment['TMS_PROJECT_ID'];
-  if (projectId != null && Uuid.isValidUUID(fromString: projectId)) {
-    config.projectId = projectId;
-  }
-
-  final configurationId = environment['TMS_CONFIGURATION_ID'];
-  if (configurationId != null &&
-      Uuid.isValidUUID(fromString: configurationId)) {
-    config.configurationId = configurationId;
-  }
-
-  final testRunId = environment['TMS_TEST_RUN_ID'];
-  if (testRunId != null && Uuid.isValidUUID(fromString: testRunId)) {
-    config.testRunId = testRunId;
-  }
-
-  final testRunName = environment['TMS_TEST_RUN_NAME'];
-  if (testRunName != null && testRunName.isNotEmpty) {
-    config.testRunName = testRunName;
-  }
-
   final automaticCreationTestCases =
       environment['TMS_AUTOMATIC_CREATION_TEST_CASES'];
   if (automaticCreationTestCases != null &&
@@ -60,6 +29,37 @@ Future<EnvConfigModel> getConfigFromEnvAsync() async {
     config.certValidation = false;
   } else {
     config.certValidation = true;
+  }
+
+  final configurationId = environment['TMS_CONFIGURATION_ID'];
+  if (configurationId != null &&
+      Uuid.isValidUUID(fromString: configurationId)) {
+    config.configurationId = configurationId;
+  }
+
+  final privateToken = environment['TMS_PRIVATE_TOKEN'];
+  if (privateToken != null && privateToken.isNotEmpty) {
+    config.privateToken = privateToken;
+  }
+
+  final projectId = environment['TMS_PROJECT_ID'];
+  if (projectId != null && Uuid.isValidUUID(fromString: projectId)) {
+    config.projectId = projectId;
+  }
+
+  final testRunId = environment['TMS_TEST_RUN_ID'];
+  if (testRunId != null && Uuid.isValidUUID(fromString: testRunId)) {
+    config.testRunId = testRunId;
+  }
+
+  final testRunName = environment['TMS_TEST_RUN_NAME'];
+  if (testRunName != null && testRunName.isNotEmpty) {
+    config.testRunName = testRunName;
+  }
+
+  final url = environment['TMS_URL'];
+  if (url != null && Uri.parse(url).isAbsolute) {
+    config.url = url;
   }
 
   return config as EnvConfigModel;

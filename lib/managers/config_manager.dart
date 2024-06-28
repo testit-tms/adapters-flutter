@@ -35,23 +35,35 @@ MergedConfigModel _mergeConfigs(
     final EnvConfigModel envConfig, final FileConfigModel fileConfig) {
   var config = MergedConfigModel();
 
-  if (envConfig.url == null || envConfig.url!.isEmpty) {
-    config.url = fileConfig.url;
+  if (envConfig.adapterMode == null) {
+    config.adapterMode = fileConfig.adapterMode;
   } else {
-    config.url = envConfig.url;
+    config.adapterMode = envConfig.adapterMode;
   }
-  config = _updateUrl(config);
 
-  if (envConfig.privateToken == null || envConfig.privateToken!.isEmpty) {
-    config.privateToken = fileConfig.privateToken;
+  if (envConfig.automaticCreationTestCases == null ||
+      !envConfig.automaticCreationTestCases!) {
+    config.automaticCreationTestCases = fileConfig.automaticCreationTestCases;
   } else {
-    config.privateToken = envConfig.privateToken;
+    config.automaticCreationTestCases = envConfig.automaticCreationTestCases;
+  }
+
+  if (envConfig.certValidation == null || envConfig.certValidation!) {
+    config.certValidation = fileConfig.certValidation;
+  } else {
+    config.certValidation = envConfig.certValidation;
   }
 
   if (envConfig.configurationId == null || envConfig.configurationId!.isEmpty) {
     config.configurationId = fileConfig.configurationId;
   } else {
     config.configurationId = envConfig.configurationId;
+  }
+
+  if (envConfig.privateToken == null || envConfig.privateToken!.isEmpty) {
+    config.privateToken = fileConfig.privateToken;
+  } else {
+    config.privateToken = envConfig.privateToken;
   }
 
   if (envConfig.projectId == null || envConfig.projectId!.isEmpty) {
@@ -72,24 +84,12 @@ MergedConfigModel _mergeConfigs(
     config.testRunName = envConfig.testRunName;
   }
 
-  if (envConfig.adapterMode == null) {
-    config.adapterMode = fileConfig.adapterMode;
+  if (envConfig.url == null || envConfig.url!.isEmpty) {
+    config.url = fileConfig.url;
   } else {
-    config.adapterMode = envConfig.adapterMode;
+    config.url = envConfig.url;
   }
-
-  if (envConfig.automaticCreationTestCases == null ||
-      !envConfig.automaticCreationTestCases!) {
-    config.automaticCreationTestCases = fileConfig.automaticCreationTestCases;
-  } else {
-    config.automaticCreationTestCases = envConfig.automaticCreationTestCases;
-  }
-
-  if (envConfig.certValidation == null || envConfig.certValidation!) {
-    config.certValidation = fileConfig.certValidation;
-  } else {
-    config.certValidation = envConfig.certValidation;
-  }
+  config = _updateUrl(config);
 
   return config;
 }

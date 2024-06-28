@@ -89,26 +89,27 @@ void main() {
     setUp(() => _logger.i('example setup'));
 
     tmsTest('example test',
-            externalId: 'example_externalId',
-            links: [Link('link_description', 'link_title', LinkType.issue, 'https://www.example.org/')],
-            tags: ['example_tag'],
-            title: 'example_title',
-            workItemsIds: ['45876'], () async {
-              await step('success step', () => expect(0, 0));
+        externalId: 'example_externalId',
+        links: [Link('link_description', 'link_title', LinkType.issue, 'https://www.example.org/')],
+        tags: ['example_tag'],
+        title: 'example_title',
+        workItemsIds: ['45876'], () async {
+          await step('success step', () => expect(0, 0));
 
-              await step('success step with attachment', () async => await addAttachment('avatar.png'));
+          await step('success step with attachment', () async => await addAttachment('avatar.png'));
 
-              await step('success step with body', () {
-                const actual = 0;
-                expect(actual, 0);
-              });
+          await step('success step with body', () {
+            const actual = 0;
+            expect(actual, 0);
+          });
 
-              await step('success step with link', () async => await addLink('https://www.example.org/'));
+          await step(
+              'success step with link', () async => await addLink('https://www.example.org/'));
 
-              await step('success step with message', () async => await addMessage('example message'));
+          await step('success step with message', () async => await addMessage('example message'));
 
-              await step('failed step', () => throw Exception('example exception'));
-            });
+          await step('failed step', () => throw Exception('example exception'));
+        });
 
     tearDown(() => _logger.i('example teardown'));
 

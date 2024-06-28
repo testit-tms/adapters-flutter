@@ -6,7 +6,6 @@ on:
 
 jobs:
   verify:
-    name: Verify
     runs-on: ubuntu-latest
     steps:
 

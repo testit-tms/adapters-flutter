@@ -18,12 +18,12 @@ Future<void> step(final String title, final dynamic Function() body,
   } finally {
     final completedOn = DateTime.now();
 
-    localStep.title = title;
+    localStep.completedOn = completedOn;
     localStep.description = description ?? '';
+    localStep.duration = completedOn.difference(startedOn).inMilliseconds;
     localStep.info = null;
     localStep.startedOn = startedOn;
-    localStep.completedOn = completedOn;
-    localStep.duration = completedOn.difference(startedOn).inMilliseconds;
+    localStep.title = title;
 
     await updateCurrentStepAsync(localStep);
     // todo: setup, teardown

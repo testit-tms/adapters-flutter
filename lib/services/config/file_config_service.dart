@@ -22,9 +22,26 @@ Future<FileConfigModel> getConfigFromFileAsync(final String? filePath) async {
     fileConfig.adapterMode = adapterMode;
   }
 
-  final url = props.get('url', defval: null);
-  if (url != null && Uri.parse(url).isAbsolute) {
-    fileConfig.url = url;
+  final automaticCreationTestCases =
+      props.get('automaticCreationTestCases', defval: null);
+  if (automaticCreationTestCases != null &&
+      automaticCreationTestCases.toLowerCase() == 'true') {
+    fileConfig.automaticCreationTestCases = true;
+  } else {
+    fileConfig.automaticCreationTestCases = false;
+  }
+
+  final certValidation = props.get('certValidation', defval: null);
+  if (certValidation != null && certValidation.toLowerCase() == 'false') {
+    fileConfig.certValidation = false;
+  } else {
+    fileConfig.certValidation = true;
+  }
+
+  final configurationId = props.get('configurationId', defval: null);
+  if (configurationId != null &&
+      Uuid.isValidUUID(fromString: configurationId)) {
+    fileConfig.configurationId = configurationId;
   }
 
   final privateToken = props.get('privateToken', defval: null);
@@ -43,12 +60,6 @@ Future<FileConfigModel> getConfigFromFileAsync(final String? filePath) async {
     fileConfig.projectId = projectId;
   }
 
-  final configurationId = props.get('configurationId', defval: null);
-  if (configurationId != null &&
-      Uuid.isValidUUID(fromString: configurationId)) {
-    fileConfig.configurationId = configurationId;
-  }
-
   final testRunId = props.get('testRunId', defval: null);
   if (testRunId != null && Uuid.isValidUUID(fromString: testRunId)) {
     fileConfig.testRunId = testRunId;
@@ -59,22 +70,9 @@ Future<FileConfigModel> getConfigFromFileAsync(final String? filePath) async {
     fileConfig.testRunName = testRunName;
   }
 
-  final automaticCreationTestCases =
-      props.get('automaticCreationTestCases', defval: null);
-
-  if (automaticCreationTestCases != null &&
-      automaticCreationTestCases.toLowerCase() == 'true') {
-    fileConfig.automaticCreationTestCases = true;
-  } else {
-    fileConfig.automaticCreationTestCases = false;
-  }
-
-  final certValidation = props.get('certValidation', defval: null);
-
-  if (certValidation != null && certValidation.toLowerCase() == 'false') {
-    fileConfig.certValidation = false;
-  } else {
-    fileConfig.certValidation = true;
+  final url = props.get('url', defval: null);
+  if (url != null && Uri.parse(url).isAbsolute) {
+    fileConfig.url = url;
   }
 
   return fileConfig;
