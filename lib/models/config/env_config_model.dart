@@ -1,13 +1,5 @@
 #!/usr/bin/env dart
 
-class EnvConfigModel {
-  int? adapterMode;
-  bool? automaticCreationTestCases;
-  bool? certValidation;
-  String? configurationId;
-  String? projectId;
-  String? privateToken;
-  String? testRunId;
-  String? testRunName;
-  String? url;
-}
+import 'package:adapters_flutter/models/config/cli_config_model.dart';
+
+class EnvConfigModel extends CliConfigModel {}
