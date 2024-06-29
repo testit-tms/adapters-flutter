@@ -19,8 +19,7 @@ Future<Map<String, dynamic>?> getWorkItemByIdAsync(
     final headers = {
       'accept': 'application/json',
       'Content-Type': 'application/json',
-      'Authorization': 'PrivateToken ${config.privateToken}',
-      'host': Uri.tryParse(config.url!)?.host ?? ''
+      'Authorization': 'PrivateToken ${config.privateToken}'
     };
 
     final request = Request('GET',

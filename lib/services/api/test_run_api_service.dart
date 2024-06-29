@@ -21,8 +21,7 @@ Future<void> createEmptyTestRunAsync(final MergedConfigModel config) async {
     final headers = {
       'accept': 'application/json',
       'Content-Type': 'application/json',
-      'Authorization': 'PrivateToken ${config.privateToken}',
-      'host': Uri.tryParse(config.url!)?.host ?? ''
+      'Authorization': 'PrivateToken ${config.privateToken}'
     };
 
     final request =
@@ -58,8 +57,7 @@ Future<List<String>> getExternalIdsFromTestRunAsync(
     final headers = {
       'accept': 'application/json',
       'Content-Type': 'application/json',
-      'Authorization': 'PrivateToken ${config.privateToken}',
-      'host': Uri.tryParse(config.url!)?.host ?? ''
+      'Authorization': 'PrivateToken ${config.privateToken}'
     };
 
     final request = Request(
@@ -107,8 +105,7 @@ Future<void> submitResultToTestRunAsync(
     final headers = {
       'accept': 'application/json',
       'Content-Type': 'application/json',
-      'Authorization': 'PrivateToken ${config.privateToken}',
-      'host': Uri.tryParse(config.url!)?.host ?? ''
+      'Authorization': 'PrivateToken ${config.privateToken}'
     };
 
     final request = Request(

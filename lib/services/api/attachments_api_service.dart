@@ -23,8 +23,7 @@ Future<AttachmentResponseModel?> createAttachmentsAsync(
     final headers = {
       'accept': 'application/json',
       'Content-Type': 'multipart/form-data',
-      'Authorization': 'PrivateToken ${config.privateToken}',
-      'host': Uri.tryParse(config.url!)?.host ?? ''
+      'Authorization': 'PrivateToken ${config.privateToken}'
     };
 
     final request = MultipartRequest(

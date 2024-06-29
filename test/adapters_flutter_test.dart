@@ -19,7 +19,7 @@ void main() {
         links: [Link('https://www.example.org/')],
         tags: ['example_tag'],
         title: 'example_title',
-        workItemsIds: ['45876'], () async {
+        workItemsIds: ['45905'], () async {
       await step('success step', () => expect(0, 0));
 
       await step('success step with attachment',

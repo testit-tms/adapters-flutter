@@ -23,8 +23,7 @@ Future<AutotestFullModel?> createAutotestAsync(
     final headers = {
       'accept': 'application/json',
       'Content-Type': 'application/json',
-      'Authorization': 'PrivateToken ${config.privateToken}',
-      'host': Uri.tryParse(config.url!)?.host ?? ''
+      'Authorization': 'PrivateToken ${config.privateToken}'
     };
 
     final request = Request(
@@ -62,8 +61,7 @@ Future<AutotestFullModel?> getAutotestByExternalIdAsync(
     final headers = {
       'accept': 'application/json',
       'Content-Type': 'application/json',
-      'Authorization': 'PrivateToken ${config.privateToken}',
-      'host': Uri.tryParse(config.url!)?.host ?? ''
+      'Authorization': 'PrivateToken ${config.privateToken}'
     };
 
     final request = Request(
@@ -111,8 +109,7 @@ Future<bool> tryLinkAutoTestToWorkItemAsync(final String? autotestId,
       final headers = {
         'accept': '*/*',
         'Content-Type': 'application/json',
-        'Authorization': 'PrivateToken ${config.privateToken}',
-        'host': Uri.tryParse(config.url!)?.host ?? ''
+        'Authorization': 'PrivateToken ${config.privateToken}'
       };
 
       final request = Request(
@@ -145,8 +142,7 @@ Future<void> updateAutotestAsync(
     final headers = {
       'accept': '*/*',
       'Content-Type': 'application/json',
-      'Authorization': 'PrivateToken ${config.privateToken}',
-      'host': Uri.tryParse(config.url!)?.host ?? ''
+      'Authorization': 'PrivateToken ${config.privateToken}'
     };
 
     final request =
