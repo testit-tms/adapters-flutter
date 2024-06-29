@@ -5,6 +5,7 @@ import 'dart:io';
 
 import 'package:adapters_flutter/converters/test_result_converter.dart';
 import 'package:adapters_flutter/managers/config_manager.dart';
+import 'package:adapters_flutter/managers/log_manager.dart';
 import 'package:adapters_flutter/models/api/autotest_api_model.dart';
 import 'package:adapters_flutter/models/api/test_run_api_model.dart';
 import 'package:adapters_flutter/models/config/merged_config_model.dart';
@@ -13,7 +14,7 @@ import 'package:adapters_flutter/models/test_result_model.dart';
 import 'package:http/http.dart';
 import 'package:logger/logger.dart';
 
-final Logger _logger = Logger();
+final Logger _logger = getLogger();
 
 Future<void> createEmptyTestRunAsync(final MergedConfigModel config) async {
   try {
@@ -37,7 +38,7 @@ Future<void> createEmptyTestRunAsync(final MergedConfigModel config) async {
 
     if (response.statusCode < 200 || response.statusCode > 299) {
       throw TmsApiException(
-          'Status code: ${response.statusCode}, Reason: ${response.reasonPhrase}');
+          'Status code: ${response.statusCode}, Reason: "${response.reasonPhrase}"');
     }
 
     final body = jsonDecode(response.body) as Map<String, dynamic>;
@@ -49,9 +50,9 @@ Future<void> createEmptyTestRunAsync(final MergedConfigModel config) async {
   }
 }
 
-Future<List<String>> getTestsFromTestRunAsync(
+Future<List<String>> getExternalIdsFromTestRunAsync(
     final MergedConfigModel config) async {
-  final List<String> testsFromTestRun = [];
+  final List<String> externalIds = [];
 
   try {
     final headers = {
@@ -72,7 +73,7 @@ Future<List<String>> getTestsFromTestRunAsync(
 
     if (response.statusCode < 200 || response.statusCode > 299) {
       throw TmsApiException(
-          'Status code: ${response.statusCode}, Reason: ${response.reasonPhrase}');
+          'Status code: ${response.statusCode}, Reason: "${response.reasonPhrase}"');
     }
 
     final body = jsonDecode(response.body) as Map<String, dynamic>;
@@ -91,13 +92,13 @@ Future<List<String>> getTestsFromTestRunAsync(
         continue;
       }
 
-      testsFromTestRun.add(autotest.externalId!);
+      externalIds.add(autotest.externalId!);
     }
   } catch (exception, stacktrace) {
     _logger.i('$exception${Platform.lineTerminator}$stacktrace');
   }
 
-  return testsFromTestRun;
+  return externalIds;
 }
 
 Future<void> submitResultToTestRunAsync(
@@ -124,7 +125,7 @@ Future<void> submitResultToTestRunAsync(
 
     if (response.statusCode < 200 || response.statusCode > 299) {
       throw TmsApiException(
-          'Status code: ${response.statusCode}, Reason: ${response.reasonPhrase}');
+          'Status code: ${response.statusCode}, Reason: "${response.reasonPhrase}"');
     }
   } catch (exception, stacktrace) {
     _logger.i('$exception${Platform.lineTerminator}$stacktrace');

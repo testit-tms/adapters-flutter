@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:adapters_flutter/managers/log_manager.dart';
 import 'package:adapters_flutter/models/api/attachment_api_model.dart';
 import 'package:adapters_flutter/models/config/merged_config_model.dart';
 import 'package:adapters_flutter/models/exception_model.dart';
@@ -12,7 +13,7 @@ import 'package:logger/logger.dart';
 import 'package:mime/mime.dart';
 import 'package:path/path.dart';
 
-final Logger _logger = Logger();
+final Logger _logger = getLogger();
 
 Future<AttachmentResponseModel?> createAttachmentsAsync(
     final MergedConfigModel config, final File file) async {
@@ -44,7 +45,7 @@ Future<AttachmentResponseModel?> createAttachmentsAsync(
 
     if (response.statusCode < 200 || response.statusCode > 299) {
       throw TmsApiException(
-          'Status code: ${response.statusCode}, Reason: ${response.reasonPhrase}');
+          'Status code: ${response.statusCode}, Reason: "${response.reasonPhrase}"');
     }
 
     final body = jsonDecode(response.body) as Map<String, dynamic>;

@@ -2,56 +2,48 @@
 
 import 'package:adapters_flutter/models/config/cli_config_model.dart';
 import 'package:adapters_flutter/services/config/file_config_service.dart';
-import 'package:uuid/uuid.dart';
+
+extension on String {
+  String? nullIfEmpty() {
+    return isEmpty ? null : this;
+  }
+}
 
 Future<CliConfigModel> getConfigFromCliAsync() async {
   const filePath = String.fromEnvironment('tmsConfigFile');
   final config = await getConfigFromFileAsync(filePath);
 
-  final adapterMode =
+  config.adapterMode =
       int.tryParse(const String.fromEnvironment('tmsAdapterMode'));
-  if (adapterMode != null && adapterMode >= 0 && adapterMode <= 2) {
-    config.adapterMode = adapterMode;
-  }
 
-  const automaticCreationTestCases =
-      String.fromEnvironment('tmsAutomaticCreationTestCases');
-  config.automaticCreationTestCases =
-      automaticCreationTestCases.toLowerCase() == 'true' ? true : false;
+  config.automaticCreationTestCases = bool.tryParse(
+      const String.fromEnvironment('tmsAutomaticCreationTestCases'),
+      caseSensitive: false);
 
-  const certValidation = String.fromEnvironment('tmsCertValidation');
-  config.certValidation =
-      certValidation.toLowerCase() == 'false' ? false : true;
+  config.certValidation = bool.tryParse(
+      const String.fromEnvironment('tmsCertValidation'),
+      caseSensitive: false);
 
-  const configurationId = String.fromEnvironment('tmsConfigurationId');
-  if (Uuid.isValidUUID(fromString: configurationId)) {
-    config.configurationId = configurationId;
-  }
+  config.configurationId =
+      const String.fromEnvironment('tmsConfigurationId').nullIfEmpty();
 
-  const privateToken = String.fromEnvironment('tmsPrivateToken');
-  if (privateToken.isNotEmpty) {
-    config.privateToken = privateToken;
-  }
+  config.isDebug = bool.tryParse(const String.fromEnvironment('tmsIsDebug'),
+      caseSensitive: false);
 
-  const projectId = String.fromEnvironment('tmsProjectId');
-  if (Uuid.isValidUUID(fromString: projectId)) {
-    config.projectId = projectId;
-  }
+  config.privateToken =
+      const String.fromEnvironment('tmsPrivateToken').nullIfEmpty();
 
-  const testRunId = String.fromEnvironment('tmsTestRunId');
-  if (Uuid.isValidUUID(fromString: testRunId)) {
-    config.testRunId = testRunId;
-  }
+  config.projectId = const String.fromEnvironment('tmsProjectId').nullIfEmpty();
 
-  const testRunName = String.fromEnvironment('tmsTestRunName');
-  if (testRunName.isNotEmpty) {
-    config.testRunName = testRunName;
-  }
+  config.testIt = bool.tryParse(const String.fromEnvironment('tmsTestIt'),
+      caseSensitive: false);
 
-  const url = String.fromEnvironment('tmsUrl');
-  if (Uri.tryParse(url)?.isAbsolute ?? false) {
-    config.url = url;
-  }
+  config.testRunId = const String.fromEnvironment('tmsTestRunId').nullIfEmpty();
+
+  config.testRunName =
+      const String.fromEnvironment('tmsTestRunName').nullIfEmpty();
+
+  config.url = const String.fromEnvironment('tmsUrl').nullIfEmpty();
 
   return config as CliConfigModel;
 }

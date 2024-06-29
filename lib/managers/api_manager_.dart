@@ -4,25 +4,46 @@ import 'package:adapters_flutter/models/config/merged_config_model.dart';
 import 'package:adapters_flutter/models/test_result_model.dart';
 import 'package:adapters_flutter/services/api/autotest_api_service.dart';
 import 'package:adapters_flutter/services/api/test_run_api_service.dart';
+import 'package:adapters_flutter/services/api/work_items_api_service.dart';
 import 'package:synchronized/synchronized.dart';
 
+List<String>? _externalIdsFromTestRun;
+bool _isTestRunCreated = false;
 final _lock = Lock();
-bool _testRunCreated = false;
-List<String>? _testsFromTestRun;
 
 Future<bool> checkTestNeedsToBeRunAsync(
     final MergedConfigModel config, final String? externalId) async {
   if (config.adapterMode == 0) {
     await _lock.synchronized(() async {
-      _testsFromTestRun ??= await getTestsFromTestRunAsync(config);
+      _externalIdsFromTestRun ??= await getExternalIdsFromTestRunAsync(config);
     });
 
-    if (!(_testsFromTestRun?.contains(externalId) ?? false)) {
+    if (!(_externalIdsFromTestRun?.contains(externalId) ?? false)) {
       return false;
     }
   }
 
   return true;
+}
+
+Future<String?> getFirstNotFoundWorkItemIdAsync(
+    final MergedConfigModel config, final List<String>? workItemsIds) async {
+  String? firstNotFoundWorkItemId;
+
+  if (workItemsIds == null || workItemsIds.isEmpty) {
+    return null;
+  }
+
+  for (final id in workItemsIds) {
+    final workItem = await getWorkItemByIdAsync(config, id);
+
+    if (workItem == null || workItem.isEmpty) {
+      firstNotFoundWorkItemId = id;
+      break;
+    }
+  }
+
+  return firstNotFoundWorkItemId;
 }
 
 Future<void> processTestResultAsync(
@@ -49,15 +70,15 @@ Future<void> processTestResultAsync(
 
 Future<void> tryCreateTestRunOnceAsync(final MergedConfigModel config) async {
   await _lock.synchronized(() async {
-    if (!_testRunCreated) {
+    if (!_isTestRunCreated) {
       if (config.adapterMode != 2) {
-        _testRunCreated = true;
+        _isTestRunCreated = true;
 
         return;
       }
 
       await createEmptyTestRunAsync(config);
-      _testRunCreated = true;
+      _isTestRunCreated = true;
     }
   });
 }

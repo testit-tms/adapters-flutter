@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:adapters_flutter/converters/test_result_converter.dart';
+import 'package:adapters_flutter/managers/log_manager.dart';
 import 'package:adapters_flutter/models/api/autotest_api_model.dart';
 import 'package:adapters_flutter/models/api/workitem_api_model.dart';
 import 'package:adapters_flutter/models/config/merged_config_model.dart';
@@ -12,7 +13,7 @@ import 'package:adapters_flutter/models/test_result_model.dart';
 import 'package:http/http.dart';
 import 'package:logger/logger.dart';
 
-final Logger _logger = Logger();
+final Logger _logger = getLogger();
 
 Future<AutotestFullModel?> createAutotestAsync(
     final MergedConfigModel config, final TestResultModel testResult) async {
@@ -41,7 +42,7 @@ Future<AutotestFullModel?> createAutotestAsync(
 
     if (response.statusCode < 200 || response.statusCode > 299) {
       throw TmsApiException(
-          'Status code: ${response.statusCode}, Reason: ${response.reasonPhrase}');
+          'Status code: ${response.statusCode}, Reason: "${response.reasonPhrase}"');
     }
 
     final body = jsonDecode(response.body) as Map<String, dynamic>;
@@ -90,7 +91,7 @@ Future<AutotestFullModel?> getAutotestByExternalIdAsync(
 
     if (response.statusCode < 200 || response.statusCode > 299) {
       throw TmsApiException(
-          'Status code: ${response.statusCode}, Reason: ${response.reasonPhrase}');
+          'Status code: ${response.statusCode}, Reason: "${response.reasonPhrase}"');
     }
 
     final body =
@@ -126,7 +127,7 @@ Future<bool> tryLinkAutoTestToWorkItemAsync(final String? autotestId,
 
       if (response.statusCode < 200 || response.statusCode > 299) {
         throw TmsApiException(
-            'Status code: ${response.statusCode}, Reason: ${response.reasonPhrase}');
+            'Status code: ${response.statusCode}, Reason: "${response.reasonPhrase}"');
       }
     } catch (exception, stacktrace) {
       _logger.i('$exception${Platform.lineTerminator}$stacktrace');
@@ -159,7 +160,7 @@ Future<void> updateAutotestAsync(
 
     if (response.statusCode < 200 || response.statusCode > 299) {
       throw TmsApiException(
-          'Status code: ${response.statusCode}, Reason: ${response.reasonPhrase}');
+          'Status code: ${response.statusCode}, Reason: "${response.reasonPhrase}"');
     }
   } catch (exception, stacktrace) {
     _logger.i('$exception${Platform.lineTerminator}$stacktrace');

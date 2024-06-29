@@ -5,8 +5,10 @@ class CliConfigModel {
   bool? automaticCreationTestCases;
   bool? certValidation;
   String? configurationId;
-  String? projectId;
+  bool? isDebug;
   String? privateToken;
+  String? projectId;
+  bool? testIt;
   String? testRunId;
   String? testRunName;
   String? url;

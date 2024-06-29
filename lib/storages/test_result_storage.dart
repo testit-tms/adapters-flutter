@@ -142,11 +142,11 @@ AutoTestStepResultsModel? _getCurrentStep() {
 
 AutoTestStepResultsModel? _getLastNotFinishedChildStep(
     final List<AutoTestStepResultsModel?>? steps) {
-  AutoTestStepResultsModel? targetStep;
-
   if (steps == null || steps.isEmpty) {
-    return targetStep;
+    return null;
   }
+
+  AutoTestStepResultsModel? targetStep;
 
   for (final step in steps.reversed) {
     if (step == null) {

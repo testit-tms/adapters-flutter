@@ -1,11 +1,43 @@
 #!/usr/bin/env dart
 
-import 'dart:io';
+final class TmsApiException implements Exception {
+  const TmsApiException([this.message]);
 
-final class TmsApiException extends HttpException {
-  const TmsApiException(super.message);
+  final String? message;
+
+  @override
+  String toString() {
+    const type = 'TmsApiException';
+    final text = message is String ? '$type: $message' : type;
+
+    return text;
+  }
 }
 
-final class TmsConfigException extends FormatException {
-  const TmsConfigException(super.message);
+final class TmsArgumentException implements Exception {
+  const TmsArgumentException([this.message]);
+
+  final String? message;
+
+  @override
+  String toString() {
+    const type = 'TmsArgumentException';
+    final text = message is String ? '$type: $message' : type;
+
+    return text;
+  }
+}
+
+final class TmsConfigException implements Exception {
+  const TmsConfigException([this.message]);
+
+  final String? message;
+
+  @override
+  String toString() {
+    const type = 'TmsConfigException';
+    final text = message is String ? '$type: $message' : type;
+
+    return text;
+  }
 }

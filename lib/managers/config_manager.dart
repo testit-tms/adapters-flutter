@@ -9,7 +9,6 @@ import 'package:adapters_flutter/models/config/merged_config_model.dart';
 import 'package:adapters_flutter/services/config/cli_config_service.dart';
 import 'package:adapters_flutter/services/config/env_config_service.dart';
 import 'package:adapters_flutter/services/config/file_config_service.dart';
-import 'package:adapters_flutter/services/validation_service.dart';
 import 'package:path/path.dart' as path;
 import 'package:synchronized/synchronized.dart';
 
@@ -25,7 +24,6 @@ Future<MergedConfigModel> getConfigAsync() async {
       final cliConfig = await getConfigFromCliAsync();
 
       _config = _mergeConfigs(cliConfig, envConfig, fileConfig);
-      validateConfig(_config);
     }
   });
 
@@ -40,63 +38,46 @@ MergedConfigModel _mergeConfigs(final CliConfigModel cliConfig,
     final EnvConfigModel envConfig, final FileConfigModel fileConfig) {
   var config = MergedConfigModel();
 
-  config.adapterMode =
-      cliConfig.adapterMode ?? envConfig.adapterMode ?? fileConfig.adapterMode;
+  config.adapterMode = cliConfig.adapterMode ??
+      envConfig.adapterMode ??
+      fileConfig.adapterMode ??
+      0;
 
-  config.automaticCreationTestCases =
-      cliConfig.automaticCreationTestCases == null ||
-              !cliConfig.automaticCreationTestCases!
-          ? envConfig.automaticCreationTestCases == null ||
-                  !envConfig.automaticCreationTestCases!
-              ? fileConfig.automaticCreationTestCases
-              : envConfig.automaticCreationTestCases
-          : cliConfig.automaticCreationTestCases;
+  config.automaticCreationTestCases = cliConfig.automaticCreationTestCases ??
+      envConfig.automaticCreationTestCases ??
+      fileConfig.automaticCreationTestCases ??
+      false;
 
-  config.certValidation =
-      cliConfig.certValidation == null || cliConfig.certValidation!
-          ? envConfig.certValidation == null || envConfig.certValidation!
-              ? fileConfig.certValidation
-              : envConfig.certValidation
-          : cliConfig.certValidation;
+  config.certValidation = cliConfig.certValidation ??
+      envConfig.certValidation ??
+      fileConfig.certValidation ??
+      true;
 
-  config.configurationId = cliConfig.configurationId == null ||
-          cliConfig.configurationId!.isEmpty
-      ? envConfig.configurationId == null || envConfig.configurationId!.isEmpty
-          ? fileConfig.configurationId
-          : envConfig.configurationId
-      : cliConfig.configurationId;
+  config.configurationId = cliConfig.configurationId ??
+      envConfig.configurationId ??
+      fileConfig.configurationId;
 
-  config.privateToken =
-      cliConfig.privateToken == null || cliConfig.privateToken!.isEmpty
-          ? envConfig.privateToken == null || envConfig.privateToken!.isEmpty
-              ? fileConfig.privateToken
-              : envConfig.privateToken
-          : cliConfig.privateToken;
+  config.isDebug =
+      cliConfig.isDebug ?? envConfig.isDebug ?? fileConfig.isDebug ?? false;
 
-  config.projectId = cliConfig.projectId == null || cliConfig.projectId!.isEmpty
-      ? envConfig.projectId == null || envConfig.projectId!.isEmpty
-          ? fileConfig.projectId
-          : envConfig.projectId
-      : cliConfig.projectId;
+  config.privateToken = cliConfig.privateToken ??
+      envConfig.privateToken ??
+      fileConfig.privateToken;
 
-  config.testRunId = cliConfig.testRunId == null || cliConfig.testRunId!.isEmpty
-      ? envConfig.testRunId == null || envConfig.testRunId!.isEmpty
-          ? fileConfig.testRunId
-          : envConfig.testRunId
-      : cliConfig.testRunId;
+  config.projectId =
+      cliConfig.projectId ?? envConfig.projectId ?? fileConfig.projectId;
+
+  config.testIt =
+      cliConfig.testIt ?? envConfig.testIt ?? fileConfig.testIt ?? true;
+
+  config.testRunId =
+      cliConfig.testRunId ?? envConfig.testRunId ?? fileConfig.testRunId;
 
   config.testRunName =
-      cliConfig.testRunName == null || cliConfig.testRunName!.isEmpty
-          ? envConfig.testRunName == null || envConfig.testRunName!.isEmpty
-              ? fileConfig.testRunName
-              : envConfig.testRunName
-          : cliConfig.testRunName;
+      cliConfig.testRunName ?? envConfig.testRunName ?? fileConfig.testRunName;
 
-  config.url = cliConfig.url == null || cliConfig.url!.isEmpty
-      ? envConfig.url == null || envConfig.url!.isEmpty
-          ? fileConfig.url
-          : envConfig.url
-      : cliConfig.url;
+  config.url = cliConfig.url ?? envConfig.url ?? fileConfig.url;
+
   config = _updateUrl(config);
 
   return config;
