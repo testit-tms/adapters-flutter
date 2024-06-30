@@ -51,7 +51,7 @@ Future<void> createEmptyTestRunAsync(final ConfigModel config) async {
   }
 }
 
-Future<List<String>> getExternalIdsFromTestRunAsync(
+Future<Iterable<String>> getExternalIdsFromTestRunAsync(
     final ConfigModel config) async {
   final List<String> externalIds = [];
 
