@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.  
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
 
+## [1.3.2] - 2024-06-30
+
+### Fixed
+
+- publisher version
+
 ## [1.3.1] - 2024-06-30
 
 ### Fixed
