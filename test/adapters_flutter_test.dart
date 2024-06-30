@@ -13,7 +13,7 @@ void main() {
 
     setUp(() => _logger.i('example setup.'));
 
-    tmsTest('example testt',
+    tmsTest('example test',
         externalId: 'example_externalId',
         links: [Link('https://www.example.org/')],
         tags: ['example_tag'],
