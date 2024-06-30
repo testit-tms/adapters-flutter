@@ -5,7 +5,7 @@ The format is based on Keep a Changelog and this project adheres to Semantic Ver
 
 ## [1.3.1] - 2024-06-30
 
-### Changed
+### Fixed
 
 - check action.
 - publish action.
