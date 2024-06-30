@@ -98,9 +98,9 @@ final Logger _logger = Logger();
 
 void main() {
   group('example group', () {
-    setUpAll(() => _logger.i('example setup all'));
+    setUpAll(() => _logger.i('example setup all.'));
 
-    setUp(() => _logger.i('example setup'));
+    setUp(() => _logger.i('example setup.'));
 
     tmsTest('example test',
         externalId: 'example_externalId',
@@ -122,12 +122,12 @@ void main() {
 
           await step('success step with message', () async => await addMessage('example message'));
 
-          await step('failed step', () => throw Exception('example exception'));
+          await step('failed step', () => throw Exception('example exception.'));
         });
 
-    tearDown(() => _logger.i('example teardown'));
+    tearDown(() => _logger.i('example teardown.'));
 
-    tearDownAll(() => _logger.i('example teardown all'));
+    tearDownAll(() => _logger.i('example teardown all.'));
   });
 }
 ```

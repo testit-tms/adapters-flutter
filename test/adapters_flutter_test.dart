@@ -4,15 +4,14 @@ import 'package:adapters_flutter/adapters_flutter.dart';
 import 'package:adapters_flutter/managers/log_manager.dart';
 import 'package:adapters_flutter/models/api/link_api_model.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:logger/logger.dart';
 
-final Logger _logger = getLogger();
+final _logger = getLogger();
 
 void main() {
   group('example group', () {
-    setUpAll(() => _logger.i('example setup all'));
+    setUpAll(() => _logger.i('example setup all.'));
 
-    setUp(() => _logger.i('example setup'));
+    setUp(() => _logger.i('example setup.'));
 
     tmsTest('example test',
         externalId: 'example_externalId',
@@ -36,11 +35,11 @@ void main() {
       await step('success step with message',
           () async => await addMessage('example message'));
 
-      await step('failed step', () => throw Exception('example exception'));
+      await step('failed step', () => throw Exception('example exception.'));
     });
 
-    tearDown(() => _logger.i('example teardown'));
+    tearDown(() => _logger.i('example teardown.'));
 
-    tearDownAll(() => _logger.i('example teardown all'));
+    tearDownAll(() => _logger.i('example teardown all.'));
   });
 }

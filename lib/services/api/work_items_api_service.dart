@@ -4,15 +4,14 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:adapters_flutter/managers/log_manager.dart';
-import 'package:adapters_flutter/models/config/merged_config_model.dart';
+import 'package:adapters_flutter/models/config_model.dart';
 import 'package:adapters_flutter/models/exception_model.dart';
 import 'package:http/http.dart';
-import 'package:logger/logger.dart';
 
-final Logger _logger = getLogger();
+final _logger = getLogger();
 
 Future<Map<String, dynamic>?> getWorkItemByIdAsync(
-    final MergedConfigModel config, String? workItemId) async {
+    final ConfigModel config, String? workItemId) async {
   Map<String, dynamic>? workItem;
 
   try {
@@ -30,13 +29,16 @@ Future<Map<String, dynamic>?> getWorkItemByIdAsync(
     final response = await Response.fromStream(streamedResponse);
 
     if (response.statusCode < 200 || response.statusCode > 299) {
-      throw TmsApiException(
-          'Status code: ${response.statusCode}, Reason: "${response.reasonPhrase}"');
+      final exception = TmsApiException(
+          'Status code: ${response.statusCode}, Reason: "${response.reasonPhrase}".');
+      _logger.i('$exception.');
+
+      return workItem;
     }
 
     workItem = jsonDecode(response.body) as Map<String, dynamic>;
   } catch (exception, stacktrace) {
-    _logger.d('$exception${Platform.lineTerminator}$stacktrace');
+    _logger.d('$exception${Platform.lineTerminator}$stacktrace.');
   }
 
   return workItem;

@@ -1,6 +1,6 @@
 #!/usr/bin/env dart
 
-class CliConfigModel {
+class ConfigModel {
   int? adapterMode;
   bool? automaticCreationTestCases;
   bool? certValidation;

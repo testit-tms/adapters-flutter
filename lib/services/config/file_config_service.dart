@@ -2,19 +2,24 @@
 
 import 'dart:io';
 
-import 'package:adapters_flutter/managers/log_manager.dart';
-import 'package:adapters_flutter/models/config/file_config_model.dart';
-import 'package:logger/logger.dart';
+import 'package:adapters_flutter/models/config_model.dart';
 import 'package:properties/properties.dart';
 
-final Logger _logger = getLogger();
+final _configFileWarnings = [];
 
-Future<FileConfigModel> getConfigFromFileAsync(final String? filePath) async {
+Iterable<String> getConfigFileWarnings() sync* {
+  while (_configFileWarnings.isNotEmpty) {
+    yield _configFileWarnings.removeLast();
+  }
+}
+
+Future<ConfigModel> getConfigFromFileAsync(final String? filePath) async {
+  final fileConfig = ConfigModel();
+
   if (filePath == null || filePath.isEmpty || !await File(filePath).exists()) {
-    return FileConfigModel();
+    return fileConfig;
   }
 
-  final fileConfig = FileConfigModel();
   final props = Properties.fromFile(filePath);
 
   fileConfig.adapterMode = props.getInt('adapterMode', defval: null);
@@ -31,8 +36,8 @@ Future<FileConfigModel> getConfigFromFileAsync(final String? filePath) async {
   fileConfig.privateToken = props.get('privateToken', defval: null);
 
   if (fileConfig.privateToken != null && fileConfig.privateToken!.isNotEmpty) {
-    _logger.w(
-        'The configuration file specifies a private token. It is not safe. Use TMS_PRIVATE_TOKEN environment variable');
+    _configFileWarnings.add(
+        'Configuration file "$filePath" specifies a private token. Use "TMS_PRIVATE_TOKEN" environment variable instead.');
   }
 
   fileConfig.projectId = props.get('projectId', defval: null);

@@ -1,37 +1,38 @@
 #!/usr/bin/env dart
 
-import 'package:adapters_flutter/models/config/merged_config_model.dart';
+import 'package:adapters_flutter/models/config_model.dart';
 import 'package:adapters_flutter/models/test_result_model.dart';
 import 'package:adapters_flutter/services/api/autotest_api_service.dart';
 import 'package:adapters_flutter/services/api/test_run_api_service.dart';
 import 'package:adapters_flutter/services/api/work_items_api_service.dart';
 import 'package:synchronized/synchronized.dart';
 
-List<String>? _externalIdsFromTestRun;
-bool _isTestRunCreated = false;
+final List<String> _externalIdsFromTestRun = [];
+var _isTestRunCreated = false;
 final _lock = Lock();
 
 Future<bool> checkTestNeedsToBeRunAsync(
-    final MergedConfigModel config, final String? externalId) async {
-  if (config.adapterMode == 0) {
-    await _lock.synchronized(() async {
-      _externalIdsFromTestRun ??= await getExternalIdsFromTestRunAsync(config);
-    });
+    final ConfigModel config, final String? externalId) async {
+  var isTestNeedsToBeRun = true;
 
-    if (!(_externalIdsFromTestRun?.contains(externalId) ?? false)) {
-      return false;
+  if (config.adapterMode == 0) {
+    await _lock.synchronized(() async => _externalIdsFromTestRun
+        .addAll(await getExternalIdsFromTestRunAsync(config)));
+
+    if (!_externalIdsFromTestRun.contains(externalId)) {
+      isTestNeedsToBeRun = false;
     }
   }
 
-  return true;
+  return isTestNeedsToBeRun;
 }
 
 Future<String?> getFirstNotFoundWorkItemIdAsync(
-    final MergedConfigModel config, final List<String>? workItemsIds) async {
+    final ConfigModel config, final Iterable<String>? workItemsIds) async {
   String? firstNotFoundWorkItemId;
 
   if (workItemsIds == null || workItemsIds.isEmpty) {
-    return null;
+    return firstNotFoundWorkItemId;
   }
 
   for (final id in workItemsIds) {
@@ -47,7 +48,7 @@ Future<String?> getFirstNotFoundWorkItemIdAsync(
 }
 
 Future<void> processTestResultAsync(
-    final MergedConfigModel config, final TestResultModel testResult) async {
+    final ConfigModel config, final TestResultModel testResult) async {
   var autotest =
       await getAutotestByExternalIdAsync(config, testResult.externalId);
 
@@ -68,17 +69,16 @@ Future<void> processTestResultAsync(
   await submitResultToTestRunAsync(config, testResult);
 }
 
-Future<void> tryCreateTestRunOnceAsync(final MergedConfigModel config) async {
-  await _lock.synchronized(() async {
-    if (!_isTestRunCreated) {
-      if (config.adapterMode != 2) {
+Future<void> tryCreateTestRunOnceAsync(final ConfigModel config) async =>
+    await _lock.synchronized(() async {
+      if (!_isTestRunCreated) {
+        if (config.adapterMode != 2) {
+          _isTestRunCreated = true;
+
+          return;
+        }
+
+        await createEmptyTestRunAsync(config);
         _isTestRunCreated = true;
-
-        return;
       }
-
-      await createEmptyTestRunAsync(config);
-      _isTestRunCreated = true;
-    }
-  });
-}
+    });

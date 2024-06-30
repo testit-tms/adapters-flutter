@@ -2,10 +2,10 @@
 
 import 'dart:io';
 
-import 'package:adapters_flutter/models/config/env_config_model.dart';
+import 'package:adapters_flutter/models/config_model.dart';
 import 'package:adapters_flutter/services/config/file_config_service.dart';
 
-Future<EnvConfigModel> getConfigFromEnvAsync() async {
+Future<ConfigModel> getConfigFromEnvAsync() async {
   final environment = Platform.environment;
   final filePath = environment['TMS_CONFIG_FILE'];
   final config = await getConfigFromFileAsync(filePath);
@@ -38,5 +38,5 @@ Future<EnvConfigModel> getConfigFromEnvAsync() async {
 
   config.url = environment['TMS_URL'];
 
-  return config as EnvConfigModel;
+  return config;
 }

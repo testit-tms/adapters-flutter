@@ -1,15 +1,17 @@
 #!/usr/bin/env dart
 
-import 'package:adapters_flutter/models/config/cli_config_model.dart';
+import 'package:adapters_flutter/models/config_model.dart';
 import 'package:adapters_flutter/services/config/file_config_service.dart';
 
 extension on String {
   String? nullIfEmpty() {
-    return isEmpty ? null : this;
+    final value = isEmpty ? null : this;
+
+    return value;
   }
 }
 
-Future<CliConfigModel> getConfigFromCliAsync() async {
+Future<ConfigModel> getConfigFromCliAsync() async {
   const filePath = String.fromEnvironment('tmsConfigFile');
   final config = await getConfigFromFileAsync(filePath);
 
@@ -45,5 +47,5 @@ Future<CliConfigModel> getConfigFromCliAsync() async {
 
   config.url = const String.fromEnvironment('tmsUrl').nullIfEmpty();
 
-  return config as CliConfigModel;
+  return config;
 }

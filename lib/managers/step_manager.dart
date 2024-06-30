@@ -7,7 +7,7 @@ import 'package:adapters_flutter/storages/test_result_storage.dart';
 
 Future<void> step(final String title, final dynamic Function() body,
     {final String? description}) async {
-  final config = await getConfigAsync();
+  final config = await createConfigOnceAsync();
 
   if (config.testIt ?? true) {
     await createEmptyStepAsync();

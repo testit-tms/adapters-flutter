@@ -2,20 +2,20 @@
 
 import 'dart:io';
 
-import 'package:adapters_flutter/models/config/cli_config_model.dart';
-import 'package:adapters_flutter/models/config/env_config_model.dart';
-import 'package:adapters_flutter/models/config/file_config_model.dart';
-import 'package:adapters_flutter/models/config/merged_config_model.dart';
+import 'package:adapters_flutter/managers/log_manager.dart';
+import 'package:adapters_flutter/models/config_model.dart';
 import 'package:adapters_flutter/services/config/cli_config_service.dart';
 import 'package:adapters_flutter/services/config/env_config_service.dart';
 import 'package:adapters_flutter/services/config/file_config_service.dart';
+import 'package:adapters_flutter/services/validation_service.dart';
 import 'package:path/path.dart' as path;
 import 'package:synchronized/synchronized.dart';
 
-MergedConfigModel? _config;
+ConfigModel? _config;
 final _lock = Lock();
+final _logger = getLogger();
 
-Future<MergedConfigModel> getConfigAsync() async {
+Future<ConfigModel> createConfigOnceAsync() async {
   await _lock.synchronized(() async {
     if (_config == null) {
       final filePath = path.join(Directory.current.path, 'testit.properties');
@@ -24,19 +24,24 @@ Future<MergedConfigModel> getConfigAsync() async {
       final cliConfig = await getConfigFromCliAsync();
 
       _config = _mergeConfigs(cliConfig, envConfig, fileConfig);
+      validateConfig(_config);
+      await setLogLevelOnceAsync(_config);
+
+      for (final warning in getConfigFileWarnings()) {
+        _logger.w(warning);
+      }
     }
   });
 
-  return _config as MergedConfigModel;
+  return _config as ConfigModel;
 }
 
-Future<void> updateTestRunIdAsync(final String testRunId) async {
-  (await getConfigAsync()).testRunId = testRunId;
-}
+Future<void> updateTestRunIdAsync(final String testRunId) async =>
+    (await createConfigOnceAsync()).testRunId = testRunId;
 
-MergedConfigModel _mergeConfigs(final CliConfigModel cliConfig,
-    final EnvConfigModel envConfig, final FileConfigModel fileConfig) {
-  var config = MergedConfigModel();
+ConfigModel _mergeConfigs(final ConfigModel cliConfig,
+    final ConfigModel envConfig, final ConfigModel fileConfig) {
+  var config = ConfigModel();
 
   config.adapterMode = cliConfig.adapterMode ??
       envConfig.adapterMode ??
@@ -83,7 +88,7 @@ MergedConfigModel _mergeConfigs(final CliConfigModel cliConfig,
   return config;
 }
 
-MergedConfigModel _updateUrl(final MergedConfigModel config) {
+ConfigModel _updateUrl(final ConfigModel config) {
   if (config.url?.endsWith('/') ?? false) {
     config.url = config.url!.substring(0, config.url!.length - 1);
   }
