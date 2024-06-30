@@ -18,6 +18,10 @@ The format is based on Keep a Changelog and this project adheres to Semantic Ver
 - link constructor signature.
 - simplify config services.
 
+### Fixed
+
+- log message colors & line length.
+
 ## [1.2.0] - 2024-06-28
 
 ### Added
