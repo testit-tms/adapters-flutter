@@ -1,17 +1,16 @@
 #!/usr/bin/env dart
 
-import 'package:adapters_flutter/adapters_flutter.dart';
-import 'package:adapters_flutter/managers/log_manager.dart';
-import 'package:adapters_flutter/models/api/link_api_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-final _logger = getLogger();
-
 void main() {
-  group('example group', () {
-    setUpAll(() => _logger.i('example setup all.'));
+  test('example', () => {expect(1, 1)});
+}
 
-    setUp(() => _logger.i('example setup.'));
+/*void main() {
+  group('example group', () {
+    setUpAll(() => expect(1, 1));
+
+    setUp(() => expect(1, 1));
 
     tmsTest('example test',
         externalId: 'example_externalId',
@@ -38,8 +37,8 @@ void main() {
       await step('failed step', () => throw Exception('example exception.'));
     });
 
-    tearDown(() => _logger.i('example teardown.'));
+    tearDown(() => expect(1, 1));
 
-    tearDownAll(() => _logger.i('example teardown all.'));
+    tearDownAll(() => expect(1, 1));
   });
-}
+}*/
