@@ -71,7 +71,7 @@ void validateConfig(final ConfigModel? config) {
 
 void validateStringArgument(final String name, final String? value) {
   if (value == null || value.isEmpty) {
-    throw TmsArgumentException('$name is invalid: "$value".');
+    throw TmsArgumentException('$name is iinvalid: "$value".');
   }
 }
 
