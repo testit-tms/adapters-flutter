@@ -27,8 +27,10 @@ flutter pub add adapters_flutter
 | It enables/disables certificate validation (**It's optional**). Default value - true                                                                                                                                                                                                                                                                                                   | certValidation             | TMS_CERT_VALIDATION               | tmsCertValidation             |
 | Name of the configuration file If it is not provided, it is used default file name (**It's optional**)                                                                                                                                                                                                                                                                                 | -                          | TMS_CONFIG_FILE                   | tmsConfigFile                 |
 | ID of configuration in TMS instance [How to getting configuration ID?](https://github.com/testit-tms/.github/tree/main/configuration#configurationid)                                                                                                                                                                                                                                  | configurationId            | TMS_CONFIGURATION_ID              | tmsConfigurationId            |
+| Enable debug logs (**It's optional**). Default value - false                                                                                                                                                                                                                                                                                                                           | isDebug                    | TMS_IS_DEBUG                      | tmsIsDebug                    |
 | API secret key [How to getting API secret key?](https://github.com/testit-tms/.github/tree/main/configuration#privatetoken)                                                                                                                                                                                                                                                            | privateToken               | TMS_PRIVATE_TOKEN                 | tmsPrivateToken               |
 | ID of project in TMS instance [How to getting project ID?](https://github.com/testit-tms/.github/tree/main/configuration#projectid)                                                                                                                                                                                                                                                    | projectId                  | TMS_PROJECT_ID                    | tmsProjectId                  |
+| It enables/disables TMS integration (**It's optional**). Default value - true                                                                                                                                                                                                                                                                                                          | testIt                     | TMS_TEST_IT                       | tmsTestIt                     |
 | ID of the created test run in TMS instance.<br/>It's necessary for **adapterMode** 0 or 1                                                                                                                                                                                                                                                                                              | testRunId                  | TMS_TEST_RUN_ID                   | tmsTestRunId                  |
 | Parameter for specifying the name of test run in TMS instance (**It's optional**). If it is not provided, it is created automatically                                                                                                                                                                                                                                                  | testRunName                | TMS_TEST_RUN_NAME                 | tmsTestRunName                |
 | Location of the TMS instance                                                                                                                                                                                                                                                                                                                                                           | url                        | TMS_URL                           | tmsUrl                        |
@@ -42,8 +44,10 @@ adapterMode={%ADAPTER_MODE%}
 automaticCreationTestCases={%AUTOMATIC_CREATION_TESTCASES%}
 certValidation={%CERTIFICATE_VALIDATION%}
 configurationId={%CONFIGURATION_ID%}
+isDebug={%IS_DEBUG%}
 privateToken={%USER_PRIVATE_TOKEN%}
 projectId={%PROJECT_ID%}
+testIt={%TEST_IT%}
 testRunId={%TEST_RUN_ID%}
 testRunName={%TEST_RUN_NAME%}
 url={%URL%}
@@ -52,7 +56,7 @@ url={%URL%}
 #### Command-line
 
 ```bash
-flutter test --dart-define=tmsAdapterMode={%ADAPTER_MODE%} --dart-define=tmsAutomaticCreationTestCases={%AUTOMATIC_CREATION_TESTCASES%} --dart-define=tmsCertValidation={%CERTIFICATE_VALIDATION%} --dart-define=tmsConfigFile={%CONFIG_FILE%}  --dart-define=tmsConfigurationId={%CONFIGURATION_ID%} --dart-define=tmsPrivateToken={%USER_PRIVATE_TOKEN%} --dart-define=tmsProjectId={%PROJECT_ID%} --dart-define=tmsTestRunId={%TEST_RUN_ID%} --dart-define=tmsTestRunName={%TEST_RUN_NAME%} --dart-define=tmsUrl={%URL%}
+flutter test --dart-define=tmsAdapterMode={%ADAPTER_MODE%} --dart-define=tmsAutomaticCreationTestCases={%AUTOMATIC_CREATION_TESTCASES%} --dart-define=tmsCertValidation={%CERTIFICATE_VALIDATION%} --dart-define=tmsConfigFile={%CONFIG_FILE%}  --dart-define=tmsConfigurationId={%CONFIGURATION_ID%} --dart-define=tmsIsDebug={%IS_DEBUG%} --dart-define=tmsPrivateToken={%USER_PRIVATE_TOKEN%} --dart-define=tmsProjectId={%PROJECT_ID%} --dart-define=tmsTestIt={%TEST_IT%} --dart-define=tmsTestRunId={%TEST_RUN_ID%} --dart-define=tmsTestRunName={%TEST_RUN_NAME%} --dart-define=tmsUrl={%URL%}
 ```
 
 ### Metadata of autotest
@@ -94,13 +98,13 @@ final Logger _logger = Logger();
 
 void main() {
   group('example group', () {
-    setUpAll(() => _logger.i('example setup all'));
+    setUpAll(() => _logger.i('example setup all.'));
 
-    setUp(() => _logger.i('example setup'));
+    setUp(() => _logger.i('example setup.'));
 
     tmsTest('example test',
         externalId: 'example_externalId',
-        links: [Link('link_description', 'link_title', LinkType.issue, 'https://www.example.org/')],
+        links: [Link('https://www.example.org/')],
         tags: ['example_tag'],
         title: 'example_title',
         workItemsIds: ['45876'], () async {
@@ -118,12 +122,12 @@ void main() {
 
           await step('success step with message', () async => await addMessage('example message'));
 
-          await step('failed step', () => throw Exception('example exception'));
+          await step('failed step', () => throw Exception('example exception.'));
         });
 
-    tearDown(() => _logger.i('example teardown'));
+    tearDown(() => _logger.i('example teardown.'));
 
-    tearDownAll(() => _logger.i('example teardown all'));
+    tearDownAll(() => _logger.i('example teardown all.'));
   });
 }
 ```

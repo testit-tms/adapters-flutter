@@ -3,27 +3,26 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:adapters_flutter/managers/log_manager.dart';
 import 'package:adapters_flutter/models/api/attachment_api_model.dart';
-import 'package:adapters_flutter/models/config/merged_config_model.dart';
+import 'package:adapters_flutter/models/config_model.dart';
 import 'package:adapters_flutter/models/exception_model.dart';
 import 'package:http/http.dart';
 import 'package:http_parser/http_parser.dart';
-import 'package:logger/logger.dart';
 import 'package:mime/mime.dart';
 import 'package:path/path.dart';
 
-final Logger _logger = Logger();
+final _logger = getLogger();
 
 Future<AttachmentResponseModel?> createAttachmentsAsync(
-    final MergedConfigModel config, final File file) async {
+    final ConfigModel config, final File file) async {
   AttachmentResponseModel? attachment;
 
   try {
     final headers = {
       'accept': 'application/json',
       'Content-Type': 'multipart/form-data',
-      'Authorization': 'PrivateToken ${config.privateToken}',
-      'host': Uri.tryParse(config.url!)?.host ?? ''
+      'Authorization': 'PrivateToken ${config.privateToken}'
     };
 
     final request = MultipartRequest(
@@ -43,14 +42,17 @@ Future<AttachmentResponseModel?> createAttachmentsAsync(
     final response = await Response.fromStream(streamedResponse);
 
     if (response.statusCode < 200 || response.statusCode > 299) {
-      throw TmsApiException(
-          'Status code: ${response.statusCode}, Reason: ${response.reasonPhrase}');
+      final exception = TmsApiException(
+          'Status code: ${response.statusCode}, Reason: "${response.reasonPhrase}".');
+      _logger.i('$exception.');
+
+      return attachment;
     }
 
     final body = jsonDecode(response.body) as Map<String, dynamic>;
     attachment = AttachmentResponseModel.fromJson(body);
   } catch (exception, stacktrace) {
-    _logger.i('$exception${Platform.lineTerminator}$stacktrace');
+    _logger.i('$exception${Platform.lineTerminator}$stacktrace.');
   }
 
   return attachment;

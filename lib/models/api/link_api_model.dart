@@ -8,7 +8,7 @@ final class Link {
   final LinkType? type;
   final String? url;
 
-  Link(this.description, this.title, this.type, this.url);
+  Link(this.url, {this.description, this.title, this.type});
 }
 
 final class LinkPostModel {

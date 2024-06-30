@@ -4,26 +4,25 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:adapters_flutter/converters/test_result_converter.dart';
+import 'package:adapters_flutter/managers/log_manager.dart';
 import 'package:adapters_flutter/models/api/autotest_api_model.dart';
 import 'package:adapters_flutter/models/api/workitem_api_model.dart';
-import 'package:adapters_flutter/models/config/merged_config_model.dart';
+import 'package:adapters_flutter/models/config_model.dart';
 import 'package:adapters_flutter/models/exception_model.dart';
 import 'package:adapters_flutter/models/test_result_model.dart';
 import 'package:http/http.dart';
-import 'package:logger/logger.dart';
 
-final Logger _logger = Logger();
+final _logger = getLogger();
 
 Future<AutotestFullModel?> createAutotestAsync(
-    final MergedConfigModel config, final TestResultModel testResult) async {
+    final ConfigModel config, final TestResultModel testResult) async {
   AutotestFullModel? autotest;
 
   try {
     final headers = {
       'accept': 'application/json',
       'Content-Type': 'application/json',
-      'Authorization': 'PrivateToken ${config.privateToken}',
-      'host': Uri.tryParse(config.url!)?.host ?? ''
+      'Authorization': 'PrivateToken ${config.privateToken}'
     };
 
     final request = Request(
@@ -40,29 +39,31 @@ Future<AutotestFullModel?> createAutotestAsync(
     final response = await Response.fromStream(streamedResponse);
 
     if (response.statusCode < 200 || response.statusCode > 299) {
-      throw TmsApiException(
-          'Status code: ${response.statusCode}, Reason: ${response.reasonPhrase}');
+      final exception = TmsApiException(
+          'Status code: ${response.statusCode}, Reason: "${response.reasonPhrase}".');
+      _logger.i('$exception.');
+
+      return autotest;
     }
 
     final body = jsonDecode(response.body) as Map<String, dynamic>;
     autotest = AutotestFullModel.fromJson(body);
   } catch (exception, stacktrace) {
-    _logger.i('$exception${Platform.lineTerminator}$stacktrace');
+    _logger.i('$exception${Platform.lineTerminator}$stacktrace.');
   }
 
   return autotest;
 }
 
 Future<AutotestFullModel?> getAutotestByExternalIdAsync(
-    final MergedConfigModel config, final String? externalId) async {
+    final ConfigModel config, final String? externalId) async {
   AutotestFullModel? autotest;
 
   try {
     final headers = {
       'accept': 'application/json',
       'Content-Type': 'application/json',
-      'Authorization': 'PrivateToken ${config.privateToken}',
-      'host': Uri.tryParse(config.url!)?.host ?? ''
+      'Authorization': 'PrivateToken ${config.privateToken}'
     };
 
     final request = Request(
@@ -89,29 +90,33 @@ Future<AutotestFullModel?> getAutotestByExternalIdAsync(
     final response = await Response.fromStream(streamedResponse);
 
     if (response.statusCode < 200 || response.statusCode > 299) {
-      throw TmsApiException(
-          'Status code: ${response.statusCode}, Reason: ${response.reasonPhrase}');
+      final exception = TmsApiException(
+          'Status code: ${response.statusCode}, Reason: "${response.reasonPhrase}".');
+      _logger.i('$exception.');
+
+      return autotest;
     }
 
     final body =
         (jsonDecode(response.body) as List).cast<Map<String, dynamic>>();
     autotest = AutotestFullModel.fromJson(body.single);
   } catch (exception, stacktrace) {
-    _logger.d('$exception${Platform.lineTerminator}$stacktrace');
+    _logger.d('$exception${Platform.lineTerminator}$stacktrace.');
   }
 
   return autotest;
 }
 
 Future<bool> tryLinkAutoTestToWorkItemAsync(final String? autotestId,
-    final MergedConfigModel config, final List<String> workItemIds) async {
+    final ConfigModel config, final Iterable<String> workItemIds) async {
+  var isLinkSuccess = true;
+
   for (final String workItemId in workItemIds) {
     try {
       final headers = {
         'accept': '*/*',
         'Content-Type': 'application/json',
-        'Authorization': 'PrivateToken ${config.privateToken}',
-        'host': Uri.tryParse(config.url!)?.host ?? ''
+        'Authorization': 'PrivateToken ${config.privateToken}'
       };
 
       final request = Request(
@@ -125,27 +130,31 @@ Future<bool> tryLinkAutoTestToWorkItemAsync(final String? autotestId,
       final response = await request.send();
 
       if (response.statusCode < 200 || response.statusCode > 299) {
-        throw TmsApiException(
-            'Status code: ${response.statusCode}, Reason: ${response.reasonPhrase}');
+        final exception = TmsApiException(
+            'Status code: ${response.statusCode}, Reason: "${response.reasonPhrase}".');
+        _logger.i('$exception.');
+
+        isLinkSuccess = false;
+        break;
       }
     } catch (exception, stacktrace) {
-      _logger.i('$exception${Platform.lineTerminator}$stacktrace');
+      _logger.i('$exception${Platform.lineTerminator}$stacktrace.');
 
-      return false;
+      isLinkSuccess = false;
+      break;
     }
   }
 
-  return true;
+  return isLinkSuccess;
 }
 
 Future<void> updateAutotestAsync(
-    final MergedConfigModel config, final TestResultModel testResult) async {
+    final ConfigModel config, final TestResultModel testResult) async {
   try {
     final headers = {
       'accept': '*/*',
       'Content-Type': 'application/json',
-      'Authorization': 'PrivateToken ${config.privateToken}',
-      'host': Uri.tryParse(config.url!)?.host ?? ''
+      'Authorization': 'PrivateToken ${config.privateToken}'
     };
 
     final request =
@@ -158,10 +167,13 @@ Future<void> updateAutotestAsync(
     final response = await request.send();
 
     if (response.statusCode < 200 || response.statusCode > 299) {
-      throw TmsApiException(
-          'Status code: ${response.statusCode}, Reason: ${response.reasonPhrase}');
+      final exception = TmsApiException(
+          'Status code: ${response.statusCode}, Reason: "${response.reasonPhrase}".');
+      _logger.i('$exception.');
+
+      return;
     }
   } catch (exception, stacktrace) {
-    _logger.i('$exception${Platform.lineTerminator}$stacktrace');
+    _logger.i('$exception${Platform.lineTerminator}$stacktrace.');
   }
 }

@@ -2,16 +2,19 @@
 
 import 'dart:io';
 
-import 'package:adapters_flutter/models/config/file_config_model.dart';
-import 'package:logger/logger.dart';
+import 'package:adapters_flutter/models/config_model.dart';
 import 'package:properties/properties.dart';
-import 'package:uuid/uuid.dart';
 
-final Logger _logger = Logger();
-bool _warningAlreadyLogged = false;
+final _configFileWarnings = [];
 
-Future<FileConfigModel> getConfigFromFileAsync(final String? filePath) async {
-  final fileConfig = FileConfigModel();
+Iterable<String> getConfigFileWarnings() sync* {
+  while (_configFileWarnings.isNotEmpty) {
+    yield _configFileWarnings.removeLast();
+  }
+}
+
+Future<ConfigModel> getConfigFromFileAsync(final String? filePath) async {
+  final fileConfig = ConfigModel();
 
   if (filePath == null || filePath.isEmpty || !await File(filePath).exists()) {
     return fileConfig;
@@ -19,60 +22,33 @@ Future<FileConfigModel> getConfigFromFileAsync(final String? filePath) async {
 
   final props = Properties.fromFile(filePath);
 
-  final adapterMode = props.getInt('adapterMode', defval: 0);
-  if (adapterMode != null && (adapterMode >= 0 && adapterMode <= 2)) {
-    fileConfig.adapterMode = adapterMode;
+  fileConfig.adapterMode = props.getInt('adapterMode', defval: null);
+
+  fileConfig.automaticCreationTestCases =
+      props.getBool('automaticCreationTestCases', defval: null);
+
+  fileConfig.certValidation = props.getBool('certValidation', defval: null);
+
+  fileConfig.configurationId = props.get('configurationId', defval: null);
+
+  fileConfig.isDebug = props.getBool('isDebug', defval: null);
+
+  fileConfig.privateToken = props.get('privateToken', defval: null);
+
+  if (fileConfig.privateToken != null && fileConfig.privateToken!.isNotEmpty) {
+    _configFileWarnings.add(
+        'Configuration file "$filePath" specifies a private token. Use "TMS_PRIVATE_TOKEN" environment variable instead.');
   }
 
-  final automaticCreationTestCases =
-      props.get('automaticCreationTestCases', defval: null);
-  fileConfig.automaticCreationTestCases = automaticCreationTestCases != null &&
-          automaticCreationTestCases.toLowerCase() == 'true'
-      ? true
-      : false;
+  fileConfig.projectId = props.get('projectId', defval: null);
 
-  final certValidation = props.get('certValidation', defval: null);
-  fileConfig.certValidation =
-      certValidation != null && certValidation.toLowerCase() == 'false'
-          ? false
-          : true;
+  fileConfig.testIt = props.getBool('testIt', defval: null);
 
-  final configurationId = props.get('configurationId', defval: null);
-  if (configurationId != null &&
-      Uuid.isValidUUID(fromString: configurationId)) {
-    fileConfig.configurationId = configurationId;
-  }
+  fileConfig.testRunId = props.get('testRunId', defval: null);
 
-  final privateToken = props.get('privateToken', defval: null);
-  if (privateToken != null && privateToken.isNotEmpty) {
-    fileConfig.privateToken = privateToken;
+  fileConfig.testRunName = props.get('testRunName', defval: null);
 
-    if (!_warningAlreadyLogged) {
-      _logger.w(
-          'The configuration file specifies a private token. It is not safe. Use TMS_PRIVATE_TOKEN environment variable');
-      _warningAlreadyLogged = true;
-    }
-  }
-
-  final projectId = props.get('projectId', defval: null);
-  if (projectId != null && Uuid.isValidUUID(fromString: projectId)) {
-    fileConfig.projectId = projectId;
-  }
-
-  final testRunId = props.get('testRunId', defval: null);
-  if (testRunId != null && Uuid.isValidUUID(fromString: testRunId)) {
-    fileConfig.testRunId = testRunId;
-  }
-
-  final testRunName = props.get('testRunName', defval: null);
-  if (testRunName != null && testRunName.isNotEmpty) {
-    fileConfig.testRunName = testRunName;
-  }
-
-  final url = props.get('url', defval: null);
-  if (url != null && (Uri.tryParse(url)?.isAbsolute ?? false)) {
-    fileConfig.url = url;
-  }
+  fileConfig.url = props.get('url', defval: null);
 
   return fileConfig;
 }

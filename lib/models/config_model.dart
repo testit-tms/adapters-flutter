@@ -1,12 +1,14 @@
 #!/usr/bin/env dart
 
-class CliConfigModel {
+class ConfigModel {
   int? adapterMode;
   bool? automaticCreationTestCases;
   bool? certValidation;
   String? configurationId;
-  String? projectId;
+  bool? isDebug;
   String? privateToken;
+  String? projectId;
+  bool? testIt;
   String? testRunId;
   String? testRunName;
   String? url;

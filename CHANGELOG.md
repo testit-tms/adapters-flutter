@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.  
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
 
+## [1.3.0] - 2024-06-30
+
+### Added
+
+- bool config parameters validation.
+- isDebug config parameter.
+- test arguments validation.
+- testIt config parameter.
+
+### Changed
+
+- exception message format.
+- link constructor signature.
+- simplify config services.
+
+### Fixed
+
+- log message colors & line length.
+
 ## [1.2.0] - 2024-06-28
 
 ### Added

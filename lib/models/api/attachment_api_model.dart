@@ -47,18 +47,17 @@ final class AttachmentResponseModel {
   final double? size;
   final String? type;
 
-  factory AttachmentResponseModel.fromJson(Map<String, dynamic> json) {
-    return AttachmentResponseModel(
-        json['createdById'].toString(),
-        DateTime.tryParse(json['createdDate'].toString()),
-        json['fileId'].toString(),
-        json['id'].toString(),
-        json['modifiedById'].toString(),
-        DateTime.tryParse(json['modifiedDate'].toString()),
-        json['name'].toString(),
-        double.tryParse(json['size'].toString()),
-        json['type'].toString());
-  }
+  factory AttachmentResponseModel.fromJson(Map<String, dynamic> json) =>
+      AttachmentResponseModel(
+          json['createdById'].toString(),
+          DateTime.tryParse(json['createdDate'].toString()),
+          json['fileId'].toString(),
+          json['id'].toString(),
+          json['modifiedById'].toString(),
+          DateTime.tryParse(json['modifiedDate'].toString()),
+          json['name'].toString(),
+          double.tryParse(json['size'].toString()),
+          json['type'].toString());
 
   const AttachmentResponseModel(
       this.createdById,
