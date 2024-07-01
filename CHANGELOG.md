@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.  
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
 
+## [1.3.5] - 2024-07-01
+
+### Changed
+
+- move sources to src folder.
+
+## [1.3.4] - 2024-06-30
+
+### Changed
+
+- add modules privacy.
+
 ## [1.3.3] - 2024-06-30
 
 ### Changed
