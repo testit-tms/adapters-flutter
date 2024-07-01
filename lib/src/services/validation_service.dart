@@ -24,6 +24,11 @@ void validateConfig(final ConfigModel? config) {
         'Automatic creation test cases flag is invalid: "${config.automaticCreationTestCases}".');
   }
 
+  if (config.automaticUpdationLinksToTestCases == null) {
+    throw TmsConfigException(
+        'Automatic updation links to test cases flag is invalid: "${config.automaticUpdationLinksToTestCases}".');
+  }
+
   if (config.certValidation == null) {
     throw TmsConfigException(
         'Certificate validation flag is invalid: "${config.certValidation}".');

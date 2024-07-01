@@ -18,6 +18,10 @@ Future<ConfigModel> getConfigFromEnvAsync() async {
       environment['TMS_AUTOMATIC_CREATION_TEST_CASES'] ?? '',
       caseSensitive: false);
 
+  config.automaticUpdationLinksToTestCases = bool.tryParse(
+      environment['TMS_AUTOMATIC_UPDATION_LINKS_TO_TEST_CASES'] ?? '',
+      caseSensitive: false);
+
   config.certValidation = bool.tryParse(
       environment['TMS_CERT_VALIDATION'] ?? '',
       caseSensitive: false);

@@ -24,6 +24,10 @@ Future<ConfigModel> getConfigFromCliAsync() async {
       const String.fromEnvironment('tmsAutomaticCreationTestCases'),
       caseSensitive: false);
 
+  config.automaticUpdationLinksToTestCases = bool.tryParse(
+      const String.fromEnvironment('tmsAutomaticUpdationLinksToTestCases'),
+      caseSensitive: false);
+
   config.certValidation = bool.tryParse(
       const String.fromEnvironment('tmsCertValidation'),
       caseSensitive: false);
