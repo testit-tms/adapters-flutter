@@ -11,9 +11,11 @@ import 'package:adapters_flutter/src/models/config_model.dart';
 import 'package:adapters_flutter/src/models/exception_model.dart';
 import 'package:adapters_flutter/src/models/test_result_model.dart';
 import 'package:http/http.dart';
+import 'package:meta/meta.dart';
 
 final _logger = getLogger();
 
+@internal
 Future<AutotestFullModel?> createAutotestAsync(
     final ConfigModel config, final TestResultModel testResult) async {
   AutotestFullModel? autotest;
@@ -55,6 +57,7 @@ Future<AutotestFullModel?> createAutotestAsync(
   return autotest;
 }
 
+@internal
 Future<AutotestFullModel?> getAutotestByExternalIdAsync(
     final ConfigModel config, final String? externalId) async {
   AutotestFullModel? autotest;
@@ -107,6 +110,7 @@ Future<AutotestFullModel?> getAutotestByExternalIdAsync(
   return autotest;
 }
 
+@internal
 Future<bool> tryLinkAutoTestToWorkItemAsync(final String? autotestId,
     final ConfigModel config, final Iterable<String> workItemIds) async {
   var isLinkSuccess = true;
@@ -148,6 +152,7 @@ Future<bool> tryLinkAutoTestToWorkItemAsync(final String? autotestId,
   return isLinkSuccess;
 }
 
+@internal
 Future<void> updateAutotestAsync(
     final ConfigModel config, final TestResultModel testResult) async {
   try {

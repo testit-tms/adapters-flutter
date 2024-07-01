@@ -7,9 +7,11 @@ import 'package:adapters_flutter/src/managers/log_manager.dart';
 import 'package:adapters_flutter/src/models/config_model.dart';
 import 'package:adapters_flutter/src/models/exception_model.dart';
 import 'package:http/http.dart';
+import 'package:meta/meta.dart';
 
 final _logger = getLogger();
 
+@internal
 Future<Map<String, dynamic>?> getWorkItemByIdAsync(
     final ConfigModel config, String? workItemId) async {
   Map<String, dynamic>? workItem;

@@ -4,7 +4,9 @@ import 'dart:io';
 
 import 'package:adapters_flutter/src/models/config_model.dart';
 import 'package:adapters_flutter/src/services/config/file_config_service.dart';
+import 'package:meta/meta.dart';
 
+@internal
 Future<ConfigModel> getConfigFromEnvAsync() async {
   final environment = Platform.environment;
   final filePath = environment['TMS_CONFIG_FILE'];

@@ -6,12 +6,14 @@ import 'dart:io';
 import 'package:adapters_flutter/src/models/api/attachment_api_model.dart';
 import 'package:adapters_flutter/src/models/api/link_api_model.dart';
 import 'package:adapters_flutter/src/models/test_result_model.dart';
+import 'package:meta/meta.dart';
 import 'package:synchronized/synchronized.dart';
 import 'package:test_api/src/backend/invoker.dart'; // ignore: depend_on_referenced_packages, implementation_imports
 
 final _lock = Lock();
 final _testResults = <int, TestResultModel>{};
 
+@internal
 Future<void> createEmptyStepAsync() async => await _lock.synchronized(() async {
       final currentStep = _getCurrentStep();
 
@@ -26,6 +28,7 @@ Future<void> createEmptyStepAsync() async => await _lock.synchronized(() async {
       }
     });
 
+@internal
 Future<void> createEmptyTestResultAsync() async => await _lock.synchronized(() {
       final key = _getTestId();
 
@@ -36,10 +39,12 @@ Future<void> createEmptyTestResultAsync() async => await _lock.synchronized(() {
       }
     });
 
+@internal
 Future<TestResultModel> removeTestResultAsync() async =>
     await _lock.synchronized<TestResultModel>(
         () => _testResults.remove(_getTestId()) as TestResultModel);
 
+@internal
 Future<void> updateCurrentStepAsync(
         final AutoTestStepResultsModel newValue) async =>
     await _lock.synchronized(() async {
@@ -54,6 +59,7 @@ Future<void> updateCurrentStepAsync(
       currentStep?.title = newValue.title;
     });
 
+@internal
 Future<void> updateTestResultAsync(final TestResultModel newValue) async =>
     await _lock.synchronized(() => _testResults.update(_getTestId(), (value) {
           value.classname = newValue.classname;
@@ -82,6 +88,7 @@ Future<void> updateTestResultAsync(final TestResultModel newValue) async =>
           return value;
         }, ifAbsent: () => TestResultModel()));
 
+@internal
 Future<void> updateTestResultAttachmentsAsync(
         final AttachmentPutModel attachment) async =>
     await _lock.synchronized(() async {
@@ -94,6 +101,7 @@ Future<void> updateTestResultAttachmentsAsync(
       }
     });
 
+@internal
 Future<void> updateTestResultLinksAsync(final Iterable<Link> links) async =>
     await _lock.synchronized(() => _testResults.update(_getTestId(), (value) {
           value.links.addAll(links);
@@ -101,6 +109,7 @@ Future<void> updateTestResultLinksAsync(final Iterable<Link> links) async =>
           return value;
         }, ifAbsent: () => TestResultModel()));
 
+@internal
 Future<void> updateTestResultMessageAsync(final String message) async =>
     await _lock.synchronized(() => _testResults.update(_getTestId(), (value) {
           if (message.isNotEmpty) {

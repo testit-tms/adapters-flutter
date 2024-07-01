@@ -8,6 +8,7 @@ import 'package:adapters_flutter/src/services/config/cli_config_service.dart';
 import 'package:adapters_flutter/src/services/config/env_config_service.dart';
 import 'package:adapters_flutter/src/services/config/file_config_service.dart';
 import 'package:adapters_flutter/src/services/validation_service.dart';
+import 'package:meta/meta.dart';
 import 'package:path/path.dart' show join;
 import 'package:synchronized/synchronized.dart';
 
@@ -15,6 +16,7 @@ ConfigModel? _config;
 final _lock = Lock();
 final _logger = getLogger();
 
+@internal
 Future<ConfigModel> createConfigOnceAsync() async {
   await _lock.synchronized(() async {
     if (_config == null) {
@@ -36,6 +38,7 @@ Future<ConfigModel> createConfigOnceAsync() async {
   return _config as ConfigModel;
 }
 
+@internal
 Future<void> updateTestRunIdAsync(final String testRunId) async =>
     (await createConfigOnceAsync()).testRunId = testRunId;
 

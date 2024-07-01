@@ -1,5 +1,8 @@
 #!/usr/bin/env dart
 
+import 'package:meta/meta.dart';
+
+@internal
 final class LabelFullModel {
   final int? globalId;
   final String? name;
@@ -7,6 +10,7 @@ final class LabelFullModel {
   const LabelFullModel(this.globalId, this.name);
 }
 
+@internal
 final class LabelPostModel {
   final String? name;
 

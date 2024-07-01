@@ -5,12 +5,14 @@ import 'package:adapters_flutter/src/models/test_result_model.dart';
 import 'package:adapters_flutter/src/services/api/autotest_api_service.dart';
 import 'package:adapters_flutter/src/services/api/test_run_api_service.dart';
 import 'package:adapters_flutter/src/services/api/work_items_api_service.dart';
+import 'package:meta/meta.dart';
 import 'package:synchronized/synchronized.dart';
 
 final List<String> _externalIdsFromTestRun = [];
 var _isTestRunCreated = false;
 final _lock = Lock();
 
+@internal
 Future<bool> checkTestNeedsToBeRunAsync(
     final ConfigModel config, final String? externalId) async {
   var isTestNeedsToBeRun = true;
@@ -27,6 +29,7 @@ Future<bool> checkTestNeedsToBeRunAsync(
   return isTestNeedsToBeRun;
 }
 
+@internal
 Future<String?> getFirstNotFoundWorkItemIdAsync(
     final ConfigModel config, final Iterable<String>? workItemsIds) async {
   String? firstNotFoundWorkItemId;
@@ -47,6 +50,7 @@ Future<String?> getFirstNotFoundWorkItemIdAsync(
   return firstNotFoundWorkItemId;
 }
 
+@internal
 Future<void> processTestResultAsync(
     final ConfigModel config, final TestResultModel testResult) async {
   var autotest =
@@ -69,6 +73,7 @@ Future<void> processTestResultAsync(
   await submitResultToTestRunAsync(config, testResult);
 }
 
+@internal
 Future<void> tryCreateTestRunOnceAsync(final ConfigModel config) async =>
     await _lock.synchronized(() async {
       if (!_isTestRunCreated) {

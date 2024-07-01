@@ -2,6 +2,7 @@
 
 import 'package:adapters_flutter/src/models/config_model.dart';
 import 'package:adapters_flutter/src/services/config/file_config_service.dart';
+import 'package:meta/meta.dart';
 
 extension on String {
   String? nullIfEmpty() {
@@ -11,6 +12,7 @@ extension on String {
   }
 }
 
+@internal
 Future<ConfigModel> getConfigFromCliAsync() async {
   const filePath = String.fromEnvironment('tmsConfigFile');
   final config = await getConfigFromFileAsync(filePath);

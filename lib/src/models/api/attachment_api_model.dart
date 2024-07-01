@@ -1,7 +1,9 @@
 #!/usr/bin/env dart
 
 import 'package:adapters_flutter/src/enums/outcome_enum.dart';
+import 'package:meta/meta.dart';
 
+@internal
 final class AttachmentPutModel {
   final String? id;
 
@@ -10,6 +12,7 @@ final class AttachmentPutModel {
   Map<String, dynamic> toJson() => {'id': id};
 }
 
+@internal
 final class AutoTestStepResultsModel {
   List<AttachmentPutModel> attachments = [];
   DateTime? completedOn;
@@ -36,6 +39,7 @@ final class AutoTestStepResultsModel {
       };
 }
 
+@internal
 final class AttachmentResponseModel {
   final String? createdById;
   final DateTime? createdDate;

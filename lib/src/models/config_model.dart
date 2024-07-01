@@ -1,5 +1,8 @@
 #!/usr/bin/env dart
 
+import 'package:meta/meta.dart';
+
+@internal
 final class ConfigModel {
   int? adapterMode;
   bool? automaticCreationTestCases;

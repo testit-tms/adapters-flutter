@@ -2,7 +2,9 @@
 
 import 'package:adapters_flutter/src/models/api/attachment_api_model.dart';
 import 'package:adapters_flutter/src/models/api/link_api_model.dart';
+import 'package:meta/meta.dart';
 
+@internal
 final class CreateEmptyTestRunRequestModel {
   final List<AttachmentPutModel>? attachments;
   final String? description;

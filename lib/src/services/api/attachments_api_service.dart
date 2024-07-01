@@ -9,11 +9,13 @@ import 'package:adapters_flutter/src/models/config_model.dart';
 import 'package:adapters_flutter/src/models/exception_model.dart';
 import 'package:http/http.dart';
 import 'package:http_parser/http_parser.dart';
+import 'package:meta/meta.dart';
 import 'package:mime/mime.dart';
 import 'package:path/path.dart';
 
 final _logger = getLogger();
 
+@internal
 Future<AttachmentResponseModel?> createAttachmentsAsync(
     final ConfigModel config, final File file) async {
   AttachmentResponseModel? attachment;

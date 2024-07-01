@@ -1,5 +1,8 @@
 #!/usr/bin/env dart
 
+import 'package:meta/meta.dart';
+
+@internal
 final class StepAutoTestResultModel {
   final List<String>? attachments;
   final DateTime? completedOn;
@@ -23,6 +26,7 @@ final class StepAutoTestResultModel {
       this.title);
 }
 
+@internal
 final class StepShortModel {
   final String? description;
   final List<StepShortModel>? steps;

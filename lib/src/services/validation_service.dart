@@ -3,8 +3,10 @@
 import 'package:adapters_flutter/src/managers/api_manager_.dart';
 import 'package:adapters_flutter/src/models/config_model.dart';
 import 'package:adapters_flutter/src/models/exception_model.dart';
+import 'package:meta/meta.dart';
 import 'package:uuid/uuid.dart';
 
+@internal
 void validateConfig(final ConfigModel? config) {
   if (config == null) {
     throw TmsConfigException('Config is invalid: "$config".');
@@ -69,18 +71,21 @@ void validateConfig(final ConfigModel? config) {
   }
 }
 
+@internal
 void validateStringArgument(final String name, final String? value) {
   if (value == null || value.isEmpty) {
     throw TmsArgumentException('$name is invalid: "$value".');
   }
 }
 
+@internal
 void validateUriArgument(final String name, final String? value) {
   if (value == null || !(Uri.tryParse(value)?.isAbsolute ?? false)) {
     throw TmsArgumentException('$name is invalid: "$value".');
   }
 }
 
+@internal
 Future<void> validateWorkItemsIdsAsync(
     final ConfigModel config, final Iterable<String>? workItemsIds) async {
   final notFoundWorkItemId =

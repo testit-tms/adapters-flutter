@@ -1,6 +1,6 @@
 name: adapters_flutter
 description: The repository contains new versions of adapters for dart test frameworks.
-version: 1.3.5
+version: 1.3.6
 repository: https://github.com/testit-tms/adapters-flutter
 homepage: https://pub.dev/packages/adapters_flutter
 
@@ -19,6 +19,7 @@ dependencies:
   mime: ^1.0.5
   http_parser: ^4.0.2
   test_api: ^0.7.0
+  meta: ^1.12.0
 
 dev_dependencies:
   flutter_lints: ^4.0.0

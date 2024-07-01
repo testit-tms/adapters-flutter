@@ -5,7 +5,9 @@ import 'package:adapters_flutter/src/models/api/autotest_api_model.dart';
 import 'package:adapters_flutter/src/models/api/label_api_model.dart';
 import 'package:adapters_flutter/src/models/api/link_api_model.dart';
 import 'package:adapters_flutter/src/models/test_result_model.dart';
+import 'package:meta/meta.dart';
 
+@internal
 AutoTestResultsForTestRunModel toAutoTestResultsForTestRunModel(
     final String? configurationId, final TestResultModel testResult) {
   final model = AutoTestResultsForTestRunModel(
@@ -32,6 +34,7 @@ AutoTestResultsForTestRunModel toAutoTestResultsForTestRunModel(
   return model;
 }
 
+@internal
 CreateAutotestRequestModel toCreateAutotestRequestModel(
     final String? projectId, final TestResultModel testResult) {
   final model = CreateAutotestRequestModel(
@@ -59,6 +62,7 @@ CreateAutotestRequestModel toCreateAutotestRequestModel(
   return model;
 }
 
+@internal
 UpdateAutotestRequestModel toUpdateAutotestRequestModel(
     final String? projectId, final TestResultModel testResult) {
   final model = UpdateAutotestRequestModel(

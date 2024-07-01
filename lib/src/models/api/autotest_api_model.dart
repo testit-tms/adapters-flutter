@@ -7,7 +7,9 @@ import 'package:adapters_flutter/src/models/api/attachment_api_model.dart';
 import 'package:adapters_flutter/src/models/api/label_api_model.dart';
 import 'package:adapters_flutter/src/models/api/link_api_model.dart';
 import 'package:adapters_flutter/src/models/api/step_api_model.dart';
+import 'package:meta/meta.dart';
 
+@internal
 final class AutotestFullModel {
   final String? id;
   final bool? isFlaky;
@@ -19,6 +21,7 @@ final class AutotestFullModel {
   const AutotestFullModel(this.id, this.isFlaky);
 }
 
+@internal
 final class AutoTestRelatedToTestResult {
   final String? externalId;
   final bool? isDeleted;
@@ -30,6 +33,7 @@ final class AutoTestRelatedToTestResult {
   const AutoTestRelatedToTestResult(this.externalId, this.isDeleted);
 }
 
+@internal
 final class AutoTestResultsForTestRunModel {
   final List<AttachmentPutModel>? attachments;
   final String? autoTestExternalId;
@@ -86,6 +90,7 @@ final class AutoTestResultsForTestRunModel {
       this.traces);
 }
 
+@internal
 final class CreateAutotestRequestModel {
   final Map<String, Object>? attributes;
   final String? classname;
@@ -145,6 +150,7 @@ final class CreateAutotestRequestModel {
       this.workItemIdsForLinkWithAutoTest);
 }
 
+@internal
 final class UpdateAutotestRequestModel {
   final String? classname;
   final String? description;

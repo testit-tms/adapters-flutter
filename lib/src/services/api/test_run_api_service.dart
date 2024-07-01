@@ -12,9 +12,11 @@ import 'package:adapters_flutter/src/models/config_model.dart';
 import 'package:adapters_flutter/src/models/exception_model.dart';
 import 'package:adapters_flutter/src/models/test_result_model.dart';
 import 'package:http/http.dart';
+import 'package:meta/meta.dart';
 
 final _logger = getLogger();
 
+@internal
 Future<void> createEmptyTestRunAsync(final ConfigModel config) async {
   try {
     final headers = {
@@ -51,6 +53,7 @@ Future<void> createEmptyTestRunAsync(final ConfigModel config) async {
   }
 }
 
+@internal
 Future<Iterable<String>> getExternalIdsFromTestRunAsync(
     final ConfigModel config) async {
   final List<String> externalIds = [];
@@ -104,6 +107,7 @@ Future<Iterable<String>> getExternalIdsFromTestRunAsync(
   return externalIds;
 }
 
+@internal
 Future<void> submitResultToTestRunAsync(
     final ConfigModel config, final TestResultModel testResult) async {
   try {

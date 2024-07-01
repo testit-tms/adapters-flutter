@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:adapters_flutter/src/models/config_model.dart';
 import 'package:logger/logger.dart';
+import 'package:meta/meta.dart';
 import 'package:synchronized/synchronized.dart';
 
 final _isColorsSupported =
@@ -12,6 +13,7 @@ var _isLogLevelSet = false;
 final _lineLength = stdout.hasTerminal ? stdout.terminalColumns : 120;
 final _lock = Lock();
 
+@internal
 Logger getLogger() {
   final logger = Logger(
       printer: PrefixPrinter(PrettyPrinter(
@@ -22,6 +24,7 @@ Logger getLogger() {
   return logger;
 }
 
+@internal
 Future<void> setLogLevelOnceAsync(final ConfigModel? config) async =>
     await _lock.synchronized(() {
       if (!_isLogLevelSet) {

@@ -1,6 +1,7 @@
 #!/usr/bin/env dart
 
 import 'package:adapters_flutter/src/enums/link_type_enum.dart';
+import 'package:meta/meta.dart';
 
 final class Link {
   final String? description;
@@ -11,6 +12,7 @@ final class Link {
   Link(this.url, {this.description, this.title, this.type});
 }
 
+@internal
 final class LinkPostModel {
   final String? description;
   final bool? hasInfo;

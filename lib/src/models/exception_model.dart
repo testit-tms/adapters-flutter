@@ -1,5 +1,8 @@
 #!/usr/bin/env dart
 
+import 'package:meta/meta.dart';
+
+@internal
 final class TmsApiException implements Exception {
   const TmsApiException([this.message]);
 
@@ -14,6 +17,7 @@ final class TmsApiException implements Exception {
   }
 }
 
+@internal
 final class TmsArgumentException implements Exception {
   const TmsArgumentException([this.message]);
 
@@ -28,6 +32,7 @@ final class TmsArgumentException implements Exception {
   }
 }
 
+@internal
 final class TmsConfigException implements Exception {
   const TmsConfigException([this.message]);
 
