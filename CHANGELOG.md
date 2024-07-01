@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.  
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
 
+## [1.4.4] - 2024-07-01
+
+### Fixed
+
+- change publish action provider & skip tests.
+
+## [1.4.3] - 2024-07-01
+
+### Fixed
+
+- change publish action provider.
+
+## [1.4.2] - 2024-07-01
+
+### Fixed
+
+- change 'flutter' to 'dart' command in publish action.
+
+## [1.4.1] - 2024-07-01
+
+### Fixed
+
+- publish action.
+
+## [1.4.0] - 2024-07-01
+
+### Added
+
+- unit tests.
+
 ## [1.3.6] - 2024-07-01
 
 ### Added

@@ -16,6 +16,12 @@ With Flutter:
 flutter pub add adapters_flutter
 ```
 
+## Compatibility
+
+| Test IT | Plugin Test IT Management |
+|---------|---------------------------|
+| 5.0     | 1.4.0+                    | 
+
 ## Usage
 
 ### Configuration

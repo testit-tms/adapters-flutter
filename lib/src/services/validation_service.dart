@@ -8,6 +8,11 @@ import 'package:uuid/uuid.dart';
 
 @internal
 void validateConfig(final ConfigModel? config) {
+  if (bool.tryParse(const String.fromEnvironment('disableValidation')) ??
+      false) {
+    return;
+  }
+
   if (config == null) {
     throw TmsConfigException('Config is invalid: "$config".');
   }
