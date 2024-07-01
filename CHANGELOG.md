@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.  
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
 
+## [1.4.0] - 2024-07-01
+
+### Added
+
+- unit tests.
+
 ## [1.3.6] - 2024-07-01
 
 ### Added
