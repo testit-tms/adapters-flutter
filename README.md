@@ -92,15 +92,12 @@ Description of functions:
 
 import 'package:adapters_flutter/adapters_flutter.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:logger/logger.dart';
-
-final Logger _logger = Logger();
 
 void main() {
   group('example group', () {
-    setUpAll(() => _logger.i('example setup all.'));
+    setUpAll(() => expect(0, 0));
 
-    setUp(() => _logger.i('example setup.'));
+    setUp(() => expect(1, 1));
 
     tmsTest('example test',
         externalId: 'example_externalId',
@@ -125,9 +122,9 @@ void main() {
           await step('failed step', () => throw Exception('example exception.'));
         });
 
-    tearDown(() => _logger.i('example teardown.'));
+    tearDown(() => expect(2, 2));
 
-    tearDownAll(() => _logger.i('example teardown all.'));
+    tearDownAll(() => expect(3, 3));
   });
 }
 ```
