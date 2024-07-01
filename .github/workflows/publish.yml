@@ -18,7 +18,7 @@ jobs:
         uses: dart-lang/setup-dart@v1
 
       - name: Install
-        run: flutter pub get
+        run: dart pub get
 
       - name: Publish
-        run: flutter pub publish --force
+        run: dart pub publish --force
