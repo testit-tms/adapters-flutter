@@ -6,19 +6,14 @@ on:
 
 jobs:
   publish:
-    permissions:
-      id-token: write
     runs-on: ubuntu-latest
     steps:
 
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup
-        uses: dart-lang/setup-dart@v1
-
-      - name: Install
-        run: dart pub get
-
       - name: Publish
-        run: dart pub publish --force
+        uses: sakebook/actions-flutter-pub-publisher@v1.4.1
+        with:
+          credential: ${{ secrets.CREDENTIAL_JSON }}
+          skip_test: true
