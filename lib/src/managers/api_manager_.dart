@@ -53,21 +53,19 @@ Future<String?> getFirstNotFoundWorkItemIdAsync(
 @internal
 Future<void> processTestResultAsync(
     final ConfigModel config, final TestResultModel testResult) async {
-  var autotest =
-      await getAutotestByExternalIdAsync(config, testResult.externalId);
+  var autoTest =
+      await getAutoTestByExternalIdAsync(config, testResult.externalId);
 
-  if (autotest == null) {
-    autotest = await createAutotestAsync(config, testResult);
+  if (autoTest == null) {
+    autoTest = await createAutoTestAsync(config, testResult);
   } else {
-    testResult.isFlaky = autotest.isFlaky ?? false;
-    await updateAutotestAsync(config, testResult);
+    testResult.isFlaky = autoTest.isFlaky ?? false;
+    await updateAutoTestAsync(config, testResult);
   }
 
   if (testResult.workItemIds.isNotEmpty) {
-    if (!await tryLinkAutoTestToWorkItemAsync(
-        autotest?.id, config, testResult.workItemIds)) {
-      return;
-    }
+    await _updateWorkItemsLinkedToAutoTestAsync(
+        autoTest?.id, config, testResult.workItemIds);
   }
 
   await submitResultToTestRunAsync(config, testResult);
@@ -87,3 +85,16 @@ Future<void> tryCreateTestRunOnceAsync(final ConfigModel config) async =>
         _isTestRunCreated = true;
       }
     });
+
+Future<void> _updateWorkItemsLinkedToAutoTestAsync(final String? autoTestId,
+    final ConfigModel config, final Iterable<String> workItemIds) async {
+  var linkedIds = await getWorkItemsLinkedToAutoTestAsync(autoTestId, config);
+
+  if (config.automaticUpdationLinksToTestCases ?? false) {
+    await unlinkAutoTestFromWorkItemsAsync(
+        autoTestId, config, linkedIds.where((id) => !workItemIds.contains(id)));
+  }
+
+  await linkWorkItemsToAutoTestAsync(
+      autoTestId, config, workItemIds.where((id) => !linkedIds.contains(id)));
+}

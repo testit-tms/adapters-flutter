@@ -509,3 +509,4 @@ doc/api/
 
 # TestIT properties file
 **/testit.properties
+**/example_test.dart

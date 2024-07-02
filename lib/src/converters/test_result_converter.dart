@@ -35,9 +35,9 @@ AutoTestResultsForTestRunModel toAutoTestResultsForTestRunModel(
 }
 
 @internal
-CreateAutotestRequestModel toCreateAutotestRequestModel(
+CreateAutoTestRequestModel toCreateAutoTestRequestModel(
     final String? projectId, final TestResultModel testResult) {
-  final model = CreateAutotestRequestModel(
+  final model = CreateAutoTestRequestModel(
       null,
       testResult.classname,
       testResult.description,
@@ -63,9 +63,9 @@ CreateAutotestRequestModel toCreateAutotestRequestModel(
 }
 
 @internal
-UpdateAutotestRequestModel toUpdateAutotestRequestModel(
+UpdateAutoTestRequestModel toUpdateAutoTestRequestModel(
     final String? projectId, final TestResultModel testResult) {
-  final model = UpdateAutotestRequestModel(
+  final model = UpdateAutoTestRequestModel(
       testResult.classname,
       testResult.description,
       testResult.externalId,

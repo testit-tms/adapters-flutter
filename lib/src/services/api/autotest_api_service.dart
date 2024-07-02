@@ -16,9 +16,9 @@ import 'package:meta/meta.dart';
 final _logger = getLogger();
 
 @internal
-Future<AutotestFullModel?> createAutotestAsync(
+Future<AutoTestFullModel?> createAutoTestAsync(
     final ConfigModel config, final TestResultModel testResult) async {
-  AutotestFullModel? autotest;
+  AutoTestFullModel? autoTest;
 
   try {
     final headers = {
@@ -31,7 +31,7 @@ Future<AutotestFullModel?> createAutotestAsync(
         'POST', Uri.tryParse('${config.url}/api/v2/autoTests') ?? Uri());
 
     final requestBody =
-        toCreateAutotestRequestModel(config.projectId, testResult);
+        toCreateAutoTestRequestModel(config.projectId, testResult);
     requestBody.shouldCreateWorkItem =
         config.automaticCreationTestCases ?? false;
     request.body = json.encode(requestBody);
@@ -45,22 +45,22 @@ Future<AutotestFullModel?> createAutotestAsync(
           'Status code: ${response.statusCode}, Reason: "${response.reasonPhrase}".');
       _logger.i('$exception.');
 
-      return autotest;
+      return autoTest;
     }
 
     final body = jsonDecode(response.body) as Map<String, dynamic>;
-    autotest = AutotestFullModel.fromJson(body);
+    autoTest = AutoTestFullModel.fromJson(body);
   } catch (exception, stacktrace) {
     _logger.i('$exception${Platform.lineTerminator}$stacktrace.');
   }
 
-  return autotest;
+  return autoTest;
 }
 
 @internal
-Future<AutotestFullModel?> getAutotestByExternalIdAsync(
+Future<AutoTestFullModel?> getAutoTestByExternalIdAsync(
     final ConfigModel config, final String? externalId) async {
-  AutotestFullModel? autotest;
+  AutoTestFullModel? autoTest;
 
   try {
     final headers = {
@@ -97,25 +97,59 @@ Future<AutotestFullModel?> getAutotestByExternalIdAsync(
           'Status code: ${response.statusCode}, Reason: "${response.reasonPhrase}".');
       _logger.i('$exception.');
 
-      return autotest;
+      return autoTest;
     }
 
     final body =
-        (jsonDecode(response.body) as List).cast<Map<String, dynamic>>();
-    autotest = AutotestFullModel.fromJson(body.single);
+        (jsonDecode(response.body) as Iterable).cast<Map<String, dynamic>>();
+    autoTest = AutoTestFullModel.fromJson(body.single);
   } catch (exception, stacktrace) {
     _logger.d('$exception${Platform.lineTerminator}$stacktrace.');
   }
 
-  return autotest;
+  return autoTest;
 }
 
 @internal
-Future<bool> tryLinkAutoTestToWorkItemAsync(final String? autotestId,
-    final ConfigModel config, final Iterable<String> workItemIds) async {
-  var isLinkSuccess = true;
+Future<Iterable<String>> getWorkItemsLinkedToAutoTestAsync(
+    final String? autoTestId, final ConfigModel config) async {
+  final List<String> globalIds = [];
 
-  for (final String workItemId in workItemIds) {
+  try {
+    final headers = {
+      'accept': 'application/json',
+      'Authorization': 'PrivateToken ${config.privateToken}'
+    };
+
+    final request = Request(
+        'GET',
+        Uri.parse(
+            '${config.url}/api/v2/autoTests/$autoTestId/workItems?isDeleted=false'));
+    request.headers.addAll(headers);
+
+    final streamedResponse = await request.send();
+    final response = await Response.fromStream(streamedResponse);
+
+    if (response.statusCode < 200 || response.statusCode > 299) {
+      final exception = TmsApiException(
+          'Status code: ${response.statusCode}, Reason: "${response.reasonPhrase}".');
+      _logger.i('$exception.');
+    }
+
+    final body = jsonDecode(response.body) as Iterable<dynamic>;
+    globalIds.addAll(
+        body.map((workItem) => (workItem['globalId'] as int).toString()));
+  } catch (exception, stacktrace) {
+    _logger.i('$exception${Platform.lineTerminator}$stacktrace.');
+  }
+
+  return globalIds;
+}
+
+@internal
+Future<void> linkWorkItemsToAutoTestAsync(final String? autoTestId,
+    final ConfigModel config, final Iterable<String> workItemIds) async {
+  for (final id in workItemIds) {
     try {
       final headers = {
         'accept': '*/*',
@@ -126,9 +160,9 @@ Future<bool> tryLinkAutoTestToWorkItemAsync(final String? autotestId,
       final request = Request(
           'POST',
           Uri.tryParse(
-                  '${config.url}/api/v2/autoTests/$autotestId/workItems') ??
+                  '${config.url}/api/v2/autoTests/$autoTestId/workItems') ??
               Uri());
-      request.body = json.encode(WorkItemLinkRequestModel(workItemId));
+      request.body = json.encode(WorkItemLinkRequestModel(id));
       request.headers.addAll(headers);
 
       final response = await request.send();
@@ -137,23 +171,45 @@ Future<bool> tryLinkAutoTestToWorkItemAsync(final String? autotestId,
         final exception = TmsApiException(
             'Status code: ${response.statusCode}, Reason: "${response.reasonPhrase}".');
         _logger.i('$exception.');
-
-        isLinkSuccess = false;
-        break;
       }
     } catch (exception, stacktrace) {
       _logger.i('$exception${Platform.lineTerminator}$stacktrace.');
-
-      isLinkSuccess = false;
-      break;
     }
   }
-
-  return isLinkSuccess;
 }
 
 @internal
-Future<void> updateAutotestAsync(
+Future<void> unlinkAutoTestFromWorkItemsAsync(final String? autoTestId,
+    final ConfigModel config, final Iterable<String> workItemIds) async {
+  for (final id in workItemIds) {
+    try {
+      final headers = {
+        'accept': '*/*',
+        'Content-Type': 'application/json',
+        'Authorization': 'PrivateToken ${config.privateToken}'
+      };
+
+      final request = Request(
+          'DELETE',
+          Uri.parse(
+              '${config.url}/api/v2/autoTests/$autoTestId/workItems?workItemId=$id'));
+      request.headers.addAll(headers);
+
+      final response = await request.send();
+
+      if (response.statusCode < 200 || response.statusCode > 299) {
+        final exception = TmsApiException(
+            'Status code: ${response.statusCode}, Reason: "${response.reasonPhrase}".');
+        _logger.i('$exception.');
+      }
+    } catch (exception, stacktrace) {
+      _logger.i('$exception${Platform.lineTerminator}$stacktrace.');
+    }
+  }
+}
+
+@internal
+Future<void> updateAutoTestAsync(
     final ConfigModel config, final TestResultModel testResult) async {
   try {
     final headers = {
@@ -165,7 +221,7 @@ Future<void> updateAutotestAsync(
     final request =
         Request('PUT', Uri.tryParse('${config.url}/api/v2/autoTests') ?? Uri());
     final requestBody =
-        toUpdateAutotestRequestModel(config.projectId, testResult);
+        toUpdateAutoTestRequestModel(config.projectId, testResult);
     request.body = json.encode(requestBody);
     request.headers.addAll(headers);
 
@@ -175,8 +231,6 @@ Future<void> updateAutotestAsync(
       final exception = TmsApiException(
           'Status code: ${response.statusCode}, Reason: "${response.reasonPhrase}".');
       _logger.i('$exception.');
-
-      return;
     }
   } catch (exception, stacktrace) {
     _logger.i('$exception${Platform.lineTerminator}$stacktrace.');
