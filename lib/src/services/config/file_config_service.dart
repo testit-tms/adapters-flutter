@@ -30,6 +30,9 @@ Future<ConfigModel> getConfigFromFileAsync(final String? filePath) async {
   fileConfig.automaticCreationTestCases =
       props.getBool('automaticCreationTestCases', defval: null);
 
+  fileConfig.automaticUpdationLinksToTestCases =
+      props.getBool('automaticUpdationLinksToTestCases', defval: null);
+
   fileConfig.certValidation = props.getBool('certValidation', defval: null);
 
   fileConfig.configurationId = props.get('configurationId', defval: null);

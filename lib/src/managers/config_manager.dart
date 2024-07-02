@@ -56,6 +56,12 @@ ConfigModel _mergeConfigs(final ConfigModel cliConfig,
       fileConfig.automaticCreationTestCases ??
       false;
 
+  config.automaticUpdationLinksToTestCases =
+      cliConfig.automaticUpdationLinksToTestCases ??
+          envConfig.automaticUpdationLinksToTestCases ??
+          fileConfig.automaticUpdationLinksToTestCases ??
+          false;
+
   config.certValidation = cliConfig.certValidation ??
       envConfig.certValidation ??
       fileConfig.certValidation ??

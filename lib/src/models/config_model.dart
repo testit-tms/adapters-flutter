@@ -6,6 +6,7 @@ import 'package:meta/meta.dart';
 final class ConfigModel {
   int? adapterMode;
   bool? automaticCreationTestCases;
+  bool? automaticUpdationLinksToTestCases;
   bool? certValidation;
   String? configurationId;
   bool? isDebug;

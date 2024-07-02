@@ -84,21 +84,21 @@ Future<Iterable<String>> getExternalIdsFromTestRunAsync(
 
     final body = jsonDecode(response.body) as Map<String, dynamic>;
     final testResults =
-        (body['testResults'] as List).cast<Map<String, dynamic>>();
+        (body['testResults'] as Iterable).cast<Map<String, dynamic>>();
 
     for (final result in testResults) {
-      final autotest = AutoTestRelatedToTestResult.fromJson(
+      final autoTest = AutoTestRelatedToTestResult.fromJson(
           result['autoTest'] as Map<String, dynamic>);
 
-      if (autotest.isDeleted ?? true) {
+      if (autoTest.isDeleted ?? true) {
         continue;
       }
 
-      if (autotest.externalId == null) {
+      if (autoTest.externalId == null) {
         continue;
       }
 
-      externalIds.add(autotest.externalId!);
+      externalIds.add(autoTest.externalId!);
     }
   } catch (exception, stacktrace) {
     _logger.i('$exception${Platform.lineTerminator}$stacktrace.');
@@ -133,8 +133,6 @@ Future<void> submitResultToTestRunAsync(
       final exception = TmsApiException(
           'Status code: ${response.statusCode}, Reason: "${response.reasonPhrase}".');
       _logger.i('$exception.');
-
-      return;
     }
   } catch (exception, stacktrace) {
     _logger.i('$exception${Platform.lineTerminator}$stacktrace.');
