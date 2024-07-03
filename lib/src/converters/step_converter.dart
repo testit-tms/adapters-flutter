@@ -8,7 +8,9 @@ import 'package:meta/meta.dart';
 StepShortModel toStepApiModel(final AutoTestStepResultsModel step) {
   final model = StepShortModel(
       step.description ?? '',
-      step.stepResults.map((s) => toStepApiModel(s)).toList(),
+      step.stepResults
+          .map((final stepResult) => toStepApiModel(stepResult))
+          .toList(),
       step.title ?? '');
 
   return model;

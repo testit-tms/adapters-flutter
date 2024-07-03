@@ -54,7 +54,7 @@ Future<void> createEmptyTestRunAsync(final ConfigModel config) async {
 }
 
 @internal
-Future<Iterable<String>> getExternalIdsFromTestRunAsync(
+Future<List<String>> getExternalIdsFromTestRunAsync(
     final ConfigModel config) async {
   final List<String> externalIds = [];
 
@@ -84,7 +84,7 @@ Future<Iterable<String>> getExternalIdsFromTestRunAsync(
 
     final body = jsonDecode(response.body) as Map<String, dynamic>;
     final testResults =
-        (body['testResults'] as Iterable).cast<Map<String, dynamic>>();
+        (body['testResults'] as List).cast<Map<String, dynamic>>();
 
     for (final result in testResults) {
       final autoTest = AutoTestRelatedToTestResult.fromJson(

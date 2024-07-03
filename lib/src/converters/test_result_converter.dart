@@ -18,7 +18,7 @@ AutoTestResultsForTestRunModel toAutoTestResultsForTestRunModel(
       testResult.duration,
       null,
       testResult.links
-          .map((link) =>
+          .map((final link) =>
               LinkPostModel(link.description, link.title, link.type, link.url))
           .toList(),
       testResult.message,
@@ -44,18 +44,20 @@ CreateAutoTestRequestModel toCreateAutoTestRequestModel(
       testResult.externalId,
       null,
       null,
-      testResult.labels.map((name) => LabelPostModel(name)).toList(),
+      testResult.labels.map((final name) => LabelPostModel(name)).toList(),
       testResult.links
-          .map((link) =>
+          .map((final link) =>
               LinkPostModel(link.description, link.title, link.type, link.url))
           .toList(),
       testResult.name,
       testResult.namespace,
       projectId,
-      testResult.setup.map((s) => toStepApiModel(s)).toList(),
+      testResult.setup.map((final setup) => toStepApiModel(setup)).toList(),
       null,
-      testResult.steps.map((s) => toStepApiModel(s)).toList(),
-      testResult.teardown.map((s) => toStepApiModel(s)).toList(),
+      testResult.steps.map((final steps) => toStepApiModel(steps)).toList(),
+      testResult.teardown
+          .map((final teardown) => toStepApiModel(teardown))
+          .toList(),
       testResult.title,
       null);
 
@@ -72,17 +74,19 @@ UpdateAutoTestRequestModel toUpdateAutoTestRequestModel(
       null,
       null,
       testResult.isFlaky,
-      testResult.labels.map((name) => LabelPostModel(name)).toList(),
+      testResult.labels.map((final name) => LabelPostModel(name)).toList(),
       testResult.links
-          .map((link) =>
+          .map((final link) =>
               LinkPostModel(link.description, link.title, link.type, link.url))
           .toList(),
       testResult.name,
       testResult.namespace,
       projectId,
-      testResult.setup.map((s) => toStepApiModel(s)).toList(),
-      testResult.steps.map((s) => toStepApiModel(s)).toList(),
-      testResult.teardown.map((s) => toStepApiModel(s)).toList(),
+      testResult.setup.map((final setup) => toStepApiModel(setup)).toList(),
+      testResult.steps.map((final steps) => toStepApiModel(steps)).toList(),
+      testResult.teardown
+          .map((final teardown) => toStepApiModel(teardown))
+          .toList(),
       testResult.title,
       null);
 

@@ -8,9 +8,10 @@ import 'package:adapters_flutter/src/services/api/work_items_api_service.dart';
 import 'package:meta/meta.dart';
 import 'package:synchronized/synchronized.dart';
 
-final List<String> _externalIdsFromTestRun = [];
 var _isTestRunCreated = false;
+var _isTestRunExternalIdsGot = false;
 final _lock = Lock();
+final _testRunExternalIds = [];
 
 @internal
 Future<bool> checkTestNeedsToBeRunAsync(
@@ -18,10 +19,15 @@ Future<bool> checkTestNeedsToBeRunAsync(
   var isTestNeedsToBeRun = true;
 
   if (config.adapterMode == 0) {
-    await _lock.synchronized(() async => _externalIdsFromTestRun
-        .addAll(await getExternalIdsFromTestRunAsync(config)));
+    await _lock.synchronized(() async {
+      if (!_isTestRunExternalIdsGot) {
+        _testRunExternalIds
+            .addAll(await getExternalIdsFromTestRunAsync(config));
+        _isTestRunExternalIdsGot = true;
+      }
+    });
 
-    if (!_externalIdsFromTestRun.contains(externalId)) {
+    if (!_testRunExternalIds.contains(externalId)) {
       isTestNeedsToBeRun = false;
     }
   }
@@ -31,7 +37,7 @@ Future<bool> checkTestNeedsToBeRunAsync(
 
 @internal
 Future<String?> getFirstNotFoundWorkItemIdAsync(
-    final ConfigModel config, final Iterable<String>? workItemsIds) async {
+    final ConfigModel config, final List<String>? workItemsIds) async {
   String? firstNotFoundWorkItemId;
 
   if (workItemsIds == null || workItemsIds.isEmpty) {
@@ -72,29 +78,35 @@ Future<void> processTestResultAsync(
 }
 
 @internal
-Future<void> tryCreateTestRunOnceAsync(final ConfigModel config) async =>
+Future<void> tryCreateTestRunOnceAsync(final ConfigModel config) async {
+  if (config.adapterMode == 2) {
     await _lock.synchronized(() async {
       if (!_isTestRunCreated) {
-        if (config.adapterMode != 2) {
-          _isTestRunCreated = true;
-
-          return;
-        }
-
         await createEmptyTestRunAsync(config);
         _isTestRunCreated = true;
       }
     });
+  }
+}
 
 Future<void> _updateWorkItemsLinkedToAutoTestAsync(final String? autoTestId,
-    final ConfigModel config, final Iterable<String> workItemIds) async {
-  var linkedIds = await getWorkItemsLinkedToAutoTestAsync(autoTestId, config);
+    final ConfigModel config, final List<String> workItemIds) async {
+  var linkedIds =
+      await getWorkItemsGlobalIdsLinkedToAutoTestAsync(autoTestId, config);
 
   if (config.automaticUpdationLinksToTestCases ?? false) {
     await unlinkAutoTestFromWorkItemsAsync(
-        autoTestId, config, linkedIds.where((id) => !workItemIds.contains(id)));
+        autoTestId,
+        config,
+        linkedIds
+            .where((final linkedId) => !workItemIds.contains(linkedId))
+            .toList());
   }
 
   await linkWorkItemsToAutoTestAsync(
-      autoTestId, config, workItemIds.where((id) => !linkedIds.contains(id)));
+      autoTestId,
+      config,
+      workItemIds
+          .where((final workItemId) => !linkedIds.contains(workItemId))
+          .toList());
 }

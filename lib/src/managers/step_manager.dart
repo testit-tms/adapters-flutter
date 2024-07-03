@@ -4,12 +4,13 @@ import 'package:adapters_flutter/src/enums/outcome_enum.dart';
 import 'package:adapters_flutter/src/managers/config_manager.dart';
 import 'package:adapters_flutter/src/models/api/attachment_api_model.dart';
 import 'package:adapters_flutter/src/storages/test_result_storage.dart';
+import 'package:test_api/src/backend/invoker.dart'; // ignore: depend_on_referenced_packages, implementation_imports
 
 Future<void> step(final String title, final dynamic Function() body,
     {final String? description}) async {
   final config = await createConfigOnceAsync();
 
-  if (config.testIt ?? true) {
+  if ((config.testIt ?? true) && !_isTeardownAllStep()) {
     await createEmptyStepAsync();
 
     final localStep = AutoTestStepResultsModel();
@@ -32,9 +33,11 @@ Future<void> step(final String title, final dynamic Function() body,
       localStep.title = title;
 
       await updateCurrentStepAsync(localStep);
-      // todo: setup, teardown
     }
   } else {
     await body.call();
   }
 }
+
+bool _isTeardownAllStep() =>
+    Invoker.current?.liveTest.test.name.endsWith('(tearDownAll)') ?? false;
