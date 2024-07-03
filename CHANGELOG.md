@@ -3,11 +3,17 @@
 All notable changes to this project will be documented in this file.  
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
 
+## [1.6.0] - 2024-07-03
+
+### Added
+
+- setUpAll & setUp support.
+
 ## [1.5.0] - 2024-07-02
 
 ### Added
 
-- automaticUpdationLinksToTestCases configuration parameter..
+- automaticUpdationLinksToTestCases configuration parameter.
 
 ## [1.4.4] - 2024-07-01
 

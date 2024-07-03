@@ -507,6 +507,7 @@ doc/api/
 *.js.deps
 *.js.map
 
-# TestIT properties file
-**/testit.properties
+# Dev local files
 **/example_test.dart
+**/testit.properties
+*.png

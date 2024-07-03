@@ -42,8 +42,9 @@ void tmsTest(final String description, final dynamic Function() body,
 
         validateStringArgument('Description', description);
         validateStringArgument('ExternalId', externalId);
-        links?.forEach((link) => validateUriArgument('Link url', link.url));
-        tags?.forEach((tag) => validateStringArgument('Tag', tag));
+        links?.forEach(
+            (final link) => validateUriArgument('Link url', link.url));
+        tags?.forEach((final tag) => validateStringArgument('Tag', tag));
         await validateWorkItemsIdsAsync(config, workItemsIds);
 
         await tryCreateTestRunOnceAsync(config);
@@ -53,7 +54,7 @@ void tmsTest(final String description, final dynamic Function() body,
         final liveTest = Invoker.current?.liveTest;
         final startedOn = DateTime.now();
 
-        localResult.classname = _getClassName();
+        localResult.classname = _getGroupName();
         localResult.description = description;
         localResult.externalId = externalId ?? '';
         localResult.labels = tags ?? [];
@@ -91,6 +92,7 @@ void tmsTest(final String description, final dynamic Function() body,
               completedOn.difference(startedOn).inMilliseconds;
 
           await updateTestResultAsync(localResult);
+          await addSetupToTestResultAsync();
           final testResult = await removeTestResultAsync();
           await processTestResultAsync(config, testResult);
 
@@ -104,11 +106,11 @@ void tmsTest(final String description, final dynamic Function() body,
       }
     });
 
-String? _getClassName() {
+String? _getGroupName() {
   final liveTest = Invoker.current?.liveTest;
 
   var className = liveTest?.groups
-          .where((group) => group.name.isNotEmpty)
+          .where((final group) => group.name.isNotEmpty)
           .lastOrNull
           ?.name ??
       liveTest?.suite.group.name;

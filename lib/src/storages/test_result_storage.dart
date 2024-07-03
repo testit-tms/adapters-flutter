@@ -11,7 +11,34 @@ import 'package:synchronized/synchronized.dart';
 import 'package:test_api/src/backend/invoker.dart'; // ignore: depend_on_referenced_packages, implementation_imports
 
 final _lock = Lock();
-final _testResults = <int, TestResultModel>{};
+final _testResults = <String, TestResultModel>{};
+
+@internal
+Future<void> addSetupToTestResultAsync() async {
+  final testId = _getTestId();
+
+  await _lock.synchronized(() => _testResults.update(testId, (value) {
+        _testResults.keys
+            .where((final key) =>
+                key.endsWith('(setUpAll)') &&
+                testId.contains(key.replaceAll('(setUpAll)', '')))
+            .map((final setupAllKey) => _testResults[setupAllKey]?.steps ?? [])
+            .forEach((final steps) => value.setup.addAll(steps));
+
+        return value;
+      }, ifAbsent: () {
+        final testResult = TestResultModel();
+
+        _testResults.keys
+            .where((final key) =>
+                key.endsWith('(setUpAll)') &&
+                testId.contains(key.replaceAll('(setUpAll)', '')))
+            .map((final key) => _testResults[key]?.steps ?? [])
+            .forEach((final steps) => testResult.setup.addAll(steps));
+
+        return testResult;
+      }));
+}
 
 @internal
 Future<void> createEmptyStepAsync() async => await _lock.synchronized(() async {
@@ -22,7 +49,12 @@ Future<void> createEmptyStepAsync() async => await _lock.synchronized(() async {
           value.steps.add(AutoTestStepResultsModel());
 
           return value;
-        }, ifAbsent: () => TestResultModel());
+        }, ifAbsent: () {
+          final testResult = TestResultModel();
+          testResult.steps.add(AutoTestStepResultsModel());
+
+          return testResult;
+        });
       } else {
         currentStep.stepResults.add(AutoTestStepResultsModel());
       }
@@ -30,12 +62,10 @@ Future<void> createEmptyStepAsync() async => await _lock.synchronized(() async {
 
 @internal
 Future<void> createEmptyTestResultAsync() async => await _lock.synchronized(() {
-      final key = _getTestId();
+      final testId = _getTestId();
 
-      if (_testResults.containsKey(key)) {
-        _testResults[key] = TestResultModel();
-      } else {
-        _testResults.addAll({key: TestResultModel()});
+      if (!_testResults.containsKey(testId)) {
+        _testResults.addAll({testId: TestResultModel()});
       }
     });
 
@@ -46,44 +76,44 @@ Future<TestResultModel> removeTestResultAsync() async =>
 
 @internal
 Future<void> updateCurrentStepAsync(
-        final AutoTestStepResultsModel newValue) async =>
+        final AutoTestStepResultsModel step) async =>
     await _lock.synchronized(() async {
       final currentStep = _getCurrentStep();
 
-      currentStep?.completedOn = newValue.completedOn;
-      currentStep?.description = newValue.description;
-      currentStep?.duration = newValue.duration;
-      currentStep?.info = newValue.info;
-      currentStep?.outcome = newValue.outcome;
-      currentStep?.startedOn = newValue.startedOn;
-      currentStep?.title = newValue.title;
+      currentStep?.completedOn = step.completedOn;
+      currentStep?.description = step.description;
+      currentStep?.duration = step.duration;
+      currentStep?.info = step.info;
+      currentStep?.outcome = step.outcome;
+      currentStep?.startedOn = step.startedOn;
+      currentStep?.title = step.title;
     });
 
 @internal
-Future<void> updateTestResultAsync(final TestResultModel newValue) async =>
+Future<void> updateTestResultAsync(final TestResultModel testResult) async =>
     await _lock.synchronized(() => _testResults.update(_getTestId(), (value) {
-          value.classname = newValue.classname;
-          value.completedOn = newValue.completedOn;
-          value.description = newValue.description;
-          value.duration = newValue.duration;
-          value.externalId = newValue.externalId;
-          value.labels = newValue.labels;
-          value.links = newValue.links;
+          value.classname = testResult.classname;
+          value.completedOn = testResult.completedOn;
+          value.description = testResult.description;
+          value.duration = testResult.duration;
+          value.externalId = testResult.externalId;
+          value.labels = testResult.labels;
+          value.links = testResult.links;
 
-          if (newValue.message?.isNotEmpty ?? false) {
+          if (testResult.message?.isNotEmpty ?? false) {
             value.message = value.message?.isEmpty ?? true
-                ? '${newValue.message}${Platform.lineTerminator}'
-                : '${value.message}${Platform.lineTerminator}${newValue.message}';
+                ? '${testResult.message}${Platform.lineTerminator}'
+                : '${value.message}${Platform.lineTerminator}${testResult.message}';
           }
 
-          value.methodName = newValue.methodName;
-          value.name = newValue.name;
-          value.namespace = newValue.namespace;
-          value.outcome = newValue.outcome;
-          value.startedOn = newValue.startedOn;
-          value.title = newValue.title;
-          value.traces = newValue.traces;
-          value.workItemIds = newValue.workItemIds;
+          value.methodName = testResult.methodName;
+          value.name = testResult.name;
+          value.namespace = testResult.namespace;
+          value.outcome = testResult.outcome;
+          value.startedOn = testResult.startedOn;
+          value.title = testResult.title;
+          value.traces = testResult.traces;
+          value.workItemIds = testResult.workItemIds;
 
           return value;
         }, ifAbsent: () => TestResultModel()));
@@ -102,7 +132,7 @@ Future<void> updateTestResultAttachmentsAsync(
     });
 
 @internal
-Future<void> updateTestResultLinksAsync(final Iterable<Link> links) async =>
+Future<void> updateTestResultLinksAsync(final List<Link> links) async =>
     await _lock.synchronized(() => _testResults.update(_getTestId(), (value) {
           value.links.addAll(links);
 
@@ -122,9 +152,9 @@ Future<void> updateTestResultMessageAsync(final String message) async =>
         }, ifAbsent: () => TestResultModel()));
 
 AutoTestStepResultsModel? _getCurrentStep() {
-  final key = _getTestId();
-  final currentStep = _testResults.containsKey(key)
-      ? _getLastNotFinishedChildStep(_testResults[key]?.steps)
+  final testId = _getTestId();
+  final currentStep = _testResults.containsKey(testId)
+      ? _getLastNotFinishedChildStep(_testResults[testId]?.steps)
       : null;
 
   return currentStep;
@@ -159,8 +189,9 @@ AutoTestStepResultsModel? _getLastNotFinishedChildStep(
   return targetStep;
 }
 
-int _getTestId() {
-  final testId = Invoker.current?.liveTest.test.hashCode ?? 0;
+String _getTestId() {
+  final liveTest = Invoker.current?.liveTest;
+  final testId = '${liveTest?.suite.path}/${liveTest?.test.name}';
 
   return testId;
 }

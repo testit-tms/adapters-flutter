@@ -101,7 +101,7 @@ Future<AutoTestFullModel?> getAutoTestByExternalIdAsync(
     }
 
     final body =
-        (jsonDecode(response.body) as Iterable).cast<Map<String, dynamic>>();
+        (jsonDecode(response.body) as List).cast<Map<String, dynamic>>();
     autoTest = AutoTestFullModel.fromJson(body.single);
   } catch (exception, stacktrace) {
     _logger.d('$exception${Platform.lineTerminator}$stacktrace.');
@@ -111,7 +111,7 @@ Future<AutoTestFullModel?> getAutoTestByExternalIdAsync(
 }
 
 @internal
-Future<Iterable<String>> getWorkItemsLinkedToAutoTestAsync(
+Future<List<String>> getWorkItemsGlobalIdsLinkedToAutoTestAsync(
     final String? autoTestId, final ConfigModel config) async {
   final List<String> globalIds = [];
 
@@ -136,9 +136,9 @@ Future<Iterable<String>> getWorkItemsLinkedToAutoTestAsync(
       _logger.i('$exception.');
     }
 
-    final body = jsonDecode(response.body) as Iterable<dynamic>;
+    final body = jsonDecode(response.body) as List<dynamic>;
     globalIds.addAll(
-        body.map((workItem) => (workItem['globalId'] as int).toString()));
+        body.map((final workItem) => (workItem['globalId'] as int).toString()));
   } catch (exception, stacktrace) {
     _logger.i('$exception${Platform.lineTerminator}$stacktrace.');
   }
@@ -148,7 +148,7 @@ Future<Iterable<String>> getWorkItemsLinkedToAutoTestAsync(
 
 @internal
 Future<void> linkWorkItemsToAutoTestAsync(final String? autoTestId,
-    final ConfigModel config, final Iterable<String> workItemIds) async {
+    final ConfigModel config, final List<String> workItemIds) async {
   for (final id in workItemIds) {
     try {
       final headers = {
@@ -180,7 +180,7 @@ Future<void> linkWorkItemsToAutoTestAsync(final String? autoTestId,
 
 @internal
 Future<void> unlinkAutoTestFromWorkItemsAsync(final String? autoTestId,
-    final ConfigModel config, final Iterable<String> workItemIds) async {
+    final ConfigModel config, final List<String> workItemIds) async {
   for (final id in workItemIds) {
     try {
       final headers = {
