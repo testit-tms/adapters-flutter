@@ -1,3 +1,5 @@
+#!/usr/bin/env dart
+
 import 'package:adapters_flutter/adapters_flutter.dart';
 import 'package:flutter_test/flutter_test.dart';
 

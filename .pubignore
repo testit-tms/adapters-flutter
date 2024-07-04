@@ -1,2 +1,4 @@
-test/
+# Dev local files
 **/testit.properties
+*.png
+test/
