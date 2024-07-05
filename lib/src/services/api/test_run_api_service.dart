@@ -9,11 +9,12 @@ import 'package:adapters_flutter/src/managers/log_manager.dart';
 import 'package:adapters_flutter/src/models/api/autotest_api_model.dart';
 import 'package:adapters_flutter/src/models/api/test_run_api_model.dart';
 import 'package:adapters_flutter/src/models/config_model.dart';
-import 'package:adapters_flutter/src/models/exception_model.dart';
 import 'package:adapters_flutter/src/models/test_result_model.dart';
-import 'package:http/http.dart';
+import 'package:adapters_flutter/src/services/validation_service.dart';
+import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 
+final _dio = Dio();
 final _logger = getLogger();
 
 @internal
@@ -25,30 +26,27 @@ Future<void> createEmptyTestRunAsync(final ConfigModel config) async {
       'Authorization': 'PrivateToken ${config.privateToken}'
     };
 
-    final request =
-        Request('POST', Uri.tryParse('${config.url}/api/v2/testRuns') ?? Uri());
-    request.body = json.encode(CreateEmptyTestRunRequestModel(
+    final options = Options(headers: headers);
+    final url = Uri.parse('${config.url}/api/v2/testRuns');
+    final data = json.encode(CreateEmptyTestRunRequestModel(
       config.projectId,
       config.testRunName,
     ));
-    request.headers.addAll(headers);
 
-    final streamedResponse = await request.send();
-    final response = await Response.fromStream(streamedResponse);
+    final response = await _dio.postUri(url, data: data, options: options);
+    final exception = getResponseValidationException(response);
 
-    if (response.statusCode < 200 || response.statusCode > 299) {
-      final exception = TmsApiException(
-          'Status code: ${response.statusCode}, Reason: "${response.reasonPhrase}".');
+    if (exception != null) {
       _logger.i('$exception.');
 
       return;
     }
 
-    final body = jsonDecode(response.body) as Map<String, dynamic>;
+    final body = response.data as Map<String, dynamic>;
     final testRunId = body['id'].toString();
 
     await updateTestRunIdAsync(testRunId);
-  } catch (exception, stacktrace) {
+  } on DioException catch (exception, stacktrace) {
     _logger.i('$exception${Platform.lineTerminator}$stacktrace.');
   }
 }
@@ -65,26 +63,21 @@ Future<List<String>> getExternalIdsFromTestRunAsync(
       'Authorization': 'PrivateToken ${config.privateToken}'
     };
 
-    final request = Request(
-        'GET',
-        Uri.tryParse('${config.url}/api/v2/testRuns/${config.testRunId}') ??
-            Uri());
-    request.headers.addAll(headers);
+    final options = Options(headers: headers);
+    final url = Uri.parse('${config.url}/api/v2/testRuns/${config.testRunId}');
 
-    final streamedResponse = await request.send();
-    final response = await Response.fromStream(streamedResponse);
+    final response = await _dio.getUri(url, options: options);
+    final exception = getResponseValidationException(response);
 
-    if (response.statusCode < 200 || response.statusCode > 299) {
-      final exception = TmsApiException(
-          'Status code: ${response.statusCode}, Reason: "${response.reasonPhrase}".');
+    if (exception != null) {
       _logger.i('$exception.');
 
       return externalIds;
     }
 
-    final body = jsonDecode(response.body) as Map<String, dynamic>;
     final testResults =
-        (body['testResults'] as List).cast<Map<String, dynamic>>();
+        ((response.data as Map<String, dynamic>)['testResults'] as List)
+            .cast<Map<String, dynamic>>();
 
     for (final result in testResults) {
       final autoTest = AutoTestRelatedToTestResult.fromJson(
@@ -100,7 +93,7 @@ Future<List<String>> getExternalIdsFromTestRunAsync(
 
       externalIds.add(autoTest.externalId!);
     }
-  } catch (exception, stacktrace) {
+  } on DioException catch (exception, stacktrace) {
     _logger.i('$exception${Platform.lineTerminator}$stacktrace.');
   }
 
@@ -117,24 +110,19 @@ Future<void> submitResultToTestRunAsync(
       'Authorization': 'PrivateToken ${config.privateToken}'
     };
 
-    final request = Request(
-        'POST',
-        Uri.tryParse(
-                '${config.url}/api/v2/testRuns/${config.testRunId}/testResults') ??
-            Uri());
-    final requestBody =
-        toAutoTestResultsForTestRunModel(config.configurationId, testResult);
-    request.body = json.encode([requestBody]);
-    request.headers.addAll(headers);
+    final options = Options(headers: headers);
+    final url = Uri.parse(
+        '${config.url}/api/v2/testRuns/${config.testRunId}/testResults');
+    final data = json.encode(
+        [toAutoTestResultsForTestRunModel(config.configurationId, testResult)]);
 
-    final response = await request.send();
+    final response = await _dio.postUri(url, data: data, options: options);
+    final exception = getResponseValidationException(response);
 
-    if (response.statusCode < 200 || response.statusCode > 299) {
-      final exception = TmsApiException(
-          'Status code: ${response.statusCode}, Reason: "${response.reasonPhrase}".');
+    if (exception != null) {
       _logger.i('$exception.');
     }
-  } catch (exception, stacktrace) {
+  } on DioException catch (exception, stacktrace) {
     _logger.i('$exception${Platform.lineTerminator}$stacktrace.');
   }
 }
