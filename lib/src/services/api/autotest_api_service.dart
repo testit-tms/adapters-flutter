@@ -8,11 +8,12 @@ import 'package:adapters_flutter/src/managers/log_manager.dart';
 import 'package:adapters_flutter/src/models/api/autotest_api_model.dart';
 import 'package:adapters_flutter/src/models/api/workitem_api_model.dart';
 import 'package:adapters_flutter/src/models/config_model.dart';
-import 'package:adapters_flutter/src/models/exception_model.dart';
 import 'package:adapters_flutter/src/models/test_result_model.dart';
-import 'package:http/http.dart';
+import 'package:adapters_flutter/src/services/validation_service.dart';
+import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 
+final _dio = Dio();
 final _logger = getLogger();
 
 @internal
@@ -27,30 +28,25 @@ Future<AutoTestFullModel?> createAutoTestAsync(
       'Authorization': 'PrivateToken ${config.privateToken}'
     };
 
-    final request = Request(
-        'POST', Uri.tryParse('${config.url}/api/v2/autoTests') ?? Uri());
+    final options = Options(headers: headers);
+    final url = Uri.parse('${config.url}/api/v2/autoTests');
 
-    final requestBody =
-        toCreateAutoTestRequestModel(config.projectId, testResult);
-    requestBody.shouldCreateWorkItem =
-        config.automaticCreationTestCases ?? false;
-    request.body = json.encode(requestBody);
-    request.headers.addAll(headers);
+    final body = toCreateAutoTestRequestModel(config.projectId, testResult);
+    body.shouldCreateWorkItem = config.automaticCreationTestCases ?? false;
+    final data = json.encode(body);
 
-    final streamedResponse = await request.send();
-    final response = await Response.fromStream(streamedResponse);
+    final response = await _dio.postUri(url, data: data, options: options);
+    final exception = getResponseValidationException(response);
 
-    if (response.statusCode < 200 || response.statusCode > 299) {
-      final exception = TmsApiException(
-          'Status code: ${response.statusCode}, Reason: "${response.reasonPhrase}".');
+    if (exception != null) {
       _logger.i('$exception.');
 
       return autoTest;
     }
 
-    final body = jsonDecode(response.body) as Map<String, dynamic>;
-    autoTest = AutoTestFullModel.fromJson(body);
-  } catch (exception, stacktrace) {
+    autoTest =
+        AutoTestFullModel.fromJson(response.data as Map<String, dynamic>);
+  } on DioException catch (exception, stacktrace) {
     _logger.i('$exception${Platform.lineTerminator}$stacktrace.');
   }
 
@@ -69,13 +65,10 @@ Future<AutoTestFullModel?> getAutoTestByExternalIdAsync(
       'Authorization': 'PrivateToken ${config.privateToken}'
     };
 
-    final request = Request(
-        'POST',
-        Uri.tryParse(
-                '${config.url}/api/v2/autoTests/search?SearchField=externalId&SearchValue=$externalId') ??
-            Uri());
-
-    request.body = json.encode({
+    final options = Options(headers: headers);
+    final url = Uri.parse(
+        '${config.url}/api/v2/autoTests/search?SearchField=externalId&SearchValue=$externalId');
+    final data = json.encode({
       'filter': {
         'projectIds': ['${config.projectId}'],
         'isDeleted': false,
@@ -87,23 +80,19 @@ Future<AutoTestFullModel?> getAutoTestByExternalIdAsync(
       }
     });
 
-    request.headers.addAll(headers);
+    final response = await _dio.postUri(url, data: data, options: options);
+    final exception = getResponseValidationException(response);
 
-    final streamedResponse = await request.send();
-    final response = await Response.fromStream(streamedResponse);
-
-    if (response.statusCode < 200 || response.statusCode > 299) {
-      final exception = TmsApiException(
-          'Status code: ${response.statusCode}, Reason: "${response.reasonPhrase}".');
+    if (exception != null) {
       _logger.i('$exception.');
 
       return autoTest;
     }
 
-    final body =
-        (jsonDecode(response.body) as List).cast<Map<String, dynamic>>();
-    autoTest = AutoTestFullModel.fromJson(body.single);
-  } catch (exception, stacktrace) {
+    autoTest = (response.data as List<dynamic>)
+        .map((autoTest) => AutoTestFullModel.fromJson(autoTest))
+        .singleOrNull;
+  } on DioException catch (exception, stacktrace) {
     _logger.d('$exception${Platform.lineTerminator}$stacktrace.');
   }
 
@@ -121,25 +110,22 @@ Future<List<String>> getWorkItemsGlobalIdsLinkedToAutoTestAsync(
       'Authorization': 'PrivateToken ${config.privateToken}'
     };
 
-    final request = Request(
-        'GET',
-        Uri.parse(
-            '${config.url}/api/v2/autoTests/$autoTestId/workItems?isDeleted=false'));
-    request.headers.addAll(headers);
+    final options = Options(headers: headers);
+    final url = Uri.parse(
+        '${config.url}/api/v2/autoTests/$autoTestId/workItems?isDeleted=false');
 
-    final streamedResponse = await request.send();
-    final response = await Response.fromStream(streamedResponse);
+    final response = await _dio.getUri(url, options: options);
+    final exception = getResponseValidationException(response);
 
-    if (response.statusCode < 200 || response.statusCode > 299) {
-      final exception = TmsApiException(
-          'Status code: ${response.statusCode}, Reason: "${response.reasonPhrase}".');
+    if (exception != null) {
       _logger.i('$exception.');
+
+      return globalIds;
     }
 
-    final body = jsonDecode(response.body) as List<dynamic>;
-    globalIds.addAll(
-        body.map((final workItem) => (workItem['globalId'] as int).toString()));
-  } catch (exception, stacktrace) {
+    globalIds.addAll((response.data as List<dynamic>)
+        .map((final workItem) => (workItem['globalId'] as int).toString()));
+  } on DioException catch (exception, stacktrace) {
     _logger.i('$exception${Platform.lineTerminator}$stacktrace.');
   }
 
@@ -157,22 +143,18 @@ Future<void> linkWorkItemsToAutoTestAsync(final String? autoTestId,
         'Authorization': 'PrivateToken ${config.privateToken}'
       };
 
-      final request = Request(
-          'POST',
-          Uri.tryParse(
-                  '${config.url}/api/v2/autoTests/$autoTestId/workItems') ??
-              Uri());
-      request.body = json.encode(WorkItemLinkRequestModel(id));
-      request.headers.addAll(headers);
+      final options = Options(headers: headers);
+      final url =
+          Uri.parse('${config.url}/api/v2/autoTests/$autoTestId/workItems');
+      final data = json.encode(WorkItemLinkRequestModel(id));
 
-      final response = await request.send();
+      final response = await _dio.postUri(url, data: data, options: options);
+      final exception = getResponseValidationException(response);
 
-      if (response.statusCode < 200 || response.statusCode > 299) {
-        final exception = TmsApiException(
-            'Status code: ${response.statusCode}, Reason: "${response.reasonPhrase}".');
+      if (exception != null) {
         _logger.i('$exception.');
       }
-    } catch (exception, stacktrace) {
+    } on DioException catch (exception, stacktrace) {
       _logger.i('$exception${Platform.lineTerminator}$stacktrace.');
     }
   }
@@ -189,20 +171,17 @@ Future<void> unlinkAutoTestFromWorkItemsAsync(final String? autoTestId,
         'Authorization': 'PrivateToken ${config.privateToken}'
       };
 
-      final request = Request(
-          'DELETE',
-          Uri.parse(
-              '${config.url}/api/v2/autoTests/$autoTestId/workItems?workItemId=$id'));
-      request.headers.addAll(headers);
+      final options = Options(headers: headers);
+      final url = Uri.parse(
+          '${config.url}/api/v2/autoTests/$autoTestId/workItems?workItemId=$id');
 
-      final response = await request.send();
+      final response = await _dio.deleteUri(url, options: options);
+      final exception = getResponseValidationException(response);
 
-      if (response.statusCode < 200 || response.statusCode > 299) {
-        final exception = TmsApiException(
-            'Status code: ${response.statusCode}, Reason: "${response.reasonPhrase}".');
+      if (exception != null) {
         _logger.i('$exception.');
       }
-    } catch (exception, stacktrace) {
+    } on DioException catch (exception, stacktrace) {
       _logger.i('$exception${Platform.lineTerminator}$stacktrace.');
     }
   }
@@ -218,21 +197,18 @@ Future<void> updateAutoTestAsync(
       'Authorization': 'PrivateToken ${config.privateToken}'
     };
 
-    final request =
-        Request('PUT', Uri.tryParse('${config.url}/api/v2/autoTests') ?? Uri());
-    final requestBody =
-        toUpdateAutoTestRequestModel(config.projectId, testResult);
-    request.body = json.encode(requestBody);
-    request.headers.addAll(headers);
+    final options = Options(headers: headers);
+    final url = Uri.parse('${config.url}/api/v2/autoTests');
+    final data =
+        json.encode(toUpdateAutoTestRequestModel(config.projectId, testResult));
 
-    final response = await request.send();
+    final response = await _dio.putUri(url, data: data, options: options);
+    final exception = getResponseValidationException(response);
 
-    if (response.statusCode < 200 || response.statusCode > 299) {
-      final exception = TmsApiException(
-          'Status code: ${response.statusCode}, Reason: "${response.reasonPhrase}".');
+    if (exception != null) {
       _logger.i('$exception.');
     }
-  } catch (exception, stacktrace) {
+  } on DioException catch (exception, stacktrace) {
     _logger.i('$exception${Platform.lineTerminator}$stacktrace.');
   }
 }

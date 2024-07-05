@@ -3,8 +3,27 @@
 import 'package:adapters_flutter/src/managers/api_manager_.dart';
 import 'package:adapters_flutter/src/models/config_model.dart';
 import 'package:adapters_flutter/src/models/exception_model.dart';
+import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 import 'package:uuid/uuid.dart';
+
+@internal
+TmsApiException? getResponseValidationException(
+    final Response<dynamic> response) {
+  TmsApiException? exception;
+
+  if (response.statusCode == null) {
+    exception;
+  }
+
+  if (response.statusCode! < 200 || response.statusCode! > 299) {
+    final message =
+        'Status code: ${response.statusCode}, Reason: "${response.statusMessage}".';
+    exception = TmsApiException(message);
+  }
+
+  return exception;
+}
 
 @internal
 void validateConfig(final ConfigModel? config) {

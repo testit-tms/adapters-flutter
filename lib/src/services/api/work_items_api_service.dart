@@ -1,14 +1,14 @@
 #!/usr/bin/env dart
 
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:adapters_flutter/src/managers/log_manager.dart';
 import 'package:adapters_flutter/src/models/config_model.dart';
-import 'package:adapters_flutter/src/models/exception_model.dart';
-import 'package:http/http.dart';
+import 'package:adapters_flutter/src/services/validation_service.dart';
+import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 
+final _dio = Dio();
 final _logger = getLogger();
 
 @internal
@@ -23,23 +23,20 @@ Future<Map<String, dynamic>?> getWorkItemByIdAsync(
       'Authorization': 'PrivateToken ${config.privateToken}'
     };
 
-    final request = Request('GET',
-        Uri.tryParse('${config.url}/api/v2/workItems/$workItemId') ?? Uri());
-    request.headers.addAll(headers);
+    final options = Options(headers: headers);
+    final url = Uri.parse('${config.url}/api/v2/workItems/$workItemId');
 
-    final streamedResponse = await request.send();
-    final response = await Response.fromStream(streamedResponse);
+    final response = await _dio.getUri(url, options: options);
+    final exception = getResponseValidationException(response);
 
-    if (response.statusCode < 200 || response.statusCode > 299) {
-      final exception = TmsApiException(
-          'Status code: ${response.statusCode}, Reason: "${response.reasonPhrase}".');
+    if (exception != null) {
       _logger.i('$exception.');
 
       return workItem;
     }
 
-    workItem = jsonDecode(response.body) as Map<String, dynamic>;
-  } catch (exception, stacktrace) {
+    workItem = response.data as Map<String, dynamic>;
+  } on DioException catch (exception, stacktrace) {
     _logger.d('$exception${Platform.lineTerminator}$stacktrace.');
   }
 
