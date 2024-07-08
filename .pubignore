@@ -1,4 +1,3 @@
-# Dev local files
-**/testit.properties
-*.png
+# Tests
+examples/
 test/
