@@ -75,6 +75,9 @@ jobs:
           echo ${{ env.TMS_TEST_RUN_ID }}
 
       - name: Test
+        run: echo ${{ env.TMS_TEST_RUN_ID }}
+
+      - name: Test
         run: |
           flutter test ./examples/ || exit 0
 
