@@ -64,7 +64,7 @@ void tmsTest(final String description, final dynamic Function() body,
         localResult.namespace =
             basenameWithoutExtension(liveTest?.suite.path ?? '');
         localResult.startedOn = startedOn;
-        localResult.title = title ?? '';
+        localResult.title = title ?? liveTest?.test.name ?? '';
         localResult.workItemIds = workItemsIds ?? [];
 
         Exception? exception;

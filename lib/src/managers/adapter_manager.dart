@@ -9,6 +9,7 @@ import 'package:adapters_flutter/src/managers/log_manager.dart';
 import 'package:adapters_flutter/src/models/api/link_api_model.dart';
 import 'package:adapters_flutter/src/services/api/attachments_api_service.dart';
 import 'package:adapters_flutter/src/storages/test_result_storage.dart';
+import 'package:path/path.dart' show join;
 
 final _logger = getLogger();
 
@@ -16,8 +17,11 @@ Future<void> addAttachment(final String filePath) async {
   final config = await createConfigOnceAsync();
 
   if (config.testIt ?? true) {
-    final file = File(filePath).absolute;
+    var file = File(filePath).absolute;
 
+    file = await file.exists()
+        ? file
+        : File(join(Directory.current.path, filePath));
     if (await file.exists()) {
       final attachment = await createAttachmentsAsync(config, file);
       await updateTestResultAttachmentsAsync(toAttachmentPutModel(attachment));
