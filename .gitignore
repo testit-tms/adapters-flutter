@@ -506,3 +506,6 @@ doc/api/
 *.js_
 *.js.deps
 *.js.map
+
+# TMS configuration
+testit.properties

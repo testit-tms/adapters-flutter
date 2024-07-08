@@ -1,3 +1,6 @@
 # Tests
 examples/
 test/
+
+# TMS configuration
+testit.properties
