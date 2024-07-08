@@ -2,6 +2,13 @@
 
 ## Getting Started
 
+### Requirements
+
+```yaml
+sdk: ">=3.4.3 <4.0.0"
+flutter: 3.22.2
+```
+
 ### Installation
 
 With Dart:

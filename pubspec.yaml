@@ -5,7 +5,8 @@ repository: https://github.com/testit-tms/adapters-flutter
 homepage: https://pub.dev/packages/adapters_flutter
 
 environment:
-  sdk: ^3.0.0
+  sdk: ">=3.4.3 <4.0.0"
+  flutter: 3.22.2
 
 dependencies:
   logger: ^2.3.0

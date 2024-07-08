@@ -7,6 +7,8 @@ The format is based on Keep a Changelog and this project adheres to Semantic Ver
 
 ### Added
 
+- readme requirements.
+- test action.
 - test examples.
 
 ### Fixed
