@@ -7,7 +7,7 @@ Example of tests with Flutter framework and adapter for Test IT.
 1. Install [flutter version 3.22.2+](https://docs.flutter.dev/release/archive).
 2. Clone this repository `git clone git@github.com:testit-tms/adapters-flutter.git`.
 3. Install dependencies `flutter pub get`.
-4. Run tests via `flutter test ./examples/tests/`.
+4. Run tests via `flutter test ./tests/`.
 
 ## Project structure
 
