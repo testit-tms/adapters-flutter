@@ -1,12 +1,12 @@
 name: adapters_flutter
 description: The repository contains new versions of adapters for dart test frameworks.
-version: 1.7.0
+version: 1.7.1
 repository: https://github.com/testit-tms/adapters-flutter
 homepage: https://pub.dev/packages/adapters_flutter
 
 environment:
   sdk: ">=3.4.3 <4.0.0"
-  flutter: 3.22.2
+  flutter: ">=3.22.2"
 
 dependencies:
   logger: ^2.3.0
