@@ -508,4 +508,4 @@ doc/api/
 *.js.map
 
 # TMS configuration
-testit.properties
+**/testit.properties

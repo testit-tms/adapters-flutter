@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.  
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
 
+## [1.7.1] - 2024-07-08
+
+### Added
+
+- readme examples.
+
+### Fixed
+
+- changelog.
+
 ## [1.7.0] - 2024-07-08
 
 ### Added
@@ -10,6 +20,19 @@ The format is based on Keep a Changelog and this project adheres to Semantic Ver
 - readme requirements.
 - test action.
 - test examples.
+
+### Fixed
+
+- addLink & addLinks functions.
+- check action.
+- externalId resolver.
+- test name.
+
+## [1.6.1] - 2024-07-08
+
+### Changed
+
+- 'flutter_test' included in 'adapters_flutter' package.
 
 ### Fixed
 
