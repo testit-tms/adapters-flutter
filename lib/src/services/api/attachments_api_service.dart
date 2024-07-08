@@ -1,18 +1,18 @@
 #!/usr/bin/env dart
 
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:adapters_flutter/src/managers/log_manager.dart';
 import 'package:adapters_flutter/src/models/api/attachment_api_model.dart';
 import 'package:adapters_flutter/src/models/config_model.dart';
-import 'package:adapters_flutter/src/services/validation_service.dart';
-import 'package:dio/dio.dart';
+import 'package:adapters_flutter/src/models/exception_model.dart';
+import 'package:http/http.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:meta/meta.dart';
 import 'package:mime/mime.dart';
 import 'package:path/path.dart';
 
-final _dio = Dio();
 final _logger = getLogger();
 
 @internal
@@ -27,28 +27,33 @@ Future<AttachmentResponseModel?> createAttachmentsAsync(
       'Authorization': 'PrivateToken ${config.privateToken}'
     };
 
-    final options = Options(headers: headers);
-    final url = Uri.parse('${config.url}/api/v2/attachments');
+    final request = MultipartRequest(
+        'POST', Uri.tryParse('${config.url}/api/v2/attachments') ?? Uri());
+
+    final fileBytes = await file.readAsBytes();
     final fileName = basename(file.path);
-    final data = FormData.fromMap({
-      'file': await MultipartFile.fromFile(file.path,
-          filename: fileName,
-          contentType: MediaType.parse(
-              lookupMimeType(fileName) ?? 'application/octet-stream'))
-    });
+    final requestFile = MultipartFile.fromBytes('file', fileBytes,
+        contentType: MediaType.parse(
+            lookupMimeType(fileName) ?? 'application/octet-stream'),
+        filename: fileName);
 
-    final response = await _dio.postUri(url, data: data, options: options);
-    final exception = getResponseValidationException(response);
+    request.files.add(requestFile);
+    request.headers.addAll(headers);
 
-    if (exception != null) {
+    final streamedResponse = await request.send();
+    final response = await Response.fromStream(streamedResponse);
+
+    if (response.statusCode < 200 || response.statusCode > 299) {
+      final exception = TmsApiException(
+          'Status code: ${response.statusCode}, Reason: "${response.reasonPhrase}".');
       _logger.i('$exception.');
 
       return attachment;
     }
 
-    attachment =
-        AttachmentResponseModel.fromJson(response.data as Map<String, dynamic>);
-  } on DioException catch (exception, stacktrace) {
+    final body = jsonDecode(response.body) as Map<String, dynamic>;
+    attachment = AttachmentResponseModel.fromJson(body);
+  } catch (exception, stacktrace) {
     _logger.i('$exception${Platform.lineTerminator}$stacktrace.');
   }
 

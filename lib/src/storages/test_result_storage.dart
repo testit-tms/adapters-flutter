@@ -97,8 +97,8 @@ Future<void> updateTestResultAsync(final TestResultModel testResult) async =>
           value.description = testResult.description;
           value.duration = testResult.duration;
           value.externalId = testResult.externalId;
-          value.labels = testResult.labels;
-          value.links = testResult.links;
+          value.labels.addAll(testResult.labels);
+          value.links.addAll(testResult.links);
 
           if (testResult.message?.isNotEmpty ?? false) {
             value.message = value.message?.isEmpty ?? true
@@ -113,7 +113,7 @@ Future<void> updateTestResultAsync(final TestResultModel testResult) async =>
           value.startedOn = testResult.startedOn;
           value.title = testResult.title;
           value.traces = testResult.traces;
-          value.workItemIds = testResult.workItemIds;
+          value.workItemIds.addAll(testResult.workItemIds);
 
           return value;
         }, ifAbsent: () => TestResultModel()));

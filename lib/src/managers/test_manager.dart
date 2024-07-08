@@ -41,7 +41,6 @@ void tmsTest(final String description, final dynamic Function() body,
         }
 
         validateStringArgument('Description', description);
-        validateStringArgument('ExternalId', externalId);
         links?.forEach(
             (final link) => validateUriArgument('Link url', link.url));
         tags?.forEach((final tag) => validateStringArgument('Tag', tag));
@@ -56,15 +55,18 @@ void tmsTest(final String description, final dynamic Function() body,
 
         localResult.classname = _getGroupName();
         localResult.description = description;
-        localResult.externalId = externalId ?? '';
+        localResult.externalId =
+            _getExternalId(externalId, liveTest?.test.name);
         localResult.labels = tags ?? [];
         localResult.links = links ?? [];
         localResult.methodName = liveTest?.test.name ?? '';
-        localResult.name = liveTest?.test.name ?? '';
+        localResult.name = (liveTest?.test.name ?? '')
+            .replaceAll(_getGroupName() ?? '', '')
+            .trim();
         localResult.namespace =
             basenameWithoutExtension(liveTest?.suite.path ?? '');
         localResult.startedOn = startedOn;
-        localResult.title = title ?? '';
+        localResult.title = title ?? liveTest?.test.name ?? '';
         localResult.workItemIds = workItemsIds ?? [];
 
         Exception? exception;
@@ -105,6 +107,30 @@ void tmsTest(final String description, final dynamic Function() body,
         await body.call();
       }
     });
+
+String? _getExternalId(final String? externalId, final String? testName) {
+  var result =
+      (externalId == null || externalId.isEmpty) ? testName : externalId;
+
+  if (result == null || result.isEmpty) {
+    return result;
+  }
+
+  final buffer = StringBuffer();
+  final expression = RegExp(r'^[a-zA-Z0-9]+$');
+
+  for (final rune in result.runes) {
+    final char = String.fromCharCode(rune);
+
+    if (expression.hasMatch(char)) {
+      buffer.write(char);
+    }
+  }
+
+  result = buffer.toString().toLowerCase();
+
+  return result;
+}
 
 String? _getGroupName() {
   final liveTest = Invoker.current?.liveTest;
