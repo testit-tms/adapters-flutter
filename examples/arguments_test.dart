@@ -4,7 +4,9 @@ import 'package:adapters_flutter/adapters_flutter.dart';
 
 void main() {
   group('arguments', () {
-    tmsTest('without args - failed', () => {});
+    tmsTest('no args - success', () => {});
+
+    tmsTest('no args - failed', () => expect(0, 1));
 
     tmsTest(
         'with externalId - success',
@@ -18,50 +20,51 @@ void main() {
 
     tmsTest(
         'with links - success',
-        externalId: 'with_links_success',
         links: [Link('https://www.example.org/')],
         () => {});
 
     tmsTest(
         'with links - failed',
-        externalId: 'with_links_failed',
         links: [Link('https://www.example.org/')],
         () => expect(0, 1));
 
-    tmsTest(
-        'with tags - success',
-        externalId: 'with_tags_success',
-        tags: ['tag1'],
-        () => {});
+    tmsTest('with tags - success', tags: ['tag1'], () => {});
 
-    tmsTest(
-        'with tags - failed',
-        externalId: 'with_tags_failed',
-        tags: ['tag1'],
-        () => expect(0, 1));
+    tmsTest('with tags - failed', tags: ['tag1'], () => expect(0, 1));
 
-    tmsTest(
-        'with title - success',
-        externalId: 'with_title_success',
-        title: 'title',
-        () => {});
+    tmsTest('with title - success', title: 'title', () => {});
 
-    tmsTest(
-        'with title - failed',
-        externalId: 'with_title_failed',
-        title: 'title',
-        () => expect(0, 1));
+    tmsTest('with title - failed', title: 'title', () => expect(0, 1));
 
-    tmsTest(
-        'with workItemsIds - success',
-        externalId: 'with_workItemsIds_success',
-        workItemsIds: ['46041'],
-        () => {});
+    tmsTest('with workItemsIds - success', workItemsIds: ['46256'], () => {});
 
     tmsTest(
         'with workItemsIds - failed',
-        externalId: 'with_workItemsIds_failed',
-        workItemsIds: ['46041'],
+        workItemsIds: ['46256'],
         () => expect(0, 1));
+
+    for (final input in Iterable.generate(3)) {
+      tmsTest('parametrized description [$input] - success', () => {});
+
+      tmsTest('parametrized description [$input] - failed', () => expect(0, 1));
+
+      tmsTest(
+          'all arguments [$input] - success',
+          externalId: 'all_arguments_${input}_success',
+          links: [Link('https://www.example.org/')],
+          tags: ['tag1'],
+          title: 'title',
+          workItemsIds: ['46256'],
+          () => {});
+
+      tmsTest(
+          'all arguments [$input] - failed',
+          externalId: 'all_arguments_${input}_failed',
+          links: [Link('https://www.example.org/')],
+          tags: ['tag1'],
+          title: 'title',
+          workItemsIds: ['46256'],
+          () => expect(0, 1));
+    }
   });
 }

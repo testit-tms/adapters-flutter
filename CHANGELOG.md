@@ -7,7 +7,14 @@ The format is based on Keep a Changelog and this project adheres to Semantic Ver
 
 ### Added
 
-- examples.
+- test examples.
+
+### Fixed
+
+- addLink & addLinks functions.
+- check action.
+- externalId resolver.
+- test name.
 
 ## [1.6.0] - 2024-07-03
 

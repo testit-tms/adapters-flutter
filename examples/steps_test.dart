@@ -8,44 +8,26 @@ void main() {
 
     setUp(() async => await _stepSuccess(description: 'setup'));
 
-    tmsTest(
-        'without args - success',
-        externalId: 'without_args_success',
-        () async => await _stepSuccess());
+    tmsTest('without args - success', () async => await _stepSuccess());
 
-    tmsTest(
-        'without args - failed',
-        externalId: 'with_args_failed',
-        () async => await _stepFailed());
+    tmsTest('without args - failed', () async => await _stepFailed());
 
-    tmsTest(
-        'with description - success',
-        externalId: 'with_description_success',
+    tmsTest('with description - success',
         () async => await _stepSuccess(description: 'description'));
 
-    tmsTest(
-        'with description - failed',
-        externalId: 'with_description_failed',
+    tmsTest('with description - failed',
         () async => await _stepFailed(description: 'description'));
 
-    tmsTest(
-        'without args & with nested step - success',
-        externalId: 'without_args_with_nested_step_success',
+    tmsTest('without args & with nested step - success',
         () async => await _stepNestedSuccess());
 
-    tmsTest(
-        'without args & with nested step - failed',
-        externalId: 'without_args_with_nested_step_failed',
+    tmsTest('without args & with nested step - failed',
         () async => await _stepNestedFailed());
 
-    tmsTest(
-        'with description & nested step - success',
-        externalId: 'with_description_with_nested_step_success',
+    tmsTest('with description & nested step - success',
         () async => await _stepNestedSuccess(description: 'description'));
 
-    tmsTest(
-        'with description & nested step - failed',
-        externalId: 'with_description_with_nested_step_failed',
+    tmsTest('with description & nested step - failed',
         () async => await _stepNestedFailed(description: 'description'));
 
     tearDown(() async => await _stepSuccess(description: 'teardown'));
