@@ -13,7 +13,7 @@ import 'package:meta/meta.dart';
 @internal
 Future<AutoTestFullModel?> createAutoTestAsync(
     final bool? automaticCreationTestCases,
-    String? projectId,
+    final String? projectId,
     final TestResultModel testResult) async {
   AutoTestFullModel? autoTest;
 

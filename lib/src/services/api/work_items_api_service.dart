@@ -7,7 +7,8 @@ import 'package:http/http.dart';
 import 'package:meta/meta.dart';
 
 @internal
-Future<Map<String, dynamic>?> getWorkItemByIdAsync(String? workItemId) async {
+Future<Map<String, dynamic>?> getWorkItemByIdAsync(
+    final String? workItemId) async {
   Map<String, dynamic>? workItem;
 
   final url = await getUrlAsync('/api/v2/workItems/$workItemId');
