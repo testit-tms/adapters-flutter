@@ -98,7 +98,7 @@ Future<void> _updateWorkItemsLinkedToAutoTestAsync(
     final bool? automaticUpdationLinksToTestCases,
     final String? autoTestId,
     final List<String> workItemIds) async {
-  var linkedIds = await getWorkItemsGlobalIdsLinkedToAutoTestAsync(autoTestId);
+  final linkedIds = await getWorkItemsGlobalIdsLinkedToAutoTestAsync(autoTestId);
 
   if (automaticUpdationLinksToTestCases ?? false) {
     await unlinkAutoTestFromWorkItemsAsync(

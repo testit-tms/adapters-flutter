@@ -111,7 +111,8 @@ void tmsTest(final String description, final dynamic Function() body,
       }
     });
 
-void tmsTestWidgets(String description, WidgetTesterCallback callback,
+void tmsTestWidgets(
+    final String description, final WidgetTesterCallback callback,
     {final String? externalId,
     final List<Link>? links,
     final int? retry,
@@ -212,17 +213,17 @@ void tmsTestWidgets(String description, WidgetTesterCallback callback,
 }
 
 String? _getExternalId(final String? externalId, final String? testName) {
-  var result =
+  var output =
       (externalId == null || externalId.isEmpty) ? testName : externalId;
 
-  if (result == null || result.isEmpty) {
-    return result;
+  if (output == null || output.isEmpty) {
+    return output;
   }
 
   final buffer = StringBuffer();
   final expression = RegExp(r'^[a-zA-Z0-9]+$');
 
-  for (final rune in result.runes) {
+  for (final rune in output.runes) {
     final char = String.fromCharCode(rune);
 
     if (expression.hasMatch(char)) {
@@ -230,9 +231,9 @@ String? _getExternalId(final String? externalId, final String? testName) {
     }
   }
 
-  result = buffer.toString().toLowerCase();
+  output = buffer.toString().toLowerCase();
 
-  return result;
+  return output;
 }
 
 String? _getGroupName() {
