@@ -5,8 +5,9 @@ import 'package:adapters_flutter/adapters_flutter.dart';
 void main() {
   group('link', () {
     test('create', () {
-      expect(() => Link('', description: '', title: '', type: LinkType.issue),
-          returnsNormally);
+      expect(() {
+        return Link('', description: '', title: '', type: LinkType.issue);
+      }, returnsNormally);
     });
   });
 }

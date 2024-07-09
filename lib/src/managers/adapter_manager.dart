@@ -23,7 +23,7 @@ Future<void> addAttachment(final String filePath) async {
         ? file
         : File(join(Directory.current.path, filePath));
     if (await file.exists()) {
-      final attachment = await createAttachmentsAsync(config, file);
+      final attachment = await createAttachmentsAsync(file);
       await updateTestResultAttachmentsAsync(toAttachmentPutModel(attachment));
     } else {
       _logger.i('Attachment file $filePath not exists.');
