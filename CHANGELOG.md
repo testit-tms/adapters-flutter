@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.  
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
 
+## [1.8.1] - 2024-07-09
+
+### Changed
+
+- api services refactoring.
+
+### Fixed
+
+- flutter actions.
+
 ## [1.8.0] - 2024-07-09
 
 ### Added

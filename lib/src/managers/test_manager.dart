@@ -37,7 +37,8 @@ void tmsTest(final String description, final dynamic Function() body,
       final config = await createConfigOnceAsync();
 
       if (config.testIt ?? true) {
-        if (!await checkTestNeedsToBeRunAsync(config, externalId)) {
+        if (!await checkTestNeedsToBeRunAsync(
+            config.adapterMode, externalId, config.testRunId)) {
           return;
         }
 
@@ -45,9 +46,10 @@ void tmsTest(final String description, final dynamic Function() body,
         links?.forEach(
             (final link) => validateUriArgument('Link url', link.url));
         tags?.forEach((final tag) => validateStringArgument('Tag', tag));
-        await validateWorkItemsIdsAsync(config, workItemsIds);
+        await validateWorkItemsIdsAsync(workItemsIds);
 
-        await tryCreateTestRunOnceAsync(config);
+        await tryCreateTestRunOnceAsync(
+            config.adapterMode, config.projectId, config.testRunName);
         await createEmptyTestResultAsync();
 
         final localResult = TestResultModel();
@@ -133,7 +135,8 @@ void tmsTestWidgets(String description, WidgetTesterCallback callback,
       final config = await createConfigOnceAsync();
 
       if (config.testIt ?? true) {
-        if (!await checkTestNeedsToBeRunAsync(config, externalId)) {
+        if (!await checkTestNeedsToBeRunAsync(
+            config.adapterMode, externalId, config.testRunId)) {
           return;
         }
 
@@ -141,9 +144,10 @@ void tmsTestWidgets(String description, WidgetTesterCallback callback,
         links?.forEach(
             (final link) => validateUriArgument('Link url', link.url));
         tags?.forEach((final tag) => validateStringArgument('Tag', tag));
-        await validateWorkItemsIdsAsync(config, workItemsIds);
+        await validateWorkItemsIdsAsync(workItemsIds);
 
-        await tryCreateTestRunOnceAsync(config);
+        await tryCreateTestRunOnceAsync(
+            config.adapterMode, config.projectId, config.testRunName);
         await createEmptyTestResultAsync();
 
         final localResult = TestResultModel();

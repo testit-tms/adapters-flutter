@@ -14,15 +14,15 @@ final _lock = Lock();
 final _testRunExternalIds = [];
 
 @internal
-Future<bool> checkTestNeedsToBeRunAsync(
-    final ConfigModel config, final String? externalId) async {
+Future<bool> checkTestNeedsToBeRunAsync(final int? adapterMode,
+    final String? externalId, final String? testRunId) async {
   var isTestNeedsToBeRun = true;
 
-  if (config.adapterMode == 0) {
+  if (adapterMode == 0) {
     await _lock.synchronized(() async {
       if (!_isTestRunExternalIdsGot) {
         _testRunExternalIds
-            .addAll(await getExternalIdsFromTestRunAsync(config));
+            .addAll(await getExternalIdsFromTestRunAsync(testRunId));
         _isTestRunExternalIdsGot = true;
       }
     });
@@ -37,7 +37,7 @@ Future<bool> checkTestNeedsToBeRunAsync(
 
 @internal
 Future<String?> getFirstNotFoundWorkItemIdAsync(
-    final ConfigModel config, final List<String>? workItemsIds) async {
+    final List<String>? workItemsIds) async {
   String? firstNotFoundWorkItemId;
 
   if (workItemsIds == null || workItemsIds.isEmpty) {
@@ -45,7 +45,7 @@ Future<String?> getFirstNotFoundWorkItemIdAsync(
   }
 
   for (final id in workItemsIds) {
-    final workItem = await getWorkItemByIdAsync(config, id);
+    final workItem = await getWorkItemByIdAsync(id);
 
     if (workItem == null || workItem.isEmpty) {
       firstNotFoundWorkItemId = id;
@@ -59,45 +59,50 @@ Future<String?> getFirstNotFoundWorkItemIdAsync(
 @internal
 Future<void> processTestResultAsync(
     final ConfigModel config, final TestResultModel testResult) async {
-  var autoTest =
-      await getAutoTestByExternalIdAsync(config, testResult.externalId);
+  var autoTest = await getAutoTestByExternalIdAsync(
+      config.projectId, testResult.externalId);
 
   if (autoTest == null) {
-    autoTest = await createAutoTestAsync(config, testResult);
+    autoTest = await createAutoTestAsync(
+        config.automaticCreationTestCases, config.projectId, testResult);
   } else {
     testResult.isFlaky = autoTest.isFlaky ?? false;
-    await updateAutoTestAsync(config, testResult);
+    await updateAutoTestAsync(config.projectId, testResult);
   }
 
   if (testResult.workItemIds.isNotEmpty) {
     await _updateWorkItemsLinkedToAutoTestAsync(
-        autoTest?.id, config, testResult.workItemIds);
+        config.automaticUpdationLinksToTestCases,
+        autoTest?.id,
+        testResult.workItemIds);
   }
 
-  await submitResultToTestRunAsync(config, testResult);
+  await submitResultToTestRunAsync(
+      config.configurationId, testResult, config.testRunId);
 }
 
 @internal
-Future<void> tryCreateTestRunOnceAsync(final ConfigModel config) async {
-  if (config.adapterMode == 2) {
+Future<void> tryCreateTestRunOnceAsync(final int? adapterMode,
+    final String? projectId, final String? testRunName) async {
+  if (adapterMode == 2) {
     await _lock.synchronized(() async {
       if (!_isTestRunCreated) {
-        await createEmptyTestRunAsync(config);
+        await createEmptyTestRunAsync(projectId, testRunName);
         _isTestRunCreated = true;
       }
     });
   }
 }
 
-Future<void> _updateWorkItemsLinkedToAutoTestAsync(final String? autoTestId,
-    final ConfigModel config, final List<String> workItemIds) async {
-  var linkedIds =
-      await getWorkItemsGlobalIdsLinkedToAutoTestAsync(autoTestId, config);
+Future<void> _updateWorkItemsLinkedToAutoTestAsync(
+    final bool? automaticUpdationLinksToTestCases,
+    final String? autoTestId,
+    final List<String> workItemIds) async {
+  var linkedIds = await getWorkItemsGlobalIdsLinkedToAutoTestAsync(autoTestId);
 
-  if (config.automaticUpdationLinksToTestCases ?? false) {
+  if (automaticUpdationLinksToTestCases ?? false) {
     await unlinkAutoTestFromWorkItemsAsync(
         autoTestId,
-        config,
         linkedIds
             .where((final linkedId) => !workItemIds.contains(linkedId))
             .toList());
@@ -105,7 +110,6 @@ Future<void> _updateWorkItemsLinkedToAutoTestAsync(final String? autoTestId,
 
   await linkWorkItemsToAutoTestAsync(
       autoTestId,
-      config,
       workItemIds
           .where((final workItemId) => !linkedIds.contains(workItemId))
           .toList());

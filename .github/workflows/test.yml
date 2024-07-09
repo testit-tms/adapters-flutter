@@ -10,6 +10,7 @@ on:
 
 env:
   DOTNET_VERSION: 8
+  FLUTTER_VERSION: ${{ secrets.FLUTTER_VERSION }}
   GITHUB_PAT: ${{ secrets.SERVICE_ACCOUNT_TOKEN }}
   PYTHON_VERSION: 3.12
   TEMP_FILE: tmp/output.txt
@@ -51,7 +52,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version-file: pubspec.yaml
+          flutter-version: ${{ env.FLUTTER_VERSION }}
 
       - name: Setup dotnet
         uses: actions/setup-dotnet@v4

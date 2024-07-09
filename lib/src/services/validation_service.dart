@@ -95,10 +95,9 @@ void validateUriArgument(final String name, final String? value) {
 }
 
 @internal
-Future<void> validateWorkItemsIdsAsync(
-    final ConfigModel config, final List<String>? workItemsIds) async {
+Future<void> validateWorkItemsIdsAsync(final List<String>? workItemsIds) async {
   final notFoundWorkItemId =
-      await getFirstNotFoundWorkItemIdAsync(config, workItemsIds);
+      await getFirstNotFoundWorkItemIdAsync(workItemsIds);
 
   if (notFoundWorkItemId == null) {
     return;
