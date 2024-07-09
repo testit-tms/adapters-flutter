@@ -196,7 +196,7 @@ String _getTestId() {
   return testId;
 }
 
-void _updateCurrentStepAttachments(final AttachmentPutModel attachment) async {
+void _updateCurrentStepAttachments(final AttachmentPutModel attachment) {
   final currentStep = _getCurrentStep();
   currentStep?.attachments.add(attachment);
 }
