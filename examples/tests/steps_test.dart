@@ -4,68 +4,135 @@ import 'package:adapters_flutter/adapters_flutter.dart';
 
 void main() {
   group('steps', () {
-    setUpAll(() async => await _stepSuccess(description: 'setup all'));
+    Future<void> stepSuccess({final String? description}) async {
+      await step('success step: $description', description: description, () {
+        expect(0, 0);
+      });
+    }
 
-    setUp(() async => await _stepSuccess(description: 'setup'));
+    Future<void> stepFailed({final String? description}) async {
+      await step('failed step: $description', description: description, () {
+        expect(1, 0);
+      });
+    }
 
-    tmsTest('without args - success', () async => await _stepSuccess());
+    Future<void> stepNestedSuccess({final String? description}) async {
+      await step('root step', description: description, () async {
+        await step('child step: $description', description: description, () {
+          expect(0, 0);
+        });
+      });
+    }
 
-    tmsTest('without args - failed', () async => await _stepFailed());
+    Future<void> stepNestedFailed({final String? description}) async {
+      await step('root step', description: description, () async {
+        await step('child step: $description', description: description, () {
+          expect(1, 0);
+        });
+      });
+    }
 
-    tmsTest('with description - success',
-        () async => await _stepSuccess(description: 'description'));
+    group('tms test', () {
+      setUpAll(() async {
+        await stepSuccess(description: 'setup all');
+      });
 
-    tmsTest('with description - failed',
-        () async => await _stepFailed(description: 'description'));
+      setUp(() async {
+        await stepSuccess(description: 'setup');
+      });
 
-    tmsTest('without args & with nested step - success',
-        () async => await _stepNestedSuccess());
+      tmsTest('without args - success', () async {
+        await stepSuccess();
+      });
 
-    tmsTest('without args & with nested step - failed',
-        () async => await _stepNestedFailed());
+      tmsTest('without args - failed', () async {
+        await stepFailed();
+      });
 
-    tmsTest('with description & nested step - success',
-        () async => await _stepNestedSuccess(description: 'description'));
+      tmsTest('with description - success', () async {
+        await stepSuccess(description: 'description');
+      });
 
-    tmsTest('with description & nested step - failed',
-        () async => await _stepNestedFailed(description: 'description'));
+      tmsTest('with description - failed', () async {
+        await stepFailed(description: 'description');
+      });
 
-    tearDown(() async => await _stepSuccess(description: 'teardown'));
+      tmsTest('without args & with nested step - success', () async {
+        await stepNestedSuccess();
+      });
 
-    tearDownAll(() async => await _stepSuccess(description: 'teardown all'));
+      tmsTest('without args & with nested step - failed', () async {
+        await stepNestedFailed();
+      });
+
+      tmsTest('with description & nested step - success', () async {
+        await stepNestedSuccess(description: 'description');
+      });
+
+      tmsTest('with description & nested step - failed', () async {
+        await stepNestedFailed(description: 'description');
+      });
+
+      tearDown(() async {
+        await stepSuccess(description: 'teardown');
+      });
+
+      tearDownAll(() async {
+        await stepSuccess(description: 'teardown all');
+      });
+    });
+
+    group('tms test widgets', () {
+      setUpAll(() async {
+        await stepSuccess(description: 'setup all');
+      });
+
+      setUp(() async {
+        await stepSuccess(description: 'setup');
+      });
+
+      tmsTestWidgets('without args - success', (tester) async {
+        await stepSuccess();
+      });
+
+      tmsTestWidgets('without args - failed', (tester) async {
+        await stepFailed();
+      });
+
+      tmsTestWidgets('with description - success', (tester) async {
+        await stepSuccess(description: 'description');
+      });
+
+      tmsTestWidgets('with description - failed', (tester) async {
+        await stepFailed(description: 'description');
+      });
+
+      tmsTestWidgets('without args & with nested step - success',
+          (tester) async {
+        await stepNestedSuccess();
+      });
+
+      tmsTestWidgets('without args & with nested step - failed',
+          (tester) async {
+        await stepNestedFailed();
+      });
+
+      tmsTestWidgets('with description & nested step - success',
+          (tester) async {
+        await stepNestedSuccess(description: 'description');
+      });
+
+      tmsTestWidgets('with description & nested step - failed', (tester) async {
+        await stepNestedFailed(description: 'description');
+      });
+
+      tearDown(() async {
+        await stepSuccess(description: 'teardown');
+      });
+
+      tearDownAll(() async {
+        await stepSuccess(description: 'teardown all');
+      });
+    });
   });
-}
-
-Future<void> _stepSuccess({final String? description}) async {
-  await step(
-      'success step: $description',
-      description: description,
-      () => expect(0, 0));
-}
-
-Future<void> _stepFailed({final String? description}) async {
-  await step(
-      'failed step: $description',
-      description: description,
-      () => expect(1, 0));
-}
-
-Future<void> _stepNestedSuccess({final String? description}) async {
-  await step(
-      'root step',
-      description: description,
-      () async => await step(
-          'child step: $description',
-          description: description,
-          () => expect(0, 0)));
-}
-
-Future<void> _stepNestedFailed({final String? description}) async {
-  await step(
-      'root step',
-      description: description,
-      () async => await step(
-          'child step: $description',
-          description: description,
-          () => expect(1, 0)));
 }

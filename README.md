@@ -106,40 +106,78 @@ Description of functions:
 #!/usr/bin/env dart
 
 import 'package:adapters_flutter/adapters_flutter.dart';
-import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('example group', () {
-    setUpAll(() => expect(0, 0));
+    setUpAll(() {
+      expect(0, 0);
+    });
 
-    setUp(() => expect(1, 1));
+    setUp(() {
+      expect(1, 1);
+    });
 
     tmsTest('example test',
-        externalId: 'example_externalId',
-        links: [Link('https://www.example.org/')],
-        tags: ['example_tag'],
-        title: 'example_title',
-        workItemsIds: ['45876'], () async {
-          await step('success step', () => expect(0, 0));
+            externalId: 'example_externalId',
+            links: [Link('https://www.example.org/')],
+            tags: ['example_tag'],
+            title: 'example_title',
+            workItemsIds: ['46343'], () async {
+              await step('success step', () {
+                expect(0, 0);
+              });
 
-          await step('success step with attachment', () async => await addAttachment('avatar.png'));
+              await step('success step with attachment', () async {
+                await addAttachment('avatar.png');
+              });
 
-          await step('success step with body', () {
-            const actual = 0;
-            expect(actual, 0);
-          });
+              await step('success step with link', () async {
+                await addLink('https://www.example.org/');
+              });
 
-          await step(
-              'success step with link', () async => await addLink('https://www.example.org/'));
+              await step('success step with message', () async {
+                await addMessage('example message');
+              });
 
-          await step('success step with message', () async => await addMessage('example message'));
+              await step('failed step', () {
+                throw Exception('example exception.');
+              });
+            });
 
-          await step('failed step', () => throw Exception('example exception.'));
-        });
+    tmsTestWidgets('example test widgets',
+            externalId: 'example_widgets_externalId',
+            links: [Link('https://www.example.org/')],
+            tags: ['example_tag_widgets'],
+            title: 'example_title_widgets',
+            workItemsIds: ['46343'], (tester) async {
+              await step('success step', () {
+                expect(0, 0);
+              });
 
-    tearDown(() => expect(2, 2));
+              await step('success step with attachment', () async {
+                await addAttachment('avatar.png');
+              });
 
-    tearDownAll(() => expect(3, 3));
+              await step('success step with link', () async {
+                await addLink('https://www.example.org/');
+              });
+
+              await step('success step with message', () async {
+                await addMessage('example message');
+              });
+
+              await step('failed step', () {
+                throw Exception('example exception.');
+              });
+            });
+
+    tearDown(() {
+      expect(2, 2);
+    });
+
+    tearDownAll(() {
+      expect(3, 3);
+    });
   });
 }
 ```

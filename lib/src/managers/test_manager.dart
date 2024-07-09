@@ -33,6 +33,7 @@ void tmsTest(final String description, final dynamic Function() body,
         tags: tags,
         testOn: testOn,
         timeout: timeout, () async {
+      HttpOverrides.global = null;
       final config = await createConfigOnceAsync();
 
       if (config.testIt ?? true) {
@@ -107,6 +108,104 @@ void tmsTest(final String description, final dynamic Function() body,
         await body.call();
       }
     });
+
+void tmsTestWidgets(String description, WidgetTesterCallback callback,
+    {final String? externalId,
+    final List<Link>? links,
+    final int? retry,
+    final bool semanticsEnabled = true,
+    final String? skip,
+    final List<String>? tags,
+    final Timeout? timeout,
+    final String? title,
+    final TestVariant<Object?> variant = const DefaultTestVariant(),
+    final List<String>? workItemsIds}) async {
+  testWidgets(description,
+      experimentalLeakTesting: null,
+      retry: retry,
+      semanticsEnabled: semanticsEnabled,
+      skip: skip?.isNotEmpty,
+      tags: tags,
+      timeout: timeout,
+      variant: variant, (tester) async {
+    await tester.runAsync(() async {
+      HttpOverrides.global = null;
+      final config = await createConfigOnceAsync();
+
+      if (config.testIt ?? true) {
+        if (!await checkTestNeedsToBeRunAsync(config, externalId)) {
+          return;
+        }
+
+        validateStringArgument('Description', description);
+        links?.forEach(
+            (final link) => validateUriArgument('Link url', link.url));
+        tags?.forEach((final tag) => validateStringArgument('Tag', tag));
+        await validateWorkItemsIdsAsync(config, workItemsIds);
+
+        await tryCreateTestRunOnceAsync(config);
+        await createEmptyTestResultAsync();
+
+        final localResult = TestResultModel();
+        final liveTest = Invoker.current?.liveTest;
+        final startedOn = DateTime.now();
+
+        localResult.classname = _getGroupName();
+        localResult.description = description;
+        localResult.externalId =
+            _getExternalId(externalId, liveTest?.test.name);
+        localResult.labels = tags ?? [];
+        localResult.links = links ?? [];
+        localResult.methodName = liveTest?.test.name ?? '';
+        localResult.name = (liveTest?.test.name ?? '')
+            .replaceAll(_getGroupName() ?? '', '')
+            .trim();
+        localResult.namespace =
+            basenameWithoutExtension(liveTest?.suite.path ?? '');
+        localResult.startedOn = startedOn;
+        localResult.title = title ?? liveTest?.test.name ?? '';
+        localResult.workItemIds = workItemsIds ?? [];
+
+        Exception? exception;
+        StackTrace? stacktrace;
+
+        try {
+          if (skip != null && skip.isNotEmpty) {
+            localResult.message = skip;
+            localResult.outcome = Outcome.skipped;
+          } else {
+            await callback(tester);
+            localResult.outcome = Outcome.passed;
+          }
+        } on Exception catch (e, s) {
+          localResult.message = e.toString();
+          localResult.outcome = Outcome.failed;
+          localResult.traces = s.toString();
+
+          exception = e;
+          stacktrace = s;
+        } finally {
+          final completedOn = DateTime.now();
+          localResult.completedOn = completedOn;
+          localResult.duration =
+              completedOn.difference(startedOn).inMilliseconds;
+
+          await updateTestResultAsync(localResult);
+          await addSetupToTestResultAsync();
+          final testResult = await removeTestResultAsync();
+          await processTestResultAsync(config, testResult);
+
+          if (exception != null) {
+            _logger.e('$exception${Platform.lineTerminator}$stacktrace.');
+            throw exception;
+          }
+        }
+      } else {
+        await callback(tester);
+      }
+    });
+  });
+}
 
 String? _getExternalId(final String? externalId, final String? testName) {
   var result =
