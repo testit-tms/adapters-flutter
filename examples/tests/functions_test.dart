@@ -1,31 +1,34 @@
 #!/usr/bin/env dart
 
+import 'dart:io';
+
 import 'package:adapters_flutter/adapters_flutter.dart';
+import 'package:path/path.dart';
 
 void main() {
   group('functions', () {
+    String getAttachment(String file) {
+      return join(Directory.current.path, 'examples', 'attachments', file);
+    }
+
     group('tms test', () {
       tmsTest('add attachment - success', () async {
-        await addAttachment('./examples/attachments/file1.txt');
+        await addAttachment(getAttachment('file1.txt'));
       });
 
       tmsTest('add attachment - failed', () async {
-        await addAttachment('./examples/attachments/file2.json');
+        await addAttachment(getAttachment('file2.json'));
         expect(0, 1);
       });
 
       tmsTest('add attachments - success', () async {
-        await addAttachments([
-          './examples/attachments/file1.txt',
-          './examples/attachments/file2.json'
-        ]);
+        await addAttachments(
+            [getAttachment('file1.txt'), getAttachment('file2.json')]);
       });
 
       tmsTest('add attachments - failed', () async {
-        await addAttachments([
-          './examples/attachments/file1.txt',
-          './examples/attachments/file2.json'
-        ]);
+        await addAttachments(
+            [getAttachment('file1.txt'), getAttachment('file2.json')]);
         expect(0, 1);
       });
 
@@ -59,26 +62,22 @@ void main() {
 
     group('tms test widgets', () {
       tmsTestWidgets('add attachment - success', (tester) async {
-        await addAttachment('./examples/attachments/file1.txt');
+        await addAttachment(getAttachment('file1.txt'));
       });
 
       tmsTestWidgets('add attachment - failed', (tester) async {
-        await addAttachment('./examples/attachments/file2.json');
+        await addAttachment(getAttachment('file2.json'));
         expect(0, 1);
       });
 
       tmsTestWidgets('add attachments - success', (tester) async {
-        await addAttachments([
-          './examples/attachments/file1.txt',
-          './examples/attachments/file2.json'
-        ]);
+        await addAttachments(
+            [getAttachment('file1.txt'), getAttachment('file2.json')]);
       });
 
       tmsTestWidgets('add attachments - failed', (tester) async {
-        await addAttachments([
-          './examples/attachments/file1.txt',
-          './examples/attachments/file2.json'
-        ]);
+        await addAttachments(
+            [getAttachment('file1.txt'), getAttachment('file2.json')]);
         expect(0, 1);
       });
 

@@ -9,7 +9,7 @@ import 'package:adapters_flutter/src/services/config/env_config_service.dart';
 import 'package:adapters_flutter/src/services/config/file_config_service.dart';
 import 'package:adapters_flutter/src/services/validation_service.dart';
 import 'package:meta/meta.dart';
-import 'package:path/path.dart' show join;
+import 'package:path/path.dart';
 import 'package:synchronized/synchronized.dart';
 
 ConfigModel? _config;
