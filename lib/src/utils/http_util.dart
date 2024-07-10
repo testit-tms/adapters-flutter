@@ -1,8 +1,7 @@
-import 'dart:io';
-
 import 'package:adapters_flutter/src/managers/config_manager.dart';
 import 'package:adapters_flutter/src/managers/log_manager.dart';
 import 'package:adapters_flutter/src/models/exception_model.dart';
+import 'package:adapters_flutter/src/utils/platform_util.dart';
 import 'package:http/http.dart';
 import 'package:meta/meta.dart';
 
@@ -38,7 +37,7 @@ Future<Response?> getOkResponseOrNullAsync(final BaseRequest request) async {
       response = null;
     }
   } catch (exception, stacktrace) {
-    _logger.i('$exception${Platform.lineTerminator}$stacktrace.');
+    _logger.i('$exception$lineSeparator$stacktrace.');
   }
 
   return response;

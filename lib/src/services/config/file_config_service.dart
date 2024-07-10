@@ -6,7 +6,7 @@ import 'package:adapters_flutter/src/models/config_model.dart';
 import 'package:meta/meta.dart';
 import 'package:properties/properties.dart';
 
-final _configFileWarnings = [];
+final List<String> _configFileWarnings = [];
 
 @internal
 Iterable<String> getConfigFileWarnings() sync* {

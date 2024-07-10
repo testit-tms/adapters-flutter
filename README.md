@@ -5,8 +5,8 @@
 ### Requirements
 
 ```yaml
-sdk: ">=3.4.3 <4.0.0"
-flutter: ">=3.22.2"
+sdk: ">=3.0.0 <4.0.0"
+flutter: ">=3.10.0"
 ```
 
 ### Installation
@@ -27,7 +27,7 @@ flutter pub add adapters_flutter
 
 | Test IT | adapters_flutter |
 |---------|------------------|
-| 5.0     | 1.9.0+           | 
+| 5.0     | 2.0.0+           | 
 
 ## Usage
 
