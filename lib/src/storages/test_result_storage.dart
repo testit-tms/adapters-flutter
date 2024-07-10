@@ -1,11 +1,11 @@
 #!/usr/bin/env dart
 
 import 'dart:async';
-import 'dart:io';
 
 import 'package:adapters_flutter/src/models/api/attachment_api_model.dart';
 import 'package:adapters_flutter/src/models/api/link_api_model.dart';
 import 'package:adapters_flutter/src/models/test_result_model.dart';
+import 'package:adapters_flutter/src/utils/platform_util.dart';
 import 'package:meta/meta.dart';
 import 'package:synchronized/synchronized.dart';
 import 'package:test_api/src/backend/invoker.dart'; // ignore: depend_on_referenced_packages, implementation_imports
@@ -102,8 +102,8 @@ Future<void> updateTestResultAsync(final TestResultModel testResult) async =>
 
           if (testResult.message?.isNotEmpty ?? false) {
             value.message = value.message?.isEmpty ?? true
-                ? '${testResult.message}${Platform.lineTerminator}'
-                : '${value.message}${Platform.lineTerminator}${testResult.message}';
+                ? '${testResult.message}$lineSeparator'
+                : '${value.message}$lineSeparator${testResult.message}';
           }
 
           value.methodName = testResult.methodName;
@@ -144,8 +144,8 @@ Future<void> updateTestResultMessageAsync(final String message) async =>
     await _lock.synchronized(() => _testResults.update(_getTestId(), (value) {
           if (message.isNotEmpty) {
             value.message = value.message?.isEmpty ?? true
-                ? '$message${Platform.lineTerminator}'
-                : '${value.message}${Platform.lineTerminator}$message';
+                ? '$message$lineSeparator'
+                : '${value.message}$lineSeparator$message';
           }
 
           return value;

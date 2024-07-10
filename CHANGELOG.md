@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.  
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
 
+## [2.0.0] - 2024-07-10
+
+### Added
+
+- dart 3.0.0 support (flutter >=3.10.0).
+
 ## [1.9.0] - 2024-07-10
 
 ### Added

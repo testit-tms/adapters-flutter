@@ -10,6 +10,7 @@ import 'package:adapters_flutter/src/models/api/link_api_model.dart';
 import 'package:adapters_flutter/src/models/test_result_model.dart';
 import 'package:adapters_flutter/src/services/validation_service.dart';
 import 'package:adapters_flutter/src/storages/test_result_storage.dart';
+import 'package:adapters_flutter/src/utils/platform_util.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart';
 import 'package:test_api/src/backend/invoker.dart'; // ignore: depend_on_referenced_packages, implementation_imports
@@ -102,7 +103,7 @@ void tmsTest(final String description, final dynamic Function() body,
           await processTestResultAsync(config, testResult);
 
           if (exception != null) {
-            _logger.e('$exception${Platform.lineTerminator}$stacktrace.');
+            _logger.e('$exception$lineSeparator$stacktrace.');
             throw exception;
           }
         }
@@ -115,7 +116,6 @@ void tmsTestWidgets(
     final String description, final WidgetTesterCallback callback,
     {final String? externalId,
     final List<Link>? links,
-    final int? retry,
     final bool semanticsEnabled = true,
     final String? skip,
     final List<String>? tags,
@@ -124,8 +124,6 @@ void tmsTestWidgets(
     final TestVariant<Object?> variant = const DefaultTestVariant(),
     final List<String>? workItemsIds}) async {
   testWidgets(description,
-      experimentalLeakTesting: null,
-      retry: retry,
       semanticsEnabled: semanticsEnabled,
       skip: skip?.isNotEmpty,
       tags: tags,
@@ -201,7 +199,7 @@ void tmsTestWidgets(
           await processTestResultAsync(config, testResult);
 
           if (exception != null) {
-            _logger.e('$exception${Platform.lineTerminator}$stacktrace.');
+            _logger.e('$exception$lineSeparator$stacktrace.');
             throw exception;
           }
         }

@@ -1,26 +1,26 @@
 name: adapters_flutter
 description: The repository contains new versions of adapters for dart test frameworks.
-version: 1.9.0
+version: 2.0.0
 repository: https://github.com/testit-tms/adapters-flutter
 homepage: https://pub.dev/packages/adapters_flutter
 
 environment:
-  sdk: ">=3.4.3 <4.0.0"
-  flutter: ">=3.22.2"
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
 
 dependencies:
   logger: ^2.3.0
-  path: ^1.9.0
+  path: ^1.8.3
   properties: ^2.1.1
   synchronized: ^3.1.0+1
-  uuid: ^4.4.0
+  uuid: ^4.2.2
   flutter_test:
     sdk: flutter
-  mime: ^1.0.5
+  mime: ^1.0.4
   http_parser: ^4.0.2
-  test_api: ^0.7.0
-  meta: ^1.12.0
-  http: ^1.2.1
+  test_api: ^0.5.1
+  meta: ^1.9.1
+  http: ^1.1.0
 
 dev_dependencies:
-  flutter_lints: ^4.0.0
+  flutter_lints: ^3.0.1
