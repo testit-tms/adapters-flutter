@@ -25,9 +25,9 @@ flutter pub add adapters_flutter
 
 ## Compatibility
 
-| Test IT | Plugin Test IT Management |
-|---------|---------------------------|
-| 5.0     | 1.4.0+                    | 
+| Test IT | adapters_flutter |
+|---------|------------------|
+| 5.0     | 1.9.0+           | 
 
 ## Usage
 
