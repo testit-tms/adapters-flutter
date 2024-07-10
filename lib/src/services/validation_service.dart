@@ -83,14 +83,14 @@ void validateConfig(final ConfigModel? config) {
 @internal
 void validateStringArgument(final String name, final String? value) {
   if (value == null || value.isEmpty) {
-    throw TmsArgumentException('$name is invalid: "$value".');
+    _logAndThrow('$name is invalid: "$value".');
   }
 }
 
 @internal
 void validateUriArgument(final String name, final String? value) {
   if (value == null || !(Uri.tryParse(value)?.isAbsolute ?? false)) {
-    throw TmsArgumentException('$name is invalid: "$value".');
+    _logAndThrow('$name is invalid: "$value".');
   }
 }
 
@@ -104,8 +104,7 @@ Future<void> validateWorkItemsIdsAsync(
     return;
   }
 
-  throw TmsArgumentException(
-      'WorkItem with id "$notFoundWorkItemId" not found.');
+  _logAndThrow('WorkItem with id "$notFoundWorkItemId" not found.');
 }
 
 void _logAndThrow(final String message) {
