@@ -67,7 +67,7 @@ Future<AutoTestFullModel?> getAutoTestByExternalIdAsync(
 }
 
 @internal
-Future<List<String>> getWorkItemsGlobalIdsLinkedToAutoTestAsync(
+Future<Iterable<String>> getWorkItemsGlobalIdsLinkedToAutoTestAsync(
     final String? autoTestId) async {
   final List<String> globalIds = [];
 
@@ -79,7 +79,7 @@ Future<List<String>> getWorkItemsGlobalIdsLinkedToAutoTestAsync(
   final response = await getOkResponseOrNullAsync(request);
 
   if (response != null) {
-    globalIds.addAll((jsonDecode(response.body) as List<dynamic>)
+    globalIds.addAll((jsonDecode(response.body) as Iterable<dynamic>)
         .map((final workItem) => (workItem['globalId'] as int).toString()));
   }
 
@@ -88,7 +88,7 @@ Future<List<String>> getWorkItemsGlobalIdsLinkedToAutoTestAsync(
 
 @internal
 Future<void> linkWorkItemsToAutoTestAsync(
-    final String? autoTestId, final List<String> workItemIds) async {
+    final String? autoTestId, final Iterable<String> workItemIds) async {
   for (final id in workItemIds) {
     final url = await getUrlAsync('/api/v2/autoTests/$autoTestId/workItems');
     final request = Request('POST', url);
@@ -101,7 +101,7 @@ Future<void> linkWorkItemsToAutoTestAsync(
 
 @internal
 Future<void> unlinkAutoTestFromWorkItemsAsync(
-    final String? autoTestId, final List<String> workItemIds) async {
+    final String? autoTestId, final Iterable<String> workItemIds) async {
   for (final id in workItemIds) {
     final url = await getUrlAsync(
         '/api/v2/autoTests/$autoTestId/workItems?workItemId=$id');

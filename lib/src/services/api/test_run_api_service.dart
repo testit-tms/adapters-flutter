@@ -32,7 +32,7 @@ Future<void> createEmptyTestRunAsync(
 }
 
 @internal
-Future<List<String>> getExternalIdsFromTestRunAsync(
+Future<Iterable<String>> getExternalIdsFromTestRunAsync(
     final String? testRunId) async {
   final List<String> externalIds = [];
 

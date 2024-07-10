@@ -132,7 +132,7 @@ Future<void> updateTestResultAttachmentsAsync(
     });
 
 @internal
-Future<void> updateTestResultLinksAsync(final List<Link> links) async =>
+Future<void> updateTestResultLinksAsync(final Iterable<Link> links) async =>
     await _lock.synchronized(() => _testResults.update(_getTestId(), (value) {
           value.links.addAll(links);
 

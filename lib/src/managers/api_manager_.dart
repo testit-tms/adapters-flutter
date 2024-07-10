@@ -37,7 +37,7 @@ Future<bool> checkTestNeedsToBeRunAsync(final int? adapterMode,
 
 @internal
 Future<String?> getFirstNotFoundWorkItemIdAsync(
-    final List<String>? workItemsIds) async {
+    final Iterable<String>? workItemsIds) async {
   String? firstNotFoundWorkItemId;
 
   if (workItemsIds == null || workItemsIds.isEmpty) {
@@ -97,8 +97,9 @@ Future<void> tryCreateTestRunOnceAsync(final int? adapterMode,
 Future<void> _updateWorkItemsLinkedToAutoTestAsync(
     final bool? automaticUpdationLinksToTestCases,
     final String? autoTestId,
-    final List<String> workItemIds) async {
-  final linkedIds = await getWorkItemsGlobalIdsLinkedToAutoTestAsync(autoTestId);
+    final Iterable<String> workItemIds) async {
+  final linkedIds =
+      await getWorkItemsGlobalIdsLinkedToAutoTestAsync(autoTestId);
 
   if (automaticUpdationLinksToTestCases ?? false) {
     await unlinkAutoTestFromWorkItemsAsync(
