@@ -1,31 +1,36 @@
 #!/usr/bin/env dart
 
+import 'dart:io';
+
 import 'package:adapters_flutter/adapters_flutter.dart';
+import 'package:path/path.dart';
+
+final _attachments = join(Directory.current.path, 'examples', 'attachments');
+final _attachment1 = join(_attachments, 'file1.txt');
+final _attachment2 = join(_attachments, 'file2.json');
 
 void main() {
   group('functions', () {
+    String getAttachment(String file) {
+      return join(Directory.current.path, 'examples', 'attachments', file);
+    }
+
     group('tms test', () {
       tmsTest('add attachment - success', () async {
-        await addAttachment('./examples/attachments/file1.txt');
+        await addAttachment(_attachment1);
       });
 
       tmsTest('add attachment - failed', () async {
-        await addAttachment('./examples/attachments/file2.json');
+        await addAttachment(getAttachment('file2.json'));
         expect(0, 1);
       });
 
       tmsTest('add attachments - success', () async {
-        await addAttachments([
-          './examples/attachments/file1.txt',
-          './examples/attachments/file2.json'
-        ]);
+        await addAttachments([_attachment1, _attachment2]);
       });
 
       tmsTest('add attachments - failed', () async {
-        await addAttachments([
-          './examples/attachments/file1.txt',
-          './examples/attachments/file2.json'
-        ]);
+        await addAttachments([_attachment1, _attachment2]);
         expect(0, 1);
       });
 
@@ -59,26 +64,20 @@ void main() {
 
     group('tms test widgets', () {
       tmsTestWidgets('add attachment - success', (tester) async {
-        await addAttachment('./examples/attachments/file1.txt');
+        await addAttachment(_attachment1);
       });
 
       tmsTestWidgets('add attachment - failed', (tester) async {
-        await addAttachment('./examples/attachments/file2.json');
+        await addAttachment(getAttachment('file2.json'));
         expect(0, 1);
       });
 
       tmsTestWidgets('add attachments - success', (tester) async {
-        await addAttachments([
-          './examples/attachments/file1.txt',
-          './examples/attachments/file2.json'
-        ]);
+        await addAttachments([_attachment1, _attachment2]);
       });
 
       tmsTestWidgets('add attachments - failed', (tester) async {
-        await addAttachments([
-          './examples/attachments/file1.txt',
-          './examples/attachments/file2.json'
-        ]);
+        await addAttachments([_attachment1, _attachment2]);
         expect(0, 1);
       });
 

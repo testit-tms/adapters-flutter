@@ -32,7 +32,7 @@ Future<void> createEmptyTestRunAsync(
 }
 
 @internal
-Future<List<String>> getExternalIdsFromTestRunAsync(
+Future<Iterable<String>> getExternalIdsFromTestRunAsync(
     final String? testRunId) async {
   final List<String> externalIds = [];
 
@@ -44,7 +44,7 @@ Future<List<String>> getExternalIdsFromTestRunAsync(
 
   if (response != null) {
     final testResults = ((jsonDecode(response.body)
-            as Map<String, dynamic>)['testResults'] as List)
+            as Map<String, dynamic>)['testResults'] as Iterable)
         .cast<Map<String, dynamic>>();
 
     for (final result in testResults) {

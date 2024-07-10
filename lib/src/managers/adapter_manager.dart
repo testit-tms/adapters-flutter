@@ -9,7 +9,7 @@ import 'package:adapters_flutter/src/managers/log_manager.dart';
 import 'package:adapters_flutter/src/models/api/link_api_model.dart';
 import 'package:adapters_flutter/src/services/api/attachments_api_service.dart';
 import 'package:adapters_flutter/src/storages/test_result_storage.dart';
-import 'package:path/path.dart' show join;
+import 'package:path/path.dart';
 
 final _logger = getLogger();
 
@@ -31,7 +31,7 @@ Future<void> addAttachment(final String filePath) async {
   }
 }
 
-Future<void> addAttachments(final List<String> filesPaths) async =>
+Future<void> addAttachments(final Iterable<String> filesPaths) async =>
     await Future.wait(filesPaths.map(addAttachment));
 
 Future<void> addLink(final String url,
@@ -46,7 +46,7 @@ Future<void> addLink(final String url,
   }
 }
 
-Future<void> addLinks(final List<Link> links) async {
+Future<void> addLinks(final Iterable<Link> links) async {
   final config = await createConfigOnceAsync();
 
   if (config.testIt ?? true) {

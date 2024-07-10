@@ -83,19 +83,20 @@ void validateConfig(final ConfigModel? config) {
 @internal
 void validateStringArgument(final String name, final String? value) {
   if (value == null || value.isEmpty) {
-    throw TmsArgumentException('$name is invalid: "$value".');
+    _logAndThrow('$name is invalid: "$value".');
   }
 }
 
 @internal
 void validateUriArgument(final String name, final String? value) {
   if (value == null || !(Uri.tryParse(value)?.isAbsolute ?? false)) {
-    throw TmsArgumentException('$name is invalid: "$value".');
+    _logAndThrow('$name is invalid: "$value".');
   }
 }
 
 @internal
-Future<void> validateWorkItemsIdsAsync(final List<String>? workItemsIds) async {
+Future<void> validateWorkItemsIdsAsync(
+    final Iterable<String>? workItemsIds) async {
   final notFoundWorkItemId =
       await getFirstNotFoundWorkItemIdAsync(workItemsIds);
 
@@ -103,8 +104,7 @@ Future<void> validateWorkItemsIdsAsync(final List<String>? workItemsIds) async {
     return;
   }
 
-  throw TmsArgumentException(
-      'WorkItem with id "$notFoundWorkItemId" not found.');
+  _logAndThrow('WorkItem with id "$notFoundWorkItemId" not found.');
 }
 
 void _logAndThrow(final String message) {

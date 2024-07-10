@@ -1,13 +1,17 @@
 #!/usr/bin/env dart
 
+import 'dart:async';
+
 import 'package:adapters_flutter/src/enums/outcome_enum.dart';
 import 'package:adapters_flutter/src/managers/config_manager.dart';
 import 'package:adapters_flutter/src/models/api/attachment_api_model.dart';
 import 'package:adapters_flutter/src/storages/test_result_storage.dart';
 import 'package:test_api/src/backend/invoker.dart'; // ignore: depend_on_referenced_packages, implementation_imports
 
-Future<void> step(final String title, final dynamic Function() body,
+FutureOr<T?> step<T>(final String title, final FutureOr<T?> Function() body,
     {final String? description}) async {
+  T? result;
+
   final config = await createConfigOnceAsync();
 
   if ((config.testIt ?? true) && !_isTeardownAllStep()) {
@@ -17,7 +21,7 @@ Future<void> step(final String title, final dynamic Function() body,
     final startedOn = DateTime.now();
 
     try {
-      await body.call();
+      result = await body.call();
       localStep.outcome = Outcome.passed;
     } catch (_) {
       localStep.outcome = Outcome.failed;
@@ -35,8 +39,10 @@ Future<void> step(final String title, final dynamic Function() body,
       await updateCurrentStepAsync(localStep);
     }
   } else {
-    await body.call();
+    result = await body.call();
   }
+
+  return result;
 }
 
 bool _isTeardownAllStep() =>

@@ -9,7 +9,7 @@ import 'package:adapters_flutter/src/services/config/env_config_service.dart';
 import 'package:adapters_flutter/src/services/config/file_config_service.dart';
 import 'package:adapters_flutter/src/services/validation_service.dart';
 import 'package:meta/meta.dart';
-import 'package:path/path.dart' show join;
+import 'package:path/path.dart';
 import 'package:synchronized/synchronized.dart';
 
 ConfigModel? _config;
@@ -21,12 +21,15 @@ Future<ConfigModel> createConfigOnceAsync() async {
   await _lock.synchronized(() async {
     if (_config == null) {
       final filePath = join(Directory.current.path, 'testit.properties');
+
       final fileConfig = await getConfigFromFileAsync(filePath);
       final envConfig = await getConfigFromEnvAsync();
       final cliConfig = await getConfigFromCliAsync();
+      final mergedConfig = _mergeConfigs(cliConfig, envConfig, fileConfig);
 
-      _config = _mergeConfigs(cliConfig, envConfig, fileConfig);
-      validateConfig(_config);
+      validateConfig(mergedConfig);
+      _config = mergedConfig;
+
       await setLogLevelOnceAsync(_config);
 
       for (final warning in getConfigFileWarnings()) {

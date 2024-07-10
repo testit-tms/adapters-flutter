@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.  
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
 
+## [1.9.0] - 2024-07-10
+
+### Added
+
+- log every validation error.
+- step return value.
+
+### Changed
+
+- examples.
+- readme.
+- unit tests.
+
+### Fixed
+
+- api bug.
+
 ## [1.8.1] - 2024-07-09
 
 ### Changed
