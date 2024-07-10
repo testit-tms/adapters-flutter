@@ -21,12 +21,15 @@ Future<ConfigModel> createConfigOnceAsync() async {
   await _lock.synchronized(() async {
     if (_config == null) {
       final filePath = join(Directory.current.path, 'testit.properties');
+
       final fileConfig = await getConfigFromFileAsync(filePath);
       final envConfig = await getConfigFromEnvAsync();
       final cliConfig = await getConfigFromCliAsync();
+      final mergedConfig = _mergeConfigs(cliConfig, envConfig, fileConfig);
 
-      _config = _mergeConfigs(cliConfig, envConfig, fileConfig);
-      validateConfig(_config);
+      validateConfig(mergedConfig);
+      _config = mergedConfig;
+
       await setLogLevelOnceAsync(_config);
 
       for (final warning in getConfigFileWarnings()) {
