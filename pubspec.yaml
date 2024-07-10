@@ -9,18 +9,18 @@ environment:
   flutter: ">=3.10.0"
 
 dependencies:
-  logger: ^2.3.0
-  path: ^1.8.3
-  properties: ^2.1.1
-  synchronized: ^3.1.0+1
-  uuid: ^4.2.2
+  logger: any
+  path: any
+  properties: any
+  synchronized: any
+  uuid: any
   flutter_test:
     sdk: flutter
-  mime: ^1.0.4
-  http_parser: ^4.0.2
-  test_api: ^0.5.1
-  meta: ^1.9.1
-  http: ^1.1.0
+  mime: any
+  http_parser: any
+  test_api: any
+  meta: any
+  http: any
 
 dev_dependencies:
-  flutter_lints: ^3.0.1
+  flutter_lints: any
