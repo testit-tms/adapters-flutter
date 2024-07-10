@@ -44,7 +44,7 @@ Future<Iterable<String>> getExternalIdsFromTestRunAsync(
 
   if (response != null) {
     final testResults = ((jsonDecode(response.body)
-            as Map<String, dynamic>)['testResults'] as List)
+            as Map<String, dynamic>)['testResults'] as Iterable)
         .cast<Map<String, dynamic>>();
 
     for (final result in testResults) {

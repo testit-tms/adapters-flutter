@@ -139,6 +139,10 @@ void main() {
             await addMessage('example message');
           });
 
+          await step('success step with return value', () {
+            return 0;
+          });
+
           await step('failed step', () {
             throw Exception('example exception.');
           });
@@ -164,6 +168,10 @@ void main() {
 
           await step('success step with message', () async {
             await addMessage('example message');
+          });
+
+          await step('success step with return value', () {
+            return 0;
           });
 
           await step('failed step', () {

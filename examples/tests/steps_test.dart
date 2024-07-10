@@ -1,5 +1,7 @@
 #!/usr/bin/env dart
 
+import 'dart:async';
+
 import 'package:adapters_flutter/adapters_flutter.dart';
 
 void main() {
@@ -29,6 +31,12 @@ void main() {
         await step('child step: $description', description: description, () {
           expect(1, 0);
         });
+      });
+    }
+
+    FutureOr<String?> stepReturnValue({final String? description}) async {
+      return await step('return value step', description: description, () {
+        return description;
       });
     }
 
@@ -71,6 +79,15 @@ void main() {
 
       tmsTest('with description & nested step - failed', () async {
         await stepNestedFailed(description: 'description');
+      });
+
+      tmsTest('with return value - success', () async {
+        expect(
+            await stepReturnValue(description: 'description'), 'description');
+      });
+
+      tmsTest('with return value - failed', () async {
+        expect(await stepReturnValue(description: 'description'), null);
       });
 
       tearDown(() async {
@@ -124,6 +141,15 @@ void main() {
 
       tmsTestWidgets('with description & nested step - failed', (tester) async {
         await stepNestedFailed(description: 'description');
+      });
+
+      tmsTestWidgets('with return value - success', (tester) async {
+        expect(
+            await stepReturnValue(description: 'description'), 'description');
+      });
+
+      tmsTestWidgets('with return value - failed', (tester) async {
+        expect(await stepReturnValue(description: 'description'), null);
       });
 
       tearDown(() async {

@@ -58,9 +58,13 @@ Future<AutoTestFullModel?> getAutoTestByExternalIdAsync(
   final response = await getOkResponseOrNullAsync(request);
 
   if (response != null) {
-    autoTest = AutoTestFullModel.fromJson((jsonDecode(response.body) as List)
+    final json = (jsonDecode(response.body) as Iterable)
         .cast<Map<String, dynamic>>()
-        .single);
+        .singleOrNull;
+
+    if (json != null) {
+      autoTest = AutoTestFullModel.fromJson(json);
+    }
   }
 
   return autoTest;
