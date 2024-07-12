@@ -9,6 +9,10 @@ The format is based on Keep a Changelog and this project adheres to Semantic Ver
 
 - adapter manager's functions signatures.
 
+### Fixed
+
+- readme.
+
 ## [2.0.1] - 2024-07-12
 
 ### Changed
