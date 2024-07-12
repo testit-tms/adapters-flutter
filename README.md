@@ -27,7 +27,7 @@ flutter pub add adapters_flutter
 
 | Test IT | adapters_flutter |
 |---------|------------------|
-| 5.0     | 2.0.1+           | 
+| 5.0     | 2.0.2+           | 
 
 ## Usage
 
@@ -196,16 +196,19 @@ void main() {
 You can help to develop the project. Any contributions are **greatly appreciated**.
 
 * If you have suggestions for adding or removing projects, feel free
-  to [open an issue](https://github.com/testit-tms/adapters-go/issues/new) to discuss it, or create
+  to [open an issue](https://github.com/testit-tms/adapters-flutter/issues/new) to discuss it, or
+  create
   a direct pull
   request after you edit the *README.md* file with necessary changes.
 * Make sure to check your spelling and grammar.
 * Create individual PR for each suggestion.
-* Read the [Code Of Conduct](https://github.com/testit-tms/adapters-go/blob/main/CODE_OF_CONDUCT.md)
+* Read
+  the [Code Of Conduct](https://github.com/testit-tms/adapters-flutter/blob/main/CODE_OF_CONDUCT.md)
   before posting
   your first idea as well.
 
 ## License
 
 Distributed under the Apache-2.0 License.
-See [LICENSE](https://github.com/testit-tms/adapters-go/blob/main/LICENSE.md) for more information.
+See [LICENSE](https://github.com/testit-tms/adapters-flutter/blob/main/LICENSE) for more
+information.

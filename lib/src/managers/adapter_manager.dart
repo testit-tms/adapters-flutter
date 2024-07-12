@@ -31,7 +31,7 @@ Future<void> addAttachment(final String filePath) async {
   }
 }
 
-Future<void> addAttachments(final Iterable<String> filesPaths) async =>
+Future<void> addAttachments(final Set<String> filesPaths) async =>
     await Future.wait(filesPaths.map(addAttachment));
 
 Future<void> addLink(final String url,
@@ -46,7 +46,7 @@ Future<void> addLink(final String url,
   }
 }
 
-Future<void> addLinks(final Iterable<Link> links) async {
+Future<void> addLinks(final Set<Link> links) async {
   final config = await createConfigOnceAsync();
 
   if (config.testIt ?? true) {
