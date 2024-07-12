@@ -6,14 +6,10 @@ import 'package:adapters_flutter/src/models/config_model.dart';
 import 'package:meta/meta.dart';
 import 'package:properties/properties.dart';
 
-final List<String> _configFileWarnings = [];
+final Set<String> _configFileWarnings = {};
 
 @internal
-Iterable<String> getConfigFileWarnings() sync* {
-  while (_configFileWarnings.isNotEmpty) {
-    yield _configFileWarnings.removeLast();
-  }
-}
+Iterable<String> getConfigFileWarnings() => _configFileWarnings;
 
 @internal
 Future<ConfigModel> getConfigFromFileAsync(final String? filePath) async {

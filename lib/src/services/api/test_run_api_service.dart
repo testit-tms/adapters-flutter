@@ -34,7 +34,7 @@ Future<void> createEmptyTestRunAsync(
 @internal
 Future<Iterable<String>> getExternalIdsFromTestRunAsync(
     final String? testRunId) async {
-  final List<String> externalIds = [];
+  final Set<String> externalIds = {};
 
   final url = await getUrlAsync('/api/v2/testRuns/$testRunId');
   final request = Request('GET', url);

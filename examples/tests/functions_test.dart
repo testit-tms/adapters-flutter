@@ -26,11 +26,11 @@ void main() {
       });
 
       tmsTest('add attachments - success', () async {
-        await addAttachments([_attachment1, _attachment2]);
+        await addAttachments({_attachment1, _attachment2});
       });
 
       tmsTest('add attachments - failed', () async {
-        await addAttachments([_attachment1, _attachment2]);
+        await addAttachments({_attachment1, _attachment2});
         expect(0, 1);
       });
 
@@ -44,11 +44,11 @@ void main() {
       });
 
       tmsTest('add links - success', () async {
-        await addLinks([Link('https://www.example.org/')]);
+        await addLinks({Link('https://www.example.org/')});
       });
 
       tmsTest('add links - failed', () async {
-        await addLinks([Link('https://www.example.org/')]);
+        await addLinks({Link('https://www.example.org/')});
         expect(0, 1);
       });
 
@@ -73,11 +73,11 @@ void main() {
       });
 
       tmsTestWidgets('add attachments - success', (tester) async {
-        await addAttachments([_attachment1, _attachment2]);
+        await addAttachments({_attachment1, _attachment2});
       });
 
       tmsTestWidgets('add attachments - failed', (tester) async {
-        await addAttachments([_attachment1, _attachment2]);
+        await addAttachments({_attachment1, _attachment2});
         expect(0, 1);
       });
 
@@ -91,11 +91,11 @@ void main() {
       });
 
       tmsTestWidgets('add links - success', (tester) async {
-        await addLinks([Link('https://www.example.org/')]);
+        await addLinks({Link('https://www.example.org/')});
       });
 
       tmsTestWidgets('add links - failed', (tester) async {
-        await addLinks([Link('https://www.example.org/')]);
+        await addLinks({Link('https://www.example.org/')});
         expect(0, 1);
       });
 

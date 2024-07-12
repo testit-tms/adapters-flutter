@@ -73,7 +73,7 @@ Future<AutoTestFullModel?> getAutoTestByExternalIdAsync(
 @internal
 Future<Iterable<String>> getWorkItemsGlobalIdsLinkedToAutoTestAsync(
     final String? autoTestId) async {
-  final List<String> globalIds = [];
+  final Set<String> globalIds = {};
 
   final url = await getUrlAsync(
       '/api/v2/autoTests/$autoTestId/workItems?isDeleted=false');

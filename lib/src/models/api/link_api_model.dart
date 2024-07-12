@@ -10,6 +10,17 @@ final class Link {
   final String? url;
 
   Link(this.url, {this.description, this.title, this.type});
+
+  @override
+  bool operator ==(final Object other) =>
+      other is Link &&
+      description == other.description &&
+      title == other.title &&
+      type == other.type &&
+      url == other.url;
+
+  @override
+  int get hashCode => 0;
 }
 
 @internal
