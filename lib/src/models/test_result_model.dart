@@ -14,8 +14,8 @@ final class TestResultModel {
   int? duration;
   String? externalId;
   bool? isFlaky;
-  List<String> labels = [];
-  List<Link> links = [];
+  Set<String> labels = {};
+  Set<Link> links = {};
   String? message;
   String? methodName;
   String? name;
@@ -29,5 +29,5 @@ final class TestResultModel {
   List<AutoTestStepResultsModel> teardown = [];
   String? title;
   String? traces;
-  List<String> workItemIds = [];
+  Set<String> workItemIds = {};
 }
