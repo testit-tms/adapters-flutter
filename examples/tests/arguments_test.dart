@@ -23,21 +23,21 @@ void main() {
         expect(0, 1);
       });
 
-      tmsTest('with links - success', links: [Link('https://www.example.org/')],
+      tmsTest('with links - success', links: {Link('https://www.example.org/')},
           () {
         return {};
       });
 
-      tmsTest('with links - failed', links: [Link('https://www.example.org/')],
+      tmsTest('with links - failed', links: {Link('https://www.example.org/')},
           () {
         expect(0, 1);
       });
 
-      tmsTest('with tags - success', tags: ['tag1'], () {
+      tmsTest('with tags - success', tags: {'tag1'}, () {
         return {};
       });
 
-      tmsTest('with tags - failed', tags: ['tag1'], () {
+      tmsTest('with tags - failed', tags: {'tag1'}, () {
         expect(0, 1);
       });
 
@@ -49,11 +49,11 @@ void main() {
         expect(0, 1);
       });
 
-      tmsTest('with workItemsIds - success', workItemsIds: ['46256'], () {
+      tmsTest('with workItemsIds - success', workItemsIds: {'46256'}, () {
         return {};
       });
 
-      tmsTest('with workItemsIds - failed', workItemsIds: ['46256'], () {
+      tmsTest('with workItemsIds - failed', workItemsIds: {'46256'}, () {
         expect(0, 1);
       });
 
@@ -68,19 +68,19 @@ void main() {
 
         tmsTest('all arguments [$input] - success',
             externalId: 'all_arguments_${input}_success',
-            links: [Link('https://www.example.org/')],
-            tags: ['tag1'],
+            links: {Link('https://www.example.org/')},
+            tags: {'tag1'},
             title: 'title',
-            workItemsIds: ['46256'], () {
+            workItemsIds: {'46256'}, () {
           return {};
         });
 
         tmsTest('all arguments [$input] - failed',
             externalId: 'all_arguments_${input}_failed',
-            links: [Link('https://www.example.org/')],
-            tags: ['tag1'],
+            links: {Link('https://www.example.org/')},
+            tags: {'tag1'},
             title: 'title',
-            workItemsIds: ['46256'], () {
+            workItemsIds: {'46256'}, () {
           expect(0, 1);
         });
       }
@@ -106,20 +106,20 @@ void main() {
       });
 
       tmsTestWidgets('with links - success',
-          links: [Link('https://www.example.org/')], (tester) async {
+          links: {Link('https://www.example.org/')}, (tester) async {
         return;
       });
 
       tmsTestWidgets('with links - failed',
-          links: [Link('https://www.example.org/')], (tester) async {
+          links: {Link('https://www.example.org/')}, (tester) async {
         expect(0, 1);
       });
 
-      tmsTestWidgets('with tags - success', tags: ['tag1'], (tester) async {
+      tmsTestWidgets('with tags - success', tags: {'tag1'}, (tester) async {
         return;
       });
 
-      tmsTestWidgets('with tags - failed', tags: ['tag1'], (tester) async {
+      tmsTestWidgets('with tags - failed', tags: {'tag1'}, (tester) async {
         expect(0, 1);
       });
 
@@ -131,12 +131,12 @@ void main() {
         expect(0, 1);
       });
 
-      tmsTestWidgets('with workItemsIds - success', workItemsIds: ['46256'],
+      tmsTestWidgets('with workItemsIds - success', workItemsIds: {'46256'},
           (tester) async {
         return;
       });
 
-      tmsTestWidgets('with workItemsIds - failed', workItemsIds: ['46256'],
+      tmsTestWidgets('with workItemsIds - failed', workItemsIds: {'46256'},
           (tester) async {
         expect(0, 1);
       });
@@ -154,19 +154,19 @@ void main() {
 
         tmsTestWidgets('all arguments [$input] - success',
             externalId: 'all_arguments_${input}_success',
-            links: [Link('https://www.example.org/')],
-            tags: ['tag1'],
+            links: {Link('https://www.example.org/')},
+            tags: {'tag1'},
             title: 'title',
-            workItemsIds: ['46256'], (tester) async {
+            workItemsIds: {'46256'}, (tester) async {
           return;
         });
 
         tmsTestWidgets('all arguments [$input] - failed',
             externalId: 'all_arguments_${input}_failed',
-            links: [Link('https://www.example.org/')],
-            tags: ['tag1'],
+            links: {Link('https://www.example.org/')},
+            tags: {'tag1'},
             title: 'title',
-            workItemsIds: ['46256'], (tester) async {
+            workItemsIds: {'46256'}, (tester) async {
           expect(0, 1);
         });
       }

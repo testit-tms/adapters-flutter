@@ -119,66 +119,66 @@ void main() {
     });
 
     tmsTest('example test',
-        externalId: 'example_externalId',
-        links: [Link('https://www.example.org/')],
-        tags: ['example_tag'],
-        title: 'example_title',
-        workItemsIds: ['46343'], () async {
-          await step('success step', () {
-            expect(0, 0);
-          });
+            externalId: 'example_externalId',
+            links: {Link('https://www.example.org/')},
+            tags: {'example_tag'},
+            title: 'example_title',
+            workItemsIds: {'46343'}, () async {
+              await step('success step', () {
+                expect(0, 0);
+              });
 
-          await step('success step with attachment', () async {
-            await addAttachment('avatar.png');
-          });
+              await step('success step with attachment', () async {
+                await addAttachment('avatar.png');
+              });
 
-          await step('success step with link', () async {
-            await addLink('https://www.example.org/');
-          });
+              await step('success step with link', () async {
+                await addLink('https://www.example.org/');
+              });
 
-          await step('success step with message', () async {
-            await addMessage('example message');
-          });
+              await step('success step with message', () async {
+                await addMessage('example message');
+              });
 
-          await step('success step with return value', () {
-            return 0;
-          });
+              await step('success step with return value', () {
+                return 0;
+              });
 
-          await step('failed step', () {
-            throw Exception('example exception.');
-          });
-        });
+              await step('failed step', () {
+                throw Exception('example exception.');
+              });
+            });
 
     tmsTestWidgets('example test widgets',
-        externalId: 'example_widgets_externalId',
-        links: [Link('https://www.example.org/')],
-        tags: ['example_tag_widgets'],
-        title: 'example_title_widgets',
-        workItemsIds: ['46343'], (tester) async {
-          await step('success step', () {
-            expect(0, 0);
-          });
+            externalId: 'example_widgets_externalId',
+            links: {Link('https://www.example.org/')},
+            tags: {'example_tag_widgets'},
+            title: 'example_title_widgets',
+            workItemsIds: {'46343'}, (tester) async {
+              await step('success step', () {
+                expect(0, 0);
+              });
 
-          await step('success step with attachment', () async {
-            await addAttachment('avatar.png');
-          });
+              await step('success step with attachment', () async {
+                await addAttachment('avatar.png');
+              });
 
-          await step('success step with link', () async {
-            await addLink('https://www.example.org/');
-          });
+              await step('success step with link', () async {
+                await addLink('https://www.example.org/');
+              });
 
-          await step('success step with message', () async {
-            await addMessage('example message');
-          });
+              await step('success step with message', () async {
+                await addMessage('example message');
+              });
 
-          await step('success step with return value', () {
-            return 0;
-          });
+              await step('success step with return value', () {
+                return 0;
+              });
 
-          await step('failed step', () {
-            throw Exception('example exception.');
-          });
-        });
+              await step('failed step', () {
+                throw Exception('example exception.');
+              });
+            });
 
     tearDown(() {
       expect(2, 2);

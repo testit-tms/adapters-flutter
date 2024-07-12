@@ -19,15 +19,15 @@ final _logger = getLogger();
 
 void tmsTest(final String description, final dynamic Function() body,
         {final String? externalId,
-        final List<Link>? links,
+        final Set<Link>? links,
         final Map<String, dynamic>? onPlatform,
         final int? retry,
         final String? skip,
-        final List<String>? tags,
+        final Set<String>? tags,
         final String? testOn,
         final Timeout? timeout,
         final String? title,
-        final List<String>? workItemsIds}) =>
+        final Set<String>? workItemsIds}) =>
     test(
         description,
         onPlatform: onPlatform,
@@ -46,14 +46,14 @@ void tmsTest(final String description, final dynamic Function() body,
 void tmsTestWidgets(
         final String description, final WidgetTesterCallback callback,
         {final String? externalId,
-        final List<Link>? links,
+        final Set<Link>? links,
         final bool semanticsEnabled = true,
         final String? skip,
-        final List<String>? tags,
+        final Set<String>? tags,
         final Timeout? timeout,
         final String? title,
         final TestVariant<Object?> variant = const DefaultTestVariant(),
-        final List<String>? workItemsIds}) async =>
+        final Set<String>? workItemsIds}) async =>
     testWidgets(
         description,
         semanticsEnabled: semanticsEnabled,
@@ -110,13 +110,14 @@ String? _getGroupName() {
   return className;
 }
 
-Future _testAsync(final String description, final Future<void> Function() body,
+Future<void> _testAsync(
+    final String description, final Future<void> Function() body,
     {final String? externalId,
-    final List<Link>? links,
+    final Set<Link>? links,
     final String? skip,
-    final List<String>? tags,
+    final Set<String>? tags,
     final String? title,
-    final List<String>? workItemsIds}) async {
+    final Set<String>? workItemsIds}) async {
   HttpOverrides.global = null;
   final config = await createConfigOnceAsync();
 
@@ -142,8 +143,8 @@ Future _testAsync(final String description, final Future<void> Function() body,
     localResult.classname = _getGroupName();
     localResult.description = description;
     localResult.externalId = _getExternalId(externalId, liveTest?.test.name);
-    localResult.labels = liveTest?.test.metadata.tags.toList() ?? [];
-    localResult.links = links ?? [];
+    localResult.labels = liveTest?.test.metadata.tags ?? {};
+    localResult.links = links ?? {};
     localResult.methodName = liveTest?.test.name ?? '';
     localResult.name = (liveTest?.test.name ?? '')
         .replaceAll(_getGroupName() ?? '', '')
@@ -152,7 +153,7 @@ Future _testAsync(final String description, final Future<void> Function() body,
         basenameWithoutExtension(liveTest?.suite.path ?? '');
     localResult.startedOn = startedOn;
     localResult.title = title ?? liveTest?.test.name ?? '';
-    localResult.workItemIds = workItemsIds ?? [];
+    localResult.workItemIds = workItemsIds ?? {};
 
     Exception? exception;
     StackTrace? stacktrace;
