@@ -105,6 +105,7 @@ Description of functions:
 ```dart
 #!/usr/bin/env dart
 
+@Tags(['suite_tag'])
 import 'package:adapters_flutter/adapters_flutter.dart';
 
 void main() {

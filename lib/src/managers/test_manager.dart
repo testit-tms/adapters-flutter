@@ -61,7 +61,7 @@ void tmsTest(final String description, final dynamic Function() body,
         localResult.description = description;
         localResult.externalId =
             _getExternalId(externalId, liveTest?.test.name);
-        localResult.labels = tags ?? [];
+        localResult.labels = liveTest?.test.metadata.tags.toList() ?? [];
         localResult.links = links ?? [];
         localResult.methodName = liveTest?.test.name ?? '';
         localResult.name = (liveTest?.test.name ?? '')
@@ -157,7 +157,7 @@ void tmsTestWidgets(
         localResult.description = description;
         localResult.externalId =
             _getExternalId(externalId, liveTest?.test.name);
-        localResult.labels = tags ?? [];
+        localResult.labels = liveTest?.test.metadata.tags.toList() ?? [];
         localResult.links = links ?? [];
         localResult.methodName = liveTest?.test.name ?? '';
         localResult.name = (liveTest?.test.name ?? '')
