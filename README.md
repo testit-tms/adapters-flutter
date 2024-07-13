@@ -5,8 +5,8 @@
 ### Requirements
 
 ```yaml
-sdk: ">=3.0.0 <4.0.0"
-flutter: ">=3.10.0"
+sdk: '>=3.0.0 <4.0.0'
+flutter: '>=3.10.0'
 ```
 
 ### Installation
