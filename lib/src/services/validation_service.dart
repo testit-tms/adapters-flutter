@@ -68,11 +68,6 @@ void validateConfig(final ConfigModel? config) {
         !Uuid.isValidUUID(fromString: config.testRunId!)) {
       _logAndThrow('Test run id is invalid: "${config.testRunId}".');
     }
-  } else if (config.adapterMode == 2) {
-    if (config.testRunId != null && config.testRunId!.isNotEmpty) {
-      _logAndThrow(
-          'TestRunId should be absent in adapter mode 2, but was "${config.testRunId}".');
-    }
   }
 
   if (config.url == null || !(Uri.tryParse(config.url!)?.isAbsolute ?? false)) {

@@ -4,7 +4,7 @@ import 'package:adapters_flutter/src/models/config_model.dart';
 import 'package:adapters_flutter/src/models/test_result_model.dart';
 import 'package:adapters_flutter/src/services/api/autotest_api_service.dart';
 import 'package:adapters_flutter/src/services/api/test_run_api_service.dart';
-import 'package:adapters_flutter/src/services/api/work_items_api_service.dart';
+import 'package:adapters_flutter/src/services/api/work_item_api_service.dart';
 import 'package:meta/meta.dart';
 import 'package:synchronized/synchronized.dart';
 
