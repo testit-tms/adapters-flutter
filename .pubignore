@@ -1,4 +1,5 @@
 # Tests
+dart_test.yaml
 examples/**
 test/**
 
