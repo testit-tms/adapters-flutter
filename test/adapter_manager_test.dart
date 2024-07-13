@@ -12,7 +12,7 @@ void main() {
 
     test('add attachments', () {
       expect(() async {
-        await addAttachments({''});
+        await addAttachments({' '});
       }, returnsNormally);
     });
 
