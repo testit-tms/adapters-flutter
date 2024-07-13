@@ -53,7 +53,7 @@ void tmsTestWidgets(
         final Timeout? timeout,
         final String? title,
         final TestVariant<Object?> variant = const DefaultTestVariant(),
-        final Set<String>? workItemsIds}) async =>
+        final Set<String>? workItemsIds}) =>
     testWidgets(
         description,
         semanticsEnabled: semanticsEnabled,
