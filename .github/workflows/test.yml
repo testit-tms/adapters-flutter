@@ -1,11 +1,11 @@
 name: Test
-run-name: "#${{ github.run_number }} test by ${{ github.triggering_actor }}"
+run-name: '#${{ github.run_number }} test by ${{ github.triggering_actor }}'
 
 on:
   pull_request:
     paths:
-      - "lib/**"
-      - "test/**"
+      - 'lib/**'
+      - 'test/**'
   workflow_dispatch:
 
 env:
@@ -72,7 +72,7 @@ jobs:
       - name: Create TestRun
         run: |
           testit testrun create --token ${{ env.TMS_PRIVATE_TOKEN }} --output ${{ env.TEMP_FILE }}
-          echo "TMS_TEST_RUN_ID=$(<${{ env.TEMP_FILE }})" >> $GITHUB_ENV
+          echo 'TMS_TEST_RUN_ID=$(<${{ env.TEMP_FILE }})' >> $GITHUB_ENV
           echo ${{ env.TMS_TEST_RUN_ID }}
 
       - name: Test
@@ -81,4 +81,4 @@ jobs:
 
       - name: Validate
         run: |
-          dotnet test --configuration Debug --no-build --logger:"console;verbosity=detailed" api-validator-dotnet
+          dotnet test --configuration Debug --no-build --logger:'console;verbosity=detailed' api-validator-dotnet
