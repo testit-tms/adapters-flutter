@@ -24,7 +24,7 @@ void main() {
 
     test('add links', () {
       expect(() async {
-        await addLinks({Link('1')});
+        await addLinks({Link('')});
       }, returnsNormally);
     });
 
