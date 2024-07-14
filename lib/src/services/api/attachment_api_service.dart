@@ -13,7 +13,7 @@ import 'package:mime/mime.dart';
 import 'package:path/path.dart';
 
 @internal
-Future<AttachmentResponseModel?> createAttachmentsAsync(
+Future<AttachmentResponseModel?> createAttachmentAsync(
     final ConfigModel config, final File file) async {
   AttachmentResponseModel? attachment;
 
