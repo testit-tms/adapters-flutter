@@ -7,7 +7,7 @@ import 'package:adapters_flutter/src/enums/link_type_enum.dart';
 import 'package:adapters_flutter/src/managers/config_manager.dart';
 import 'package:adapters_flutter/src/managers/log_manager.dart';
 import 'package:adapters_flutter/src/models/api/link_api_model.dart';
-import 'package:adapters_flutter/src/services/api/attachments_api_service.dart';
+import 'package:adapters_flutter/src/services/api/attachment_api_service.dart';
 import 'package:adapters_flutter/src/storages/test_result_storage.dart';
 import 'package:path/path.dart';
 
@@ -23,7 +23,7 @@ Future<void> addAttachment(final String filePath) async {
         ? file
         : File(join(Directory.current.path, filePath));
     if (await file.exists()) {
-      final attachment = await createAttachmentsAsync(file);
+      final attachment = await createAttachmentsAsync(config, file);
       await updateTestResultAttachmentsAsync(toAttachmentPutModel(attachment));
     } else {
       _logger.i('Attachment file $filePath not exists.');

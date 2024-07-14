@@ -4,13 +4,15 @@ import 'package:adapters_flutter/src/managers/api_manager_.dart';
 import 'package:adapters_flutter/src/managers/log_manager.dart';
 import 'package:adapters_flutter/src/models/config_model.dart';
 import 'package:adapters_flutter/src/models/exception_model.dart';
+import 'package:adapters_flutter/src/services/api/configuration_api_service.dart';
+import 'package:adapters_flutter/src/services/api/test_run_api_service.dart';
 import 'package:meta/meta.dart';
 import 'package:uuid/uuid.dart';
 
 final _logger = getLogger();
 
 @internal
-void validateConfig(final ConfigModel? config) {
+Future<void> validateConfigAsync(final ConfigModel? config) async {
   if (bool.tryParse(const String.fromEnvironment('disableValidation')) ??
       false) {
     return;
@@ -68,16 +70,13 @@ void validateConfig(final ConfigModel? config) {
         !Uuid.isValidUUID(fromString: config.testRunId!)) {
       _logAndThrow('Test run id is invalid: "${config.testRunId}".');
     }
-  } else if (config.adapterMode == 2) {
-    if (config.testRunId != null && config.testRunId!.isNotEmpty) {
-      _logAndThrow(
-          'TestRunId should be absent in adapter mode 2, but was "${config.testRunId}".');
-    }
   }
 
   if (config.url == null || !(Uri.tryParse(config.url!)?.isAbsolute ?? false)) {
     _logAndThrow('Url is invalid: "${config.url}".');
   }
+
+  await _postValidateConfigAsync(config);
 }
 
 @internal
@@ -96,9 +95,9 @@ void validateUriArgument(final String name, final String? value) {
 
 @internal
 Future<void> validateWorkItemsIdsAsync(
-    final Iterable<String>? workItemsIds) async {
+    final ConfigModel config, final Iterable<String>? workItemsIds) async {
   final notFoundWorkItemId =
-      await getFirstNotFoundWorkItemIdAsync(workItemsIds);
+      await getFirstNotFoundWorkItemIdAsync(config, workItemsIds);
 
   if (notFoundWorkItemId == null) {
     return;
@@ -112,4 +111,25 @@ void _logAndThrow(final String message) {
   _logger.e(exception);
 
   throw exception;
+}
+
+Future<void> _postValidateConfigAsync(final ConfigModel config) async {
+  final configurations = await getConfigurationsByProjectIdAsync(config);
+
+  if (configurations.isEmpty) {
+    _logAndThrow('Project with id "${config.projectId}" not found.');
+  }
+
+  if (!configurations.contains(config.configurationId)) {
+    _logAndThrow(
+        'Configuration with id "${config.configurationId}" not found.');
+  }
+
+  if (config.adapterMode == 0 || config.adapterMode == 1) {
+    final testRun = await getTestRunByIdAsync(config);
+
+    if (testRun == null) {
+      _logAndThrow('Test run with id "${config.configurationId}" not found.');
+    }
+  }
 }

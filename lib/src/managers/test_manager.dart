@@ -70,7 +70,7 @@ void tmsTestWidgets(
             title: title,
             workItemsIds: workItemsIds)));
 
-String? _getExternalId(final String? externalId, final String? testName) {
+String? _getSafeExternalId(final String? externalId, final String? testName) {
   var output =
       (externalId == null || externalId.isEmpty) ? testName : externalId;
 
@@ -122,27 +122,27 @@ Future<void> _testAsync(
   final config = await createConfigOnceAsync();
 
   if (config.testIt ?? true) {
-    if (!await checkTestNeedsToBeRunAsync(
-        config.adapterMode, externalId, config.testRunId)) {
+    final liveTest = Invoker.current?.liveTest;
+    final safeExternalId = _getSafeExternalId(externalId, liveTest?.test.name);
+
+    if (!await checkTestNeedsToBeRunAsync(config, safeExternalId)) {
       return;
     }
 
     validateStringArgument('Description', description);
     links?.forEach((final link) => validateUriArgument('Link url', link.url));
     tags?.forEach((final tag) => validateStringArgument('Tag', tag));
-    await validateWorkItemsIdsAsync(workItemsIds);
+    await validateWorkItemsIdsAsync(config, workItemsIds);
 
-    await tryCreateTestRunOnceAsync(
-        config.adapterMode, config.projectId, config.testRunName);
+    await tryCreateTestRunOnceAsync(config);
     await createEmptyTestResultAsync();
 
     final localResult = TestResultModel();
-    final liveTest = Invoker.current?.liveTest;
     final startedOn = DateTime.now();
 
     localResult.classname = _getGroupName();
     localResult.description = description;
-    localResult.externalId = _getExternalId(externalId, liveTest?.test.name);
+    localResult.externalId = safeExternalId;
     localResult.labels = liveTest?.test.metadata.tags ?? {};
     localResult.links = links ?? {};
     localResult.methodName = liveTest?.test.name ?? '';

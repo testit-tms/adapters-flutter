@@ -27,7 +27,7 @@ Future<ConfigModel> createConfigOnceAsync() async {
       final cliConfig = await getConfigFromCliAsync();
       final mergedConfig = _mergeConfigs(cliConfig, envConfig, fileConfig);
 
-      validateConfig(mergedConfig);
+      await validateConfigAsync(mergedConfig);
       _config = mergedConfig;
 
       await setLogLevelOnceAsync(_config);

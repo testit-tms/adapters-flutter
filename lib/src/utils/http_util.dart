@@ -1,4 +1,3 @@
-import 'package:adapters_flutter/src/managers/config_manager.dart';
 import 'package:adapters_flutter/src/managers/log_manager.dart';
 import 'package:adapters_flutter/src/models/exception_model.dart';
 import 'package:adapters_flutter/src/utils/platform_util.dart';
@@ -6,19 +5,6 @@ import 'package:http/http.dart';
 import 'package:meta/meta.dart';
 
 final _logger = getLogger();
-
-@internal
-Future<void> addHeadersToRequestAsync(final BaseRequest request) async {
-  final config = await createConfigOnceAsync();
-
-  final headers = {
-    'accept': '*/*',
-    'Content-Type': 'application/json',
-    'Authorization': 'PrivateToken ${config.privateToken}'
-  };
-
-  request.headers.addAll(headers);
-}
 
 @internal
 Future<Response?> getOkResponseOrNullAsync(final BaseRequest request) async {
@@ -41,12 +27,4 @@ Future<Response?> getOkResponseOrNullAsync(final BaseRequest request) async {
   }
 
   return response;
-}
-
-@internal
-Future<Uri> getUrlAsync(final String? relativeUrl) async {
-  final config = await createConfigOnceAsync();
-  final url = Uri.parse('${config.url}$relativeUrl');
-
-  return url;
 }
