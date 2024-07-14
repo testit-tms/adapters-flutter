@@ -27,7 +27,7 @@ flutter pub add adapters_flutter
 
 | Test IT | adapters_flutter |
 |---------|------------------|
-| 5.0     | 2.0.3+           | 
+| 5.0     | 2.0.4+           | 
 
 ## Usage
 

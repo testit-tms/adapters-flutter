@@ -4,13 +4,14 @@ import 'package:adapters_flutter/src/managers/api_manager_.dart';
 import 'package:adapters_flutter/src/managers/log_manager.dart';
 import 'package:adapters_flutter/src/models/config_model.dart';
 import 'package:adapters_flutter/src/models/exception_model.dart';
+import 'package:adapters_flutter/src/services/api/configuration_api_service.dart';
 import 'package:meta/meta.dart';
 import 'package:uuid/uuid.dart';
 
 final _logger = getLogger();
 
 @internal
-void validateConfig(final ConfigModel? config) {
+Future<void> validateConfigAsync(final ConfigModel? config) async {
   if (bool.tryParse(const String.fromEnvironment('disableValidation')) ??
       false) {
     return;
@@ -73,6 +74,16 @@ void validateConfig(final ConfigModel? config) {
   if (config.url == null || !(Uri.tryParse(config.url!)?.isAbsolute ?? false)) {
     _logAndThrow('Url is invalid: "${config.url}".');
   }
+
+  final configurations = await getConfigurationsByProjectIdAsync(config);
+
+  if (configurations.isEmpty) {
+    _logAndThrow('Project id not found: "${config.projectId}".');
+  }
+
+  if (!configurations.contains(config.configurationId)) {
+    _logAndThrow('Configuration id not found: "${config.configurationId}".');
+  }
 }
 
 @internal
@@ -91,9 +102,9 @@ void validateUriArgument(final String name, final String? value) {
 
 @internal
 Future<void> validateWorkItemsIdsAsync(
-    final Iterable<String>? workItemsIds) async {
+    final ConfigModel config, final Iterable<String>? workItemsIds) async {
   final notFoundWorkItemId =
-      await getFirstNotFoundWorkItemIdAsync(workItemsIds);
+      await getFirstNotFoundWorkItemIdAsync(config, workItemsIds);
 
   if (notFoundWorkItemId == null) {
     return;

@@ -8,24 +8,27 @@ import 'package:http/http.dart';
 import 'package:meta/meta.dart';
 
 @internal
-Future<Map<String, dynamic>?> getWorkItemByIdAsync(
-    final ConfigModel config, final String? workItemId) async {
-  Map<String, dynamic>? workItem;
+Future<Iterable<String>> getConfigurationsByProjectIdAsync(
+    final ConfigModel config) async {
+  final Set<String> configurations = {};
 
   final headers = {
     'accept': '*/*',
     'Content-Type': 'application/json',
     'Authorization': 'PrivateToken ${config.privateToken}'
   };
-  final url = '${config.url}/api/v2/workItems/$workItemId';
+  final url =
+      '${config.url}/api/v2/projects/${config.projectId}/configurations';
   final request = Request('GET', Uri.parse(url));
   request.headers.addAll(headers);
 
   final response = await getOkResponseOrNullAsync(request);
 
   if (response != null) {
-    workItem = jsonDecode(response.body) as Map<String, dynamic>;
+    configurations.addAll((jsonDecode(response.body) as Iterable)
+        .where((configuration) => !configuration['isDeleted'])
+        .map((configuration) => configuration['id']));
   }
 
-  return workItem;
+  return configurations;
 }

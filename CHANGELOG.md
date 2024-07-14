@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.  
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
 
+## [2.0.4] - 2024-07-13
+
+### Changed
+
+- validation.
+
 ## [2.0.3] - 2024-07-13
 
 ### Fixed

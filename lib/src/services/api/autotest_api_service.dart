@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:adapters_flutter/src/converters/test_result_converter.dart';
 import 'package:adapters_flutter/src/models/api/autotest_api_model.dart';
 import 'package:adapters_flutter/src/models/api/workitem_api_model.dart';
+import 'package:adapters_flutter/src/models/config_model.dart';
 import 'package:adapters_flutter/src/models/test_result_model.dart';
 import 'package:adapters_flutter/src/utils/http_util.dart';
 import 'package:http/http.dart';
@@ -12,17 +13,21 @@ import 'package:meta/meta.dart';
 
 @internal
 Future<AutoTestFullModel?> createAutoTestAsync(
-    final bool? automaticCreationTestCases,
-    final String? projectId,
-    final TestResultModel testResult) async {
+    final ConfigModel config, final TestResultModel testResult) async {
   AutoTestFullModel? autoTest;
 
-  final url = await getUrlAsync('/api/v2/autoTests');
-  final request = Request('POST', url);
-  await addHeadersToRequestAsync(request);
-  final requestBody = toCreateAutoTestRequestModel(projectId, testResult);
-  requestBody.shouldCreateWorkItem = automaticCreationTestCases ?? false;
+  final headers = {
+    'accept': '*/*',
+    'Content-Type': 'application/json',
+    'Authorization': 'PrivateToken ${config.privateToken}'
+  };
+  final url = '${config.url}/api/v2/autoTests';
+  final request = Request('POST', Uri.parse(url));
+  final requestBody =
+      toCreateAutoTestRequestModel(config.projectId, testResult);
+  requestBody.shouldCreateWorkItem = config.automaticCreationTestCases ?? false;
   request.body = json.encode(requestBody);
+  request.headers.addAll(headers);
 
   final response = await getOkResponseOrNullAsync(request);
 
@@ -36,16 +41,20 @@ Future<AutoTestFullModel?> createAutoTestAsync(
 
 @internal
 Future<AutoTestFullModel?> getAutoTestByExternalIdAsync(
-    final String? projectId, final String? externalId) async {
+    final ConfigModel config, final String? externalId) async {
   AutoTestFullModel? autoTest;
 
-  final url = await getUrlAsync(
-      '/api/v2/autoTests/search?SearchField=externalId&SearchValue=$externalId');
-  final request = Request('POST', url);
-  await addHeadersToRequestAsync(request);
+  final headers = {
+    'accept': '*/*',
+    'Content-Type': 'application/json',
+    'Authorization': 'PrivateToken ${config.privateToken}'
+  };
+  final url =
+      '${config.url}/api/v2/autoTests/search?SearchField=externalId&SearchValue=$externalId';
+  final request = Request('POST', Uri.parse(url));
   request.body = json.encode({
     'filter': {
-      'projectIds': [projectId],
+      'projectIds': [config.projectId],
       'isDeleted': false,
     },
     'includes': {
@@ -54,6 +63,7 @@ Future<AutoTestFullModel?> getAutoTestByExternalIdAsync(
       'includeLabels': true
     }
   });
+  request.headers.addAll(headers);
 
   final response = await getOkResponseOrNullAsync(request);
 
@@ -72,13 +82,18 @@ Future<AutoTestFullModel?> getAutoTestByExternalIdAsync(
 
 @internal
 Future<Iterable<String>> getWorkItemsGlobalIdsLinkedToAutoTestAsync(
-    final String? autoTestId) async {
+    final String? autoTestId, final ConfigModel config) async {
   final Set<String> globalIds = {};
 
-  final url = await getUrlAsync(
-      '/api/v2/autoTests/$autoTestId/workItems?isDeleted=false');
-  final request = Request('GET', url);
-  await addHeadersToRequestAsync(request);
+  final headers = {
+    'accept': '*/*',
+    'Content-Type': 'application/json',
+    'Authorization': 'PrivateToken ${config.privateToken}'
+  };
+  final url =
+      '${config.url}/api/v2/autoTests/$autoTestId/workItems?isDeleted=false';
+  final request = Request('GET', Uri.parse(url));
+  request.headers.addAll(headers);
 
   final response = await getOkResponseOrNullAsync(request);
 
@@ -91,26 +106,36 @@ Future<Iterable<String>> getWorkItemsGlobalIdsLinkedToAutoTestAsync(
 }
 
 @internal
-Future<void> linkWorkItemsToAutoTestAsync(
-    final String? autoTestId, final Iterable<String> workItemIds) async {
+Future<void> linkWorkItemsToAutoTestAsync(final String? autoTestId,
+    final ConfigModel config, final Iterable<String> workItemIds) async {
   for (final id in workItemIds) {
-    final url = await getUrlAsync('/api/v2/autoTests/$autoTestId/workItems');
-    final request = Request('POST', url);
-    await addHeadersToRequestAsync(request);
+    final headers = {
+      'accept': '*/*',
+      'Content-Type': 'application/json',
+      'Authorization': 'PrivateToken ${config.privateToken}'
+    };
+    final url = '${config.url}/api/v2/autoTests/$autoTestId/workItems';
+    final request = Request('POST', Uri.parse(url));
     request.body = json.encode(WorkItemLinkRequestModel(id));
+    request.headers.addAll(headers);
 
     await getOkResponseOrNullAsync(request);
   }
 }
 
 @internal
-Future<void> unlinkAutoTestFromWorkItemsAsync(
-    final String? autoTestId, final Iterable<String> workItemIds) async {
+Future<void> unlinkAutoTestFromWorkItemsAsync(final String? autoTestId,
+    final ConfigModel config, final Iterable<String> workItemIds) async {
   for (final id in workItemIds) {
-    final url = await getUrlAsync(
-        '/api/v2/autoTests/$autoTestId/workItems?workItemId=$id');
-    final request = Request('DELETE', url);
-    await addHeadersToRequestAsync(request);
+    final headers = {
+      'accept': '*/*',
+      'Content-Type': 'application/json',
+      'Authorization': 'PrivateToken ${config.privateToken}'
+    };
+    final url =
+        '${config.url}/api/v2/autoTests/$autoTestId/workItems?workItemId=$id';
+    final request = Request('DELETE', Uri.parse(url));
+    request.headers.addAll(headers);
 
     await getOkResponseOrNullAsync(request);
   }
@@ -118,12 +143,17 @@ Future<void> unlinkAutoTestFromWorkItemsAsync(
 
 @internal
 Future<void> updateAutoTestAsync(
-    final String? projectId, final TestResultModel testResult) async {
-  final url = await getUrlAsync('/api/v2/autoTests');
-  final request = Request('PUT', url);
-  await addHeadersToRequestAsync(request);
+    final ConfigModel config, final TestResultModel testResult) async {
+  final headers = {
+    'accept': '*/*',
+    'Content-Type': 'application/json',
+    'Authorization': 'PrivateToken ${config.privateToken}'
+  };
+  final url = '${config.url}/api/v2/autoTests';
+  final request = Request('PUT', Uri.parse(url));
   request.body =
-      json.encode(toUpdateAutoTestRequestModel(projectId, testResult));
+      json.encode(toUpdateAutoTestRequestModel(config.projectId, testResult));
+  request.headers.addAll(headers);
 
   await getOkResponseOrNullAsync(request);
 }

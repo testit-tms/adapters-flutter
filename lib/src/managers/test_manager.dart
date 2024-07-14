@@ -122,18 +122,16 @@ Future<void> _testAsync(
   final config = await createConfigOnceAsync();
 
   if (config.testIt ?? true) {
-    if (!await checkTestNeedsToBeRunAsync(
-        config.adapterMode, externalId, config.testRunId)) {
+    if (!await checkTestNeedsToBeRunAsync(config, externalId)) {
       return;
     }
 
     validateStringArgument('Description', description);
     links?.forEach((final link) => validateUriArgument('Link url', link.url));
     tags?.forEach((final tag) => validateStringArgument('Tag', tag));
-    await validateWorkItemsIdsAsync(workItemsIds);
+    await validateWorkItemsIdsAsync(config, workItemsIds);
 
-    await tryCreateTestRunOnceAsync(
-        config.adapterMode, config.projectId, config.testRunName);
+    await tryCreateTestRunOnceAsync(config);
     await createEmptyTestResultAsync();
 
     final localResult = TestResultModel();
