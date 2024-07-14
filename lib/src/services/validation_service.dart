@@ -5,6 +5,7 @@ import 'package:adapters_flutter/src/managers/log_manager.dart';
 import 'package:adapters_flutter/src/models/config_model.dart';
 import 'package:adapters_flutter/src/models/exception_model.dart';
 import 'package:adapters_flutter/src/services/api/configuration_api_service.dart';
+import 'package:adapters_flutter/src/services/api/test_run_api_service.dart';
 import 'package:meta/meta.dart';
 import 'package:uuid/uuid.dart';
 
@@ -75,15 +76,7 @@ Future<void> validateConfigAsync(final ConfigModel? config) async {
     _logAndThrow('Url is invalid: "${config.url}".');
   }
 
-  final configurations = await getConfigurationsByProjectIdAsync(config);
-
-  if (configurations.isEmpty) {
-    _logAndThrow('Project id not found: "${config.projectId}".');
-  }
-
-  if (!configurations.contains(config.configurationId)) {
-    _logAndThrow('Configuration id not found: "${config.configurationId}".');
-  }
+  await _postValidateConfigAsync(config);
 }
 
 @internal
@@ -118,4 +111,25 @@ void _logAndThrow(final String message) {
   _logger.e(exception);
 
   throw exception;
+}
+
+Future<void> _postValidateConfigAsync(final ConfigModel config) async {
+  final configurations = await getConfigurationsByProjectIdAsync(config);
+
+  if (configurations.isEmpty) {
+    _logAndThrow('Project with id "${config.projectId}" not found.');
+  }
+
+  if (!configurations.contains(config.configurationId)) {
+    _logAndThrow(
+        'Configuration with id "${config.configurationId}" not found.');
+  }
+
+  if (config.adapterMode == 0 || config.adapterMode == 1) {
+    final testRun = await getTestRunByIdAsync(config);
+
+    if (testRun == null) {
+      _logAndThrow('Test run with id "${config.configurationId}" not found.');
+    }
+  }
 }

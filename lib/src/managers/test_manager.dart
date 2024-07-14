@@ -70,7 +70,7 @@ void tmsTestWidgets(
             title: title,
             workItemsIds: workItemsIds)));
 
-String? _getExternalId(final String? externalId, final String? testName) {
+String? _getSafeExternalId(final String? externalId, final String? testName) {
   var output =
       (externalId == null || externalId.isEmpty) ? testName : externalId;
 
@@ -122,7 +122,10 @@ Future<void> _testAsync(
   final config = await createConfigOnceAsync();
 
   if (config.testIt ?? true) {
-    if (!await checkTestNeedsToBeRunAsync(config, externalId)) {
+    final liveTest = Invoker.current?.liveTest;
+    final safeExternalId = _getSafeExternalId(externalId, liveTest?.test.name);
+
+    if (!await checkTestNeedsToBeRunAsync(config, safeExternalId)) {
       return;
     }
 
@@ -135,12 +138,11 @@ Future<void> _testAsync(
     await createEmptyTestResultAsync();
 
     final localResult = TestResultModel();
-    final liveTest = Invoker.current?.liveTest;
     final startedOn = DateTime.now();
 
     localResult.classname = _getGroupName();
     localResult.description = description;
-    localResult.externalId = _getExternalId(externalId, liveTest?.test.name);
+    localResult.externalId = safeExternalId;
     localResult.labels = liveTest?.test.metadata.tags ?? {};
     localResult.links = links ?? {};
     localResult.methodName = liveTest?.test.name ?? '';

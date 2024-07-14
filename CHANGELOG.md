@@ -7,7 +7,11 @@ The format is based on Keep a Changelog and this project adheres to Semantic Ver
 
 ### Changed
 
-- validation.
+- config validation.
+
+### Fixed
+
+- adapter mode 0.
 
 ## [2.0.3] - 2024-07-13
 

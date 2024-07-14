@@ -4,7 +4,6 @@ import 'dart:convert';
 
 import 'package:adapters_flutter/src/converters/test_result_converter.dart';
 import 'package:adapters_flutter/src/managers/config_manager.dart';
-import 'package:adapters_flutter/src/models/api/autotest_api_model.dart';
 import 'package:adapters_flutter/src/models/api/test_run_api_model.dart';
 import 'package:adapters_flutter/src/models/config_model.dart';
 import 'package:adapters_flutter/src/models/test_result_model.dart';
@@ -37,9 +36,9 @@ Future<void> createEmptyTestRunAsync(final ConfigModel config) async {
 }
 
 @internal
-Future<Iterable<String>> getExternalIdsFromTestRunAsync(
+Future<Map<String, dynamic>?> getTestRunByIdAsync(
     final ConfigModel config) async {
-  final Set<String> externalIds = {};
+  Map<String, dynamic>? testRun;
 
   final headers = {
     'accept': '*/*',
@@ -53,27 +52,10 @@ Future<Iterable<String>> getExternalIdsFromTestRunAsync(
   final response = await getOkResponseOrNullAsync(request);
 
   if (response != null) {
-    final testResults = ((jsonDecode(response.body)
-            as Map<String, dynamic>)['testResults'] as Iterable)
-        .cast<Map<String, dynamic>>();
-
-    for (final result in testResults) {
-      final autoTest = AutoTestRelatedToTestResult.fromJson(
-          result['autoTest'] as Map<String, dynamic>);
-
-      if (autoTest.isDeleted ?? true) {
-        continue;
-      }
-
-      if (autoTest.externalId == null) {
-        continue;
-      }
-
-      externalIds.add(autoTest.externalId!);
-    }
+    testRun = jsonDecode(response.body) as Map<String, dynamic>;
   }
 
-  return externalIds;
+  return testRun;
 }
 
 @internal

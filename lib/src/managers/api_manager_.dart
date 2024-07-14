@@ -21,8 +21,15 @@ Future<bool> checkTestNeedsToBeRunAsync(
   if (config.adapterMode == 0) {
     await _lock.synchronized(() async {
       if (!_isTestRunExternalIdsGot) {
-        _testRunExternalIds
-            .addAll(await getExternalIdsFromTestRunAsync(config));
+        final testRun = await getTestRunByIdAsync(config);
+
+        if (testRun != null) {
+          _testRunExternalIds.addAll((testRun['testResults'] as Iterable)
+              .where((testResult) => !testResult['autoTest']['isDeleted'])
+              .map((testResult) =>
+                  testResult['autoTest']['externalId'].toString()));
+        }
+
         _isTestRunExternalIdsGot = true;
       }
     });
