@@ -467,5 +467,9 @@ doc/api/
 *.js.deps
 *.js.map
 
-# TMS configuration
+## Tms files
+# Attachments
+*.png
+
+# Config
 **/testit.properties

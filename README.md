@@ -27,7 +27,7 @@ flutter pub add adapters_flutter
 
 | Test IT | adapters_flutter |
 |---------|------------------|
-| 5.0     | 2.0.4+           | 
+| 5.0     | 2.1.0+           | 
 
 ## Usage
 
@@ -106,16 +106,24 @@ Description of functions:
 #!/usr/bin/env dart
 
 @Tags(['suite_tag'])
+import 'dart:io';
+
 import 'package:adapters_flutter/adapters_flutter.dart';
 
 void main() {
   group('example group', () {
-    setUpAll(() {
-      expect(0, 0);
+    setUpAll(() async {
+      HttpOverrides.global = null;
+
+      await step('setup all step', () {
+        expect(0, 0);
+      });
     });
 
-    setUp(() {
-      expect(1, 1);
+    setUp(() async {
+      await step('setup step', () {
+        expect(0, 0);
+      });
     });
 
     tmsTest('example test',
@@ -123,7 +131,7 @@ void main() {
             links: {Link('https://www.example.org/')},
             tags: {'example_tag'},
             title: 'example_title',
-            workItemsIds: {'46343'}, () async {
+            workItemsIds: {'46890'}, () async {
               await step('success step', () {
                 expect(0, 0);
               });
@@ -140,8 +148,16 @@ void main() {
                 await addMessage('example message');
               });
 
-              await step('success step with return value', () {
+              final actual = await step('success step with return value', () {
                 return 0;
+              });
+
+              expect(actual, 0);
+
+              await step('success root step', () async {
+                await step('success child step', () {
+                  expect(0, 0);
+                });
               });
 
               await step('failed step', () {
@@ -154,7 +170,7 @@ void main() {
             links: {Link('https://www.example.org/')},
             tags: {'example_tag_widgets'},
             title: 'example_title_widgets',
-            workItemsIds: {'46343'}, (tester) async {
+            workItemsIds: {'46890'}, (tester) async {
               await step('success step', () {
                 expect(0, 0);
               });
@@ -171,8 +187,16 @@ void main() {
                 await addMessage('example message');
               });
 
-              await step('success step with return value', () {
+              final actual = await step('success step with return value', () {
                 return 0;
+              });
+
+              expect(actual, 0);
+
+              await step('success root step', () async {
+                await step('success child step', () {
+                  expect(0, 0);
+                });
               });
 
               await step('failed step', () {
@@ -180,12 +204,16 @@ void main() {
               });
             });
 
-    tearDown(() {
-      expect(2, 2);
+    tearDown(() async {
+      await step('tearDown step', () {
+        expect(0, 0);
+      });
     });
 
-    tearDownAll(() {
-      expect(3, 3);
+    tearDownAll(() async {
+      await step('tearDownAll step', () {
+        expect(0, 0);
+      });
     });
   });
 }

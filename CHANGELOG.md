@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.  
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
 
+## [2.1.0] - 2024-07-14
+
+### Added
+
+- setup & teardown full support.
+
+### Fixed
+
+- test run not always completed.
+
 ## [2.0.4] - 2024-07-13
 
 ### Changed

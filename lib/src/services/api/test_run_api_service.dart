@@ -12,6 +12,21 @@ import 'package:http/http.dart';
 import 'package:meta/meta.dart';
 
 @internal
+Future<void> completeTestRunAsync(final ConfigModel config) async {
+  final headers = {
+    'accept': '*/*',
+    'Content-Type': 'application/json',
+    'Authorization': 'PrivateToken ${config.privateToken}'
+  };
+
+  final url = '${config.url}/api/v2/testRuns/${config.testRunId}/complete';
+  var request = Request('POST', Uri.parse(url));
+  request.headers.addAll(headers);
+
+  await getOkResponseOrNullAsync(request);
+}
+
+@internal
 Future<void> createEmptyTestRunAsync(final ConfigModel config) async {
   final headers = {
     'accept': '*/*',

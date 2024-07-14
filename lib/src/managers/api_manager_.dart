@@ -14,7 +14,7 @@ final _lock = Lock();
 final _testRunExternalIds = [];
 
 @internal
-Future<bool> checkTestNeedsToBeRunAsync(
+Future<bool> isTestNeedsToBeRunAsync(
     final ConfigModel config, final String? externalId) async {
   var isTestNeedsToBeRun = true;
 

@@ -6,7 +6,6 @@ import 'package:adapters_flutter/src/enums/outcome_enum.dart';
 import 'package:adapters_flutter/src/managers/config_manager.dart';
 import 'package:adapters_flutter/src/models/api/attachment_api_model.dart';
 import 'package:adapters_flutter/src/storages/test_result_storage.dart';
-import 'package:test_api/src/backend/invoker.dart'; // ignore: depend_on_referenced_packages, implementation_imports
 
 FutureOr<T?> step<T>(final String title, final FutureOr<T?> Function() body,
     {final String? description}) async {
@@ -14,7 +13,7 @@ FutureOr<T?> step<T>(final String title, final FutureOr<T?> Function() body,
 
   final config = await createConfigOnceAsync();
 
-  if ((config.testIt ?? true) && !_isTeardownAllStep()) {
+  if ((config.testIt ?? true)) {
     await createEmptyStepAsync();
 
     final localStep = AutoTestStepResultsModel();
@@ -44,6 +43,3 @@ FutureOr<T?> step<T>(final String title, final FutureOr<T?> Function() body,
 
   return result;
 }
-
-bool _isTeardownAllStep() =>
-    Invoker.current?.liveTest.test.name.endsWith('(tearDownAll)') ?? false;

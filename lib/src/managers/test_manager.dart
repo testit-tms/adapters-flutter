@@ -8,67 +8,108 @@ import 'package:adapters_flutter/src/managers/config_manager.dart';
 import 'package:adapters_flutter/src/managers/log_manager.dart';
 import 'package:adapters_flutter/src/models/api/link_api_model.dart';
 import 'package:adapters_flutter/src/models/test_result_model.dart';
+import 'package:adapters_flutter/src/services/api/test_run_api_service.dart';
+import 'package:adapters_flutter/src/services/config/file_config_service.dart';
 import 'package:adapters_flutter/src/services/validation_service.dart';
 import 'package:adapters_flutter/src/storages/test_result_storage.dart';
 import 'package:adapters_flutter/src/utils/platform_util.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart';
+import 'package:synchronized/synchronized.dart';
+import 'package:test_api/src/backend/declarer.dart'; // ignore: depend_on_referenced_packages, implementation_imports
 import 'package:test_api/src/backend/invoker.dart'; // ignore: depend_on_referenced_packages, implementation_imports
 
+bool _isPostProcessActionAdded = false;
+bool _isWarningsLogged = false;
+final _lock = Lock();
 final _logger = getLogger();
 
 void tmsTest(final String description, final dynamic Function() body,
-        {final String? externalId,
-        final Set<Link>? links,
-        final Map<String, dynamic>? onPlatform,
-        final int? retry,
-        final String? skip,
-        final Set<String>? tags,
-        final String? testOn,
-        final Timeout? timeout,
-        final String? title,
-        final Set<String>? workItemsIds}) =>
-    test(
-        description,
-        onPlatform: onPlatform,
-        retry: retry,
-        tags: tags,
-        testOn: testOn,
-        timeout: timeout,
-        () async => await _testAsync(description, () async => await body.call(),
-            externalId: externalId,
-            links: links,
-            skip: skip,
-            tags: tags,
-            title: title,
-            workItemsIds: workItemsIds));
+    {final String? externalId,
+    final Set<Link>? links,
+    final Map<String, dynamic>? onPlatform,
+    final int? retry,
+    final String? skip,
+    final Set<String>? tags,
+    final String? testOn,
+    final Timeout? timeout,
+    final String? title,
+    final Set<String>? workItemsIds}) {
+  _addPostProcessActionOnce();
+
+  test(
+      description,
+      onPlatform: onPlatform,
+      retry: retry,
+      tags: tags,
+      testOn: testOn,
+      timeout: timeout,
+      () async => await _testAsync(description, () async => await body.call(),
+          externalId: externalId,
+          links: links,
+          skip: skip,
+          tags: tags,
+          title: title,
+          workItemsIds: workItemsIds));
+}
 
 void tmsTestWidgets(
-        final String description, final WidgetTesterCallback callback,
-        {final String? externalId,
-        final Set<Link>? links,
-        final bool semanticsEnabled = true,
-        final String? skip,
-        final Set<String>? tags,
-        final Timeout? timeout,
-        final String? title,
-        final TestVariant<Object?> variant = const DefaultTestVariant(),
-        final Set<String>? workItemsIds}) =>
-    testWidgets(
-        description,
-        semanticsEnabled: semanticsEnabled,
-        skip: skip?.isNotEmpty,
-        tags: tags,
-        timeout: timeout,
-        variant: variant,
-        (tester) async => await tester.runAsync(() async => await _testAsync(
-            description, () async => await callback(tester),
-            externalId: externalId,
-            links: links,
-            skip: skip,
-            tags: tags,
-            title: title,
-            workItemsIds: workItemsIds)));
+    final String description, final WidgetTesterCallback callback,
+    {final String? externalId,
+    final Set<Link>? links,
+    final bool semanticsEnabled = true,
+    final String? skip,
+    final Set<String>? tags,
+    final Timeout? timeout,
+    final String? title,
+    final TestVariant<Object?> variant = const DefaultTestVariant(),
+    final Set<String>? workItemsIds}) {
+  _addPostProcessActionOnce();
+
+  testWidgets(
+      description,
+      semanticsEnabled: semanticsEnabled,
+      skip: skip?.isNotEmpty,
+      tags: tags,
+      timeout: timeout,
+      variant: variant,
+      (tester) async => await tester.runAsync(() async => await _testAsync(
+          description, () async => await callback(tester),
+          externalId: externalId,
+          links: links,
+          skip: skip,
+          tags: tags,
+          title: title,
+          workItemsIds: workItemsIds)));
+}
+
+void _addPostProcessActionOnce() {
+  _lock.synchronized(() async {
+    if (!_isPostProcessActionAdded) {
+      Declarer.current?.addTearDownAll(() async {
+        final config = await createConfigOnceAsync();
+        final testIdsForProcessing = await getTestIdsForProcessingAsync();
+
+        if (testIdsForProcessing.isEmpty) {
+          await completeTestRunAsync(config);
+
+          return;
+        }
+
+        for (final testId in testIdsForProcessing) {
+          await addSetupAllToTestResultAsync(testId);
+          await addTeardownAllToTestResultAsync(testId);
+          final testResult = await getTestResultByTestIdAsync(testId);
+          await processTestResultAsync(config, testResult);
+        }
+
+        await removeAllTestResultsAsync();
+      });
+
+      _isPostProcessActionAdded = true;
+    }
+  });
+}
 
 String? _getSafeExternalId(final String? externalId, final String? testName) {
   var output =
@@ -120,12 +161,15 @@ Future<void> _testAsync(
     final Set<String>? workItemsIds}) async {
   HttpOverrides.global = null;
   final config = await createConfigOnceAsync();
+  await _tryLogWarningsOnceAsync();
 
   if (config.testIt ?? true) {
     final liveTest = Invoker.current?.liveTest;
     final safeExternalId = _getSafeExternalId(externalId, liveTest?.test.name);
 
-    if (!await checkTestNeedsToBeRunAsync(config, safeExternalId)) {
+    if (!await isTestNeedsToBeRunAsync(config, safeExternalId)) {
+      await excludeTestIdFromProcessingAsync();
+
       return;
     }
 
@@ -179,9 +223,6 @@ Future<void> _testAsync(
       localResult.duration = completedOn.difference(startedOn).inMilliseconds;
 
       await updateTestResultAsync(localResult);
-      await addSetupToTestResultAsync();
-      final testResult = await removeTestResultAsync();
-      await processTestResultAsync(config, testResult);
 
       if (exception != null) {
         _logger.e('$exception$lineSeparator$stacktrace.');
@@ -191,4 +232,16 @@ Future<void> _testAsync(
   } else {
     await body.call();
   }
+}
+
+Future<void> _tryLogWarningsOnceAsync() async {
+  await _lock.synchronized(() async {
+    if (!_isWarningsLogged) {
+      for (final warning in getConfigFileWarnings()) {
+        _logger.w(warning);
+      }
+
+      _isWarningsLogged = true;
+    }
+  });
 }
