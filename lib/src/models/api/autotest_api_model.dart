@@ -22,18 +22,6 @@ final class AutoTestFullModel {
 }
 
 @internal
-final class AutoTestRelatedToTestResult {
-  final String? externalId;
-  final bool? isDeleted;
-
-  factory AutoTestRelatedToTestResult.fromJson(Map<String, dynamic> json) =>
-      AutoTestRelatedToTestResult(json['externalId'].toString(),
-          bool.tryParse(json['isDeleted'].toString()));
-
-  const AutoTestRelatedToTestResult(this.externalId, this.isDeleted);
-}
-
-@internal
 final class AutoTestResultsForTestRunModel {
   final List<AttachmentPutModel>? attachments;
   final String? autoTestExternalId;

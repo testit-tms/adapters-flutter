@@ -14,7 +14,6 @@ import 'package:synchronized/synchronized.dart';
 
 ConfigModel? _config;
 final _lock = Lock();
-final _logger = getLogger();
 
 @internal
 Future<ConfigModel> createConfigOnceAsync() async {
@@ -31,10 +30,6 @@ Future<ConfigModel> createConfigOnceAsync() async {
       _config = mergedConfig;
 
       await setLogLevelOnceAsync(_config);
-
-      for (final warning in getConfigFileWarnings()) {
-        _logger.w(warning);
-      }
     }
   });
 

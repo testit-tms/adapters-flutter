@@ -1,28 +1,32 @@
 #!/usr/bin/env dart
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:adapters_flutter/src/models/api/attachment_api_model.dart';
 import 'package:adapters_flutter/src/models/api/link_api_model.dart';
 import 'package:adapters_flutter/src/models/test_result_model.dart';
 import 'package:adapters_flutter/src/utils/platform_util.dart';
 import 'package:meta/meta.dart';
+import 'package:path/path.dart';
 import 'package:synchronized/synchronized.dart';
 import 'package:test_api/src/backend/invoker.dart'; // ignore: depend_on_referenced_packages, implementation_imports
 
+const _setupAllKey = '(setupall)';
+const _teardownAllKey = '(teardownall)';
+
+final _excludedTestIds = <String>{};
 final _lock = Lock();
 final _testResults = <String, TestResultModel>{};
 
 @internal
-Future<void> addSetupToTestResultAsync() async {
-  final testId = _getTestId();
-
+Future<void> addSetupAllToTestResultAsync(final String testId) async {
   await _lock.synchronized(() => _testResults.update(testId, (value) {
         _testResults.keys
             .where((final key) =>
-                key.endsWith('(setUpAll)') &&
-                testId.contains(key.replaceAll('(setUpAll)', '')))
-            .map((final setupAllKey) => _testResults[setupAllKey]?.steps ?? [])
+                key.endsWith(_setupAllKey) &&
+                testId.contains(key.replaceAll(_setupAllKey, '')))
+            .map((final key) => _testResults[key]?.steps ?? [])
             .forEach((final steps) => value.setup.addAll(steps));
 
         return value;
@@ -31,10 +35,35 @@ Future<void> addSetupToTestResultAsync() async {
 
         _testResults.keys
             .where((final key) =>
-                key.endsWith('(setUpAll)') &&
-                testId.contains(key.replaceAll('(setUpAll)', '')))
+                key.endsWith(_setupAllKey) &&
+                testId.contains(key.replaceAll(_setupAllKey, '')))
             .map((final key) => _testResults[key]?.steps ?? [])
             .forEach((final steps) => testResult.setup.addAll(steps));
+
+        return testResult;
+      }));
+}
+
+@internal
+Future<void> addTeardownAllToTestResultAsync(final String testId) async {
+  await _lock.synchronized(() => _testResults.update(testId, (value) {
+        _testResults.keys
+            .where((final key) =>
+                key.endsWith(_teardownAllKey) &&
+                testId.contains(key.replaceAll(_teardownAllKey, '')))
+            .map((final key) => _testResults[key]?.steps ?? [])
+            .forEach((final steps) => value.teardown.addAll(steps));
+
+        return value;
+      }, ifAbsent: () {
+        final testResult = TestResultModel();
+
+        _testResults.keys
+            .where((final key) =>
+                key.endsWith(_teardownAllKey) &&
+                testId.contains(key.replaceAll(_teardownAllKey, '')))
+            .map((final key) => _testResults[key]?.steps ?? [])
+            .forEach((final steps) => testResult.teardown.addAll(steps));
 
         return testResult;
       }));
@@ -70,9 +99,25 @@ Future<void> createEmptyTestResultAsync() async => await _lock.synchronized(() {
     });
 
 @internal
-Future<TestResultModel> removeTestResultAsync() async =>
+Future<void> excludeTestIdFromProcessingAsync() async =>
+    await _lock.synchronized(() => _excludedTestIds.add(_getTestId()));
+
+@internal
+Future<Iterable<String>> getTestIdsForProcessingAsync() async =>
+    await _lock.synchronized<Iterable<String>>(() => _testResults.keys.where(
+        (key) =>
+            !key.endsWith(_setupAllKey) &&
+            !key.endsWith(_teardownAllKey) &&
+            !_excludedTestIds.contains(key)));
+
+@internal
+Future<TestResultModel> getTestResultByTestIdAsync(String testId) async =>
     await _lock.synchronized<TestResultModel>(
-        () => _testResults.remove(_getTestId()) as TestResultModel);
+        () => _testResults[testId] as TestResultModel);
+
+@internal
+Future<void> removeAllTestResultsAsync() async =>
+    await _lock.synchronized(() => _testResults.clear());
 
 @internal
 Future<void> updateCurrentStepAsync(
@@ -191,7 +236,9 @@ AutoTestStepResultsModel? _getLastNotFinishedChildStep(
 
 String _getTestId() {
   final liveTest = Invoker.current?.liveTest;
-  final testId = '${liveTest?.suite.path}/${liveTest?.test.name}';
+  final testId =
+      canonicalize(join(liveTest?.suite.path ?? '', liveTest?.test.name))
+          .replaceAll(canonicalize(Directory.current.path), '');
 
   return testId;
 }
