@@ -77,7 +77,7 @@ jobs:
 
       - name: Test
         run: |
-          flutter test ./examples/ || exit 0
+          flutter test ./example/test/ || exit 0
 
       - name: Validate
         run: |

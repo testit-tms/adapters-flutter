@@ -1,7 +1,12 @@
-# Tests
-dart_test.yaml
-examples/**
-test/**
+## Tms files
+# Attachments
+*.png
 
-# TMS configuration
+# Config
 **/testit.properties
+
+# Examples
+example/**
+
+# Unit tests
+test/**
