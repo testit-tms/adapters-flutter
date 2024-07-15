@@ -27,27 +27,27 @@ flutter pub add adapters_flutter
 
 | Test IT | adapters_flutter |
 |---------|------------------|
-| 5.0     | 2.1.2+           | 
+| 5.0     | 2.1.4+           | 
 
 ## Usage
 
 ### Configuration
 
-| Description                                                                                                                                                                                                                                                                                                                                                                            | File property                     | Environment variable                       | Cli property                         |
-|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------|--------------------------------------------|--------------------------------------|
-| Adapter mode. Default value - 0. The adapter supports following modes:<br/>0 - in this mode, the adapter filters tests by test run ID and configuration ID, and sends the results to the test run<br/>1 - in this mode, the adapter sends all results to the test run without filtering<br/>2 - in this mode, the adapter creates a new test run and sends results to the new test run | adapterMode                       | TMS_ADAPTER_MODE                           | tmsAdapterMode                       |
-| Mode of automatic creation test cases (**It's optional**). Default value - false. The adapter supports following modes:<br/>true - in this mode, the adapter will create a test case linked to the created autotest (not to the updated autotest)<br/>false - in this mode, the adapter will not create a test case                                                                    | automaticCreationTestCases        | TMS_AUTOMATIC_CREATION_TEST_CASES          | tmsAutomaticCreationTestCases        |
-| Mode of automatic updation links to test cases (**It's optional**). Default value - false. The adapter supports following modes:<br/>true - in this mode, the adapter will update links to test cases<br/>false - in this mode, the adapter will not update link to test cases                                                                                                         | automaticUpdationLinksToTestCases | TMS_AUTOMATIC_UPDATION_LINKS_TO_TEST_CASES | tmsAutomaticUpdationLinksToTestCases |
-| It enables/disables certificate validation (**It's optional**). Default value - true                                                                                                                                                                                                                                                                                                   | certValidation                    | TMS_CERT_VALIDATION                        | tmsCertValidation                    |
-| Name of the configuration file If it is not provided, it is used default file name (**It's optional**)                                                                                                                                                                                                                                                                                 | -                                 | TMS_CONFIG_FILE                            | tmsConfigFile                        |
-| ID of configuration in TMS instance [How to getting configuration ID?](https://github.com/testit-tms/.github/tree/main/configuration#configurationid)                                                                                                                                                                                                                                  | configurationId                   | TMS_CONFIGURATION_ID                       | tmsConfigurationId                   |
-| Enable debug logs (**It's optional**). Default value - false                                                                                                                                                                                                                                                                                                                           | isDebug                           | TMS_IS_DEBUG                               | tmsIsDebug                           |
-| API secret key [How to getting API secret key?](https://github.com/testit-tms/.github/tree/main/configuration#privatetoken)                                                                                                                                                                                                                                                            | privateToken                      | TMS_PRIVATE_TOKEN                          | tmsPrivateToken                      |
-| ID of project in TMS instance [How to getting project ID?](https://github.com/testit-tms/.github/tree/main/configuration#projectid)                                                                                                                                                                                                                                                    | projectId                         | TMS_PROJECT_ID                             | tmsProjectId                         |
-| It enables/disables TMS integration (**It's optional**). Default value - true                                                                                                                                                                                                                                                                                                          | testIt                            | TMS_TEST_IT                                | tmsTestIt                            |
-| ID of the created test run in TMS instance.<br/>It's necessary for **adapterMode** 0 or 1                                                                                                                                                                                                                                                                                              | testRunId                         | TMS_TEST_RUN_ID                            | tmsTestRunId                         |
-| Parameter for specifying the name of test run in TMS instance (**It's optional**). If it is not provided, it is created automatically                                                                                                                                                                                                                                                  | testRunName                       | TMS_TEST_RUN_NAME                          | tmsTestRunName                       |
-| Location of the TMS instance                                                                                                                                                                                                                                                                                                                                                           | url                               | TMS_URL                                    | tmsUrl                               |
+| Description                                                                                                                                                                                                                                                                                                                         | File property                     | Environment variable                       | Cli property                         |
+|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------|--------------------------------------------|--------------------------------------|
+| Adapter mode. Default value - 0. The adapter supports following modes:<br/>0 - in this mode, the adapter sends only those autotests results that are found in the test run<br/>1 - in this mode, the adapter sends all results to the test run<br/>2 - in this mode, the adapter creates a new test run and sends all results to it | adapterMode                       | TMS_ADAPTER_MODE                           | tmsAdapterMode                       |
+| Mode of automatic creation test cases (**It's optional**). Default value - false. The adapter supports following modes:<br/>true - in this mode, the adapter will create a test case linked to the created autotest (not to the updated autotest)<br/>false - in this mode, the adapter will not create a test case                 | automaticCreationTestCases        | TMS_AUTOMATIC_CREATION_TEST_CASES          | tmsAutomaticCreationTestCases        |
+| Mode of automatic updation links to test cases (**It's optional**). Default value - false. The adapter supports following modes:<br/>true - in this mode, the adapter will update links to test cases<br/>false - in this mode, the adapter will not update link to test cases                                                      | automaticUpdationLinksToTestCases | TMS_AUTOMATIC_UPDATION_LINKS_TO_TEST_CASES | tmsAutomaticUpdationLinksToTestCases |
+| It enables/disables certificate validation (**It's optional**). Default value - true                                                                                                                                                                                                                                                | certValidation                    | TMS_CERT_VALIDATION                        | tmsCertValidation                    |
+| Name of the configuration file If it is not provided, it is used default file name (**It's optional**)                                                                                                                                                                                                                              | -                                 | TMS_CONFIG_FILE                            | tmsConfigFile                        |
+| ID of configuration in TMS instance [How to getting configuration ID?](https://github.com/testit-tms/.github/tree/main/configuration#configurationid)                                                                                                                                                                               | configurationId                   | TMS_CONFIGURATION_ID                       | tmsConfigurationId                   |
+| Enable debug logs (**It's optional**). Default value - false                                                                                                                                                                                                                                                                        | isDebug                           | TMS_IS_DEBUG                               | tmsIsDebug                           |
+| API secret key [How to getting API secret key?](https://github.com/testit-tms/.github/tree/main/configuration#privatetoken)                                                                                                                                                                                                         | privateToken                      | TMS_PRIVATE_TOKEN                          | tmsPrivateToken                      |
+| ID of project in TMS instance [How to getting project ID?](https://github.com/testit-tms/.github/tree/main/configuration#projectid)                                                                                                                                                                                                 | projectId                         | TMS_PROJECT_ID                             | tmsProjectId                         |
+| It enables/disables TMS integration (**It's optional**). Default value - true                                                                                                                                                                                                                                                       | testIt                            | TMS_TEST_IT                                | tmsTestIt                            |
+| ID of the created test run in TMS instance.<br/>It's necessary for **adapterMode** 0 or 1                                                                                                                                                                                                                                           | testRunId                         | TMS_TEST_RUN_ID                            | tmsTestRunId                         |
+| Parameter for specifying the name of test run in TMS instance (**It's optional**). If it is not provided, it is created automatically                                                                                                                                                                                               | testRunName                       | TMS_TEST_RUN_NAME                          | tmsTestRunName                       |
+| Url of the TMS instance                                                                                                                                                                                                                                                                                                             | url                               | TMS_URL                                    | tmsUrl                               |
 
 #### File
 
@@ -80,14 +80,13 @@ Use metadata to specify information about autotest.
 
 Description of test arguments:
 
-* `description` - autotest description specified in the autotest card
-* `externalId` - unique internal autotest ID (used in Test IT)
-* `labels` - tags listed in the autotest card
-* `links` - links listed in the autotest card
-* `title` - autotest name specified in the autotest card. If not specified, the name from the
-  displayName method is used
-* `workItemsIds` - a method that links autotests with manual tests. Receives the array of manual
-  tests' IDs
+* `description` - autotest description specified in the autotest card.
+* `externalId` - unique internal autotest ID (used in Test IT).
+* `links` - links listed in the autotest card.
+* `tags` - tags listed in the autotest card.
+* `title` - autotest name specified in the autotest card. If not specified, the test name is used.
+* `workItemsIds` - a method that links autotests with manual tests. Receives the set of manual
+  tests' IDs.
 
 Description of functions:
 
@@ -96,7 +95,7 @@ Description of functions:
 * `addLinks` - add single link to the autotest result.
 * `addLinks` - add links to the autotest result.
 * `addMessage` - add message to the autotest result.
-* `step` - the designation of the step
+* `step` - the designation of the step.
 
 ### Examples
 
@@ -205,13 +204,13 @@ void main() {
         });
 
     tearDown(() async {
-      await step('tearDown step', () {
+      await step('teardown step', () {
         expect(0, 0);
       });
     });
 
     tearDownAll(() async {
-      await step('tearDownAll step', () {
+      await step('teardown all step', () {
         expect(0, 0);
       });
     });
