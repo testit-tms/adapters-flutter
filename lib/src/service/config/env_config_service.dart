@@ -1,10 +1,9 @@
 #!/usr/bin/env dart
 
-import 'dart:io';
-
 import 'package:adapters_flutter/src/model/config_model.dart';
 import 'package:adapters_flutter/src/service/config/file_config_service.dart';
 import 'package:meta/meta.dart';
+import 'package:universal_io/io.dart';
 
 @internal
 Future<ConfigModel> getConfigFromEnvAsync() async {

@@ -1,9 +1,8 @@
 #!/usr/bin/env dart
 
-import 'dart:io';
-
 import 'package:adapters_flutter/adapters_flutter.dart';
 import 'package:path/path.dart';
+import 'package:universal_io/io.dart';
 
 final _attachmentDir = join(Directory.current.path, 'example', 'attachment');
 final _attachment1 = join(_attachmentDir, 'file1.txt');

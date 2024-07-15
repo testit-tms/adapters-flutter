@@ -1,7 +1,6 @@
 #!/usr/bin/env dart
 
 import 'dart:async';
-import 'dart:io';
 
 import 'package:adapters_flutter/src/enum/outcome_enum.dart';
 import 'package:adapters_flutter/src/manager/api_manager_.dart';
@@ -18,6 +17,7 @@ import 'package:path/path.dart';
 import 'package:synchronized/synchronized.dart';
 import 'package:test_api/src/backend/declarer.dart'; // ignore: depend_on_referenced_packages, implementation_imports
 import 'package:test_api/src/backend/invoker.dart'; // ignore: depend_on_referenced_packages, implementation_imports
+import 'package:universal_io/io.dart';
 
 bool _isPostProcessingAdded = false;
 bool _isWarningsLogged = false;

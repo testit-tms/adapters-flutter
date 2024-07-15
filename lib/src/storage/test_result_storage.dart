@@ -1,7 +1,6 @@
 #!/usr/bin/env dart
 
 import 'dart:async';
-import 'dart:io';
 
 import 'package:adapters_flutter/src/model/api/attachment_api_model.dart';
 import 'package:adapters_flutter/src/model/api/link_api_model.dart';
@@ -11,6 +10,7 @@ import 'package:meta/meta.dart';
 import 'package:path/path.dart';
 import 'package:synchronized/synchronized.dart';
 import 'package:test_api/src/backend/invoker.dart'; // ignore: depend_on_referenced_packages, implementation_imports
+import 'package:universal_io/io.dart';
 
 const _setupAllKey = '(setupall)';
 const _teardownAllKey = '(teardownall)';

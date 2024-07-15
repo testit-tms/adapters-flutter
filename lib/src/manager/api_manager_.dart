@@ -1,7 +1,5 @@
 #!/usr/bin/env dart
 
-import 'dart:io';
-
 import 'package:adapters_flutter/src/model/api/attachment_api_model.dart';
 import 'package:adapters_flutter/src/model/config_model.dart';
 import 'package:adapters_flutter/src/model/test_result_model.dart';
@@ -12,6 +10,7 @@ import 'package:adapters_flutter/src/service/api/test_run_api_service.dart';
 import 'package:adapters_flutter/src/service/api/work_item_api_service.dart';
 import 'package:meta/meta.dart';
 import 'package:synchronized/synchronized.dart';
+import 'package:universal_io/io.dart';
 
 var _isTestRunCreated = false;
 var _isTestRunExternalIdsGot = false;
