@@ -34,7 +34,7 @@ void tmsTest(final String description, final dynamic Function() body,
     final Timeout? timeout,
     final String? title,
     final Set<String>? workItemsIds}) {
-  _addPostProcessActionOnce();
+  _addPostProcessActionOnceAsync();
 
   test(
       description,
@@ -63,7 +63,7 @@ void tmsTestWidgets(
     final String? title,
     final TestVariant<Object?> variant = const DefaultTestVariant(),
     final Set<String>? workItemsIds}) {
-  _addPostProcessActionOnce();
+  _addPostProcessActionOnceAsync();
 
   testWidgets(
       description,
@@ -82,8 +82,8 @@ void tmsTestWidgets(
           workItemsIds: workItemsIds)));
 }
 
-void _addPostProcessActionOnce() {
-  _lock.synchronized(() async {
+Future<void> _addPostProcessActionOnceAsync() async {
+  await _lock.synchronized(() async {
     if (!_isPostProcessActionAdded) {
       Declarer.current?.addTearDownAll(() async {
         final config = await createConfigOnceAsync();
