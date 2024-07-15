@@ -57,7 +57,7 @@ void main() {
       });
     });
 
-    group('tms test widgets', () {
+    group('tms widgets test', () {
       tmsTestWidgets('add attachment - success', (tester) async {
         await addAttachment(_attachment1);
       });

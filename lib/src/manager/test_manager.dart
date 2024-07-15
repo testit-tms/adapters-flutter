@@ -1,7 +1,5 @@
 #!/usr/bin/env dart
 
-import 'dart:async';
-
 import 'package:adapters_flutter/src/enum/outcome_enum.dart';
 import 'package:adapters_flutter/src/manager/api_manager_.dart';
 import 'package:adapters_flutter/src/manager/config_manager.dart';
@@ -36,7 +34,7 @@ void tmsTest(final String description, final dynamic Function() body,
     final Timeout? timeout,
     final String? title,
     final Set<String>? workItemsIds}) {
-  _addPostProcessingOnce();
+  _addPostProcessingOnceAsync();
 
   test(
       description,
@@ -66,7 +64,7 @@ void tmsTestWidgets(
     final String? title,
     final TestVariant<Object?> variant = const DefaultTestVariant(),
     final Set<String>? workItemsIds}) {
-  _addPostProcessingOnce();
+  _addPostProcessingOnceAsync();
 
   testWidgets(
       description,
@@ -85,33 +83,25 @@ void tmsTestWidgets(
           workItemsIds: workItemsIds)));
 }
 
-void _addPostProcessingOnce() {
-  scheduleMicrotask(() async {
-    await _lock.synchronized(() async {
-      if (!_isPostProcessingAdded) {
-        Declarer.current?.addTearDownAll(() async {
-          final config = await createConfigOnceAsync();
-          final processingTestIds = await getProcessingTestIdsAsync();
+void _addPostProcessingOnceAsync() {
+  Declarer.current?.addTearDownAll(() async {
+    final config = await createConfigOnceAsync();
+    final processingTestIds = await getProcessingTestIdsAsync();
 
-          if (processingTestIds.isEmpty) {
-            await tryCompleteTestRunAsync(config);
+    if (processingTestIds.isEmpty) {
+      await tryCompleteTestRunAsync(config);
 
-            return;
-          }
+      return;
+    }
 
-          for (final testId in processingTestIds) {
-            await addSetupAllsToTestResultAsync(testId);
-            await addTeardownAllsToTestResultAsync(testId);
-            final testResult = await getTestResultByTestIdAsync(testId);
-            await processTestResultAsync(config, testResult);
-          }
+    for (final testId in processingTestIds) {
+      await addSetupAllsToTestResultAsync(testId);
+      await addTeardownAllsToTestResultAsync(testId);
+      final testResult = await getTestResultByTestIdAsync(testId);
+      await processTestResultAsync(config, testResult);
+    }
 
-          await removeAllTestResultsAsync();
-        });
-
-        _isPostProcessingAdded = true;
-      }
-    });
+    await removeAllTestResultsAsync();
   });
 }
 
