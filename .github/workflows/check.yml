@@ -21,4 +21,6 @@ jobs:
           flutter-version: ${{ secrets.FLUTTER_VERSION }}
 
       - name: Test
-        run: flutter test --dart-define=disableValidation=true ./test/
+        run: |
+          flutter --disable-telemetry
+          flutter test --dart-define=disableValidation=true ./test/
