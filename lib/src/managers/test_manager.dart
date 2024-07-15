@@ -1,5 +1,6 @@
 #!/usr/bin/env dart
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:adapters_flutter/src/enums/outcome_enum.dart';
@@ -18,7 +19,7 @@ import 'package:synchronized/synchronized.dart';
 import 'package:test_api/src/backend/declarer.dart'; // ignore: depend_on_referenced_packages, implementation_imports
 import 'package:test_api/src/backend/invoker.dart'; // ignore: depend_on_referenced_packages, implementation_imports
 
-bool _isPostProcessActionAdded = false;
+bool _isPostProcessingAdded = false;
 bool _isWarningsLogged = false;
 final _lock = Lock();
 final _logger = getLogger();
@@ -34,7 +35,7 @@ void tmsTest(final String description, final dynamic Function() body,
     final Timeout? timeout,
     final String? title,
     final Set<String>? workItemsIds}) {
-  _addPostProcessActionOnceAsync();
+  _addPostProcessingOnce();
 
   test(
       description,
@@ -63,7 +64,7 @@ void tmsTestWidgets(
     final String? title,
     final TestVariant<Object?> variant = const DefaultTestVariant(),
     final Set<String>? workItemsIds}) {
-  _addPostProcessActionOnceAsync();
+  _addPostProcessingOnce();
 
   testWidgets(
       description,
@@ -82,31 +83,33 @@ void tmsTestWidgets(
           workItemsIds: workItemsIds)));
 }
 
-Future<void> _addPostProcessActionOnceAsync() async {
-  await _lock.synchronized(() async {
-    if (!_isPostProcessActionAdded) {
-      Declarer.current?.addTearDownAll(() async {
-        final config = await createConfigOnceAsync();
-        final testIdsForProcessing = await getTestIdsForProcessingAsync();
+void _addPostProcessingOnce() {
+  scheduleMicrotask(() async {
+    await _lock.synchronized(() async {
+      if (!_isPostProcessingAdded) {
+        Declarer.current?.addTearDownAll(() async {
+          final config = await createConfigOnceAsync();
+          final processingTestIds = await getProcessingTestIdsAsync();
 
-        if (testIdsForProcessing.isEmpty) {
-          await tryCompleteTestRunAsync(config);
+          if (processingTestIds.isEmpty) {
+            await tryCompleteTestRunAsync(config);
 
-          return;
-        }
+            return;
+          }
 
-        for (final testId in testIdsForProcessing) {
-          await addSetupAllToTestResultAsync(testId);
-          await addTeardownAllToTestResultAsync(testId);
-          final testResult = await getTestResultByTestIdAsync(testId);
-          await processTestResultAsync(config, testResult);
-        }
+          for (final testId in processingTestIds) {
+            await addSetupAllsToTestResultAsync(testId);
+            await addTeardownAllsToTestResultAsync(testId);
+            final testResult = await getTestResultByTestIdAsync(testId);
+            await processTestResultAsync(config, testResult);
+          }
 
-        await removeAllTestResultsAsync();
-      });
+          await removeAllTestResultsAsync();
+        });
 
-      _isPostProcessActionAdded = true;
-    }
+        _isPostProcessingAdded = true;
+      }
+    });
   });
 }
 

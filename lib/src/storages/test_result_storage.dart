@@ -20,7 +20,7 @@ final _lock = Lock();
 final _testResults = <String, TestResultModel>{};
 
 @internal
-Future<void> addSetupAllToTestResultAsync(final String testId) async {
+Future<void> addSetupAllsToTestResultAsync(final String testId) async {
   await _lock.synchronized(() => _testResults.update(testId, (value) {
         _testResults.keys
             .where((final key) =>
@@ -45,7 +45,7 @@ Future<void> addSetupAllToTestResultAsync(final String testId) async {
 }
 
 @internal
-Future<void> addTeardownAllToTestResultAsync(final String testId) async {
+Future<void> addTeardownAllsToTestResultAsync(final String testId) async {
   await _lock.synchronized(() => _testResults.update(testId, (value) {
         _testResults.keys
             .where((final key) =>
@@ -103,7 +103,7 @@ Future<void> excludeTestIdFromProcessingAsync() async =>
     await _lock.synchronized(() => _excludedTestIds.add(_getTestId()));
 
 @internal
-Future<Iterable<String>> getTestIdsForProcessingAsync() async =>
+Future<Iterable<String>> getProcessingTestIdsAsync() async =>
     await _lock.synchronized<Iterable<String>>(() => _testResults.keys.where(
         (key) =>
             !key.endsWith(_setupAllKey) &&
