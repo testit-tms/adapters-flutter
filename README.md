@@ -78,7 +78,7 @@ flutter test --dart-define=tmsAdapterMode={%ADAPTER_MODE%} --dart-define=tmsAuto
 
 Use metadata to specify information about autotest.
 
-Description of test arguments:
+#### Description of test arguments:
 
 * `description` - autotest description specified in the autotest card.
 * `externalId` - unique internal autotest ID (used in Test IT).
@@ -88,14 +88,17 @@ Description of test arguments:
 * `workItemsIds` - a method that links autotests with manual tests. Receives the set of manual
   tests' IDs.
 
-Description of functions:
+#### Description of functions:
 
 * `addAttachment` - add single attachment to the autotest result.
 * `addAttachments` - add attachments to the autotest result.
 * `addLinks` - add single link to the autotest result.
 * `addLinks` - add links to the autotest result.
 * `addMessage` - add message to the autotest result.
-* `step` - the designation of the step.
+
+#### Description of steps:
+
+* `step` - the designation of the test step.
 
 ## Contributing
 
