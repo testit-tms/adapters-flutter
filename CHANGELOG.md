@@ -11,6 +11,8 @@ The format is based on Keep a Changelog and this project adheres to Semantic Ver
 
 ### Fixed
 
+- examples readme
+- folders names warning.
 - post processing action.
 
 ## [2.1.0] - 2024-07-14
