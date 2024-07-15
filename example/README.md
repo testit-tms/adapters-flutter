@@ -1,4 +1,4 @@
-# Flutter examples
+# Example
 
 Flutter test with Test IT adapter examples.
 
