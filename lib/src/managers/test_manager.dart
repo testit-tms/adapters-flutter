@@ -8,7 +8,6 @@ import 'package:adapters_flutter/src/managers/config_manager.dart';
 import 'package:adapters_flutter/src/managers/log_manager.dart';
 import 'package:adapters_flutter/src/models/api/link_api_model.dart';
 import 'package:adapters_flutter/src/models/test_result_model.dart';
-import 'package:adapters_flutter/src/services/api/test_run_api_service.dart';
 import 'package:adapters_flutter/src/services/config/file_config_service.dart';
 import 'package:adapters_flutter/src/services/validation_service.dart';
 import 'package:adapters_flutter/src/storages/test_result_storage.dart';
@@ -35,7 +34,7 @@ void tmsTest(final String description, final dynamic Function() body,
     final Timeout? timeout,
     final String? title,
     final Set<String>? workItemsIds}) {
-  _addPostProcessActionOnce();
+  _addPostProcessActionOnceAsync();
 
   test(
       description,
@@ -64,7 +63,7 @@ void tmsTestWidgets(
     final String? title,
     final TestVariant<Object?> variant = const DefaultTestVariant(),
     final Set<String>? workItemsIds}) {
-  _addPostProcessActionOnce();
+  _addPostProcessActionOnceAsync();
 
   testWidgets(
       description,
@@ -83,15 +82,15 @@ void tmsTestWidgets(
           workItemsIds: workItemsIds)));
 }
 
-void _addPostProcessActionOnce() {
-  _lock.synchronized(() async {
+Future<void> _addPostProcessActionOnceAsync() async {
+  await _lock.synchronized(() async {
     if (!_isPostProcessActionAdded) {
       Declarer.current?.addTearDownAll(() async {
         final config = await createConfigOnceAsync();
         final testIdsForProcessing = await getTestIdsForProcessingAsync();
 
         if (testIdsForProcessing.isEmpty) {
-          await completeTestRunAsync(config);
+          await tryCompleteTestRunAsync(config);
 
           return;
         }

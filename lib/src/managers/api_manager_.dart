@@ -1,8 +1,13 @@
 #!/usr/bin/env dart
 
+import 'dart:io';
+
+import 'package:adapters_flutter/src/models/api/attachment_api_model.dart';
 import 'package:adapters_flutter/src/models/config_model.dart';
 import 'package:adapters_flutter/src/models/test_result_model.dart';
+import 'package:adapters_flutter/src/services/api/attachment_api_service.dart';
 import 'package:adapters_flutter/src/services/api/autotest_api_service.dart';
+import 'package:adapters_flutter/src/services/api/configuration_api_service.dart';
 import 'package:adapters_flutter/src/services/api/test_run_api_service.dart';
 import 'package:adapters_flutter/src/services/api/work_item_api_service.dart';
 import 'package:meta/meta.dart';
@@ -12,6 +17,37 @@ var _isTestRunCreated = false;
 var _isTestRunExternalIdsGot = false;
 final _lock = Lock();
 final _testRunExternalIds = [];
+
+@internal
+Future<String?> getFirstNotFoundWorkItemIdAsync(
+    final ConfigModel config, final Iterable<String>? workItemsIds) async {
+  String? firstNotFoundWorkItemId;
+
+  if (workItemsIds == null || workItemsIds.isEmpty) {
+    return firstNotFoundWorkItemId;
+  }
+
+  for (final id in workItemsIds) {
+    final workItem = await getWorkItemByIdAsync(config, id);
+
+    if (workItem == null || workItem.isEmpty) {
+      firstNotFoundWorkItemId = id;
+      break;
+    }
+  }
+
+  return firstNotFoundWorkItemId;
+}
+
+@internal
+Future<Iterable<String>> getProjectConfigurationsAsync(
+        final ConfigModel config) async =>
+    await getConfigurationsByProjectIdAsync(config);
+
+@internal
+Future<Map<String, dynamic>?> getTestRunOrNullByIdAsync(
+        final ConfigModel config) async =>
+    await getTestRunByIdAsync(config);
 
 @internal
 Future<bool> isTestNeedsToBeRunAsync(
@@ -43,27 +79,6 @@ Future<bool> isTestNeedsToBeRunAsync(
 }
 
 @internal
-Future<String?> getFirstNotFoundWorkItemIdAsync(
-    final ConfigModel config, final Iterable<String>? workItemsIds) async {
-  String? firstNotFoundWorkItemId;
-
-  if (workItemsIds == null || workItemsIds.isEmpty) {
-    return firstNotFoundWorkItemId;
-  }
-
-  for (final id in workItemsIds) {
-    final workItem = await getWorkItemByIdAsync(config, id);
-
-    if (workItem == null || workItem.isEmpty) {
-      firstNotFoundWorkItemId = id;
-      break;
-    }
-  }
-
-  return firstNotFoundWorkItemId;
-}
-
-@internal
 Future<void> processTestResultAsync(
     final ConfigModel config, final TestResultModel testResult) async {
   var autoTest =
@@ -77,12 +92,21 @@ Future<void> processTestResultAsync(
   }
 
   if (testResult.workItemIds.isNotEmpty) {
-    await _updateWorkItemsLinkedToAutoTestAsync(
+    await _tryUpdateWorkItemsLinkedToAutoTestAsync(
         autoTest?.id, config, testResult.workItemIds);
   }
 
   await submitResultToTestRunAsync(config, testResult);
 }
+
+@internal
+Future<void> tryCompleteTestRunAsync(final ConfigModel config) async =>
+    await completeTestRunAsync(config);
+
+@internal
+Future<AttachmentResponseModel?> tryCreateAttachmentAsync(
+        final ConfigModel config, final File file) async =>
+    await createAttachmentAsync(config, file);
 
 @internal
 Future<void> tryCreateTestRunOnceAsync(final ConfigModel config) async {
@@ -96,7 +120,7 @@ Future<void> tryCreateTestRunOnceAsync(final ConfigModel config) async {
   }
 }
 
-Future<void> _updateWorkItemsLinkedToAutoTestAsync(final String? autoTestId,
+Future<void> _tryUpdateWorkItemsLinkedToAutoTestAsync(final String? autoTestId,
     final ConfigModel config, final Iterable<String> workItemIds) async {
   final linkedIds =
       await getWorkItemsGlobalIdsLinkedToAutoTestAsync(autoTestId, config);
