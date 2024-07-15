@@ -1,3 +1,5 @@
+#!/usr/bin/env dart
+
 import 'package:adapters_flutter/src/managers/log_manager.dart';
 import 'package:adapters_flutter/src/models/exception_model.dart';
 import 'package:adapters_flutter/src/utils/platform_util.dart';
