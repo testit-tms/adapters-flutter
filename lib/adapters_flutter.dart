@@ -1,6 +1,6 @@
 #!/usr/bin/env dart
 
-/// TMS adapter for flutter test's library.
+/// Flutter test's TMS adapter.
 library;
 
 export 'package:adapters_flutter/src/enum/link_type_enum.dart';
