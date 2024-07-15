@@ -80,14 +80,14 @@ Use metadata to specify information about autotest.
 
 Description of test arguments:
 
-* `description` - autotest description specified in the autotest card
-* `externalId` - unique internal autotest ID (used in Test IT)
-* `labels` - tags listed in the autotest card
-* `links` - links listed in the autotest card
+* `description` - autotest description specified in the autotest card.
+* `externalId` - unique internal autotest ID (used in Test IT).
+* `labels` - tags listed in the autotest card.
+* `links` - links listed in the autotest card.
 * `title` - autotest name specified in the autotest card. If not specified, the name from the
-  displayName method is used
+  displayName method is used.
 * `workItemsIds` - a method that links autotests with manual tests. Receives the array of manual
-  tests' IDs
+  tests' IDs.
 
 Description of functions:
 
@@ -96,7 +96,7 @@ Description of functions:
 * `addLinks` - add single link to the autotest result.
 * `addLinks` - add links to the autotest result.
 * `addMessage` - add message to the autotest result.
-* `step` - the designation of the step
+* `step` - the designation of the step.
 
 ### Examples
 
@@ -205,13 +205,13 @@ void main() {
         });
 
     tearDown(() async {
-      await step('tearDown step', () {
+      await step('teardown step', () {
         expect(0, 0);
       });
     });
 
     tearDownAll(() async {
-      await step('tearDownAll step', () {
+      await step('teardown all step', () {
         expect(0, 0);
       });
     });
