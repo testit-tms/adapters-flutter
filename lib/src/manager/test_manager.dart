@@ -24,6 +24,7 @@ bool _isWarningsLogged = false;
 final _lock = Lock();
 final _logger = getLogger();
 
+/// Run flutter test [body] with [description] and, optional, [externalId], [links], [onPlatform], [retry], [skip], [tags], [testOn], [timeout], [title] or [workItemsIds], then upload result to Test IT.
 void tmsTest(final String description, final dynamic Function() body,
     {final String? externalId,
     final Set<Link>? links,
@@ -53,6 +54,7 @@ void tmsTest(final String description, final dynamic Function() body,
           workItemsIds: workItemsIds));
 }
 
+/// Run flutter testWidgets [callback] with [description] and, optional, [externalId], [links], [semanticsEnabled], [skip], [tags], [timeout], [title], [variant] or [workItemsIds], then upload result to Test IT.
 void tmsTestWidgets(
     final String description, final WidgetTesterCallback callback,
     {final String? externalId,

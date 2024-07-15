@@ -21,3 +21,4 @@ Flutter test with Test IT adapter examples.
       with [functions adapters-flutter](https://github.com/testit-tms/adapters-flutter?tab=readme-ov-file#metadata-of-autotest).
     * **steps_test.dart** – simple test with steps example.
       with [steps adapters-flutter](https://github.com/testit-tms/adapters-flutter?tab=readme-ov-file#metadata-of-autotest).
+* **example.dart** – full test example.

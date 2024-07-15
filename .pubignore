@@ -6,7 +6,9 @@
 **/testit.properties
 
 # Examples
-example/**
+example/attachment/**
+example/test/**
+example/README.md
 
 # Tests
 **/dart_test.yaml
