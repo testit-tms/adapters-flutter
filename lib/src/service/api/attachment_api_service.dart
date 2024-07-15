@@ -1,7 +1,6 @@
 #!/usr/bin/env dart
 
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:adapters_flutter/src/model/api/attachment_api_model.dart';
 import 'package:adapters_flutter/src/model/config_model.dart';
@@ -11,6 +10,7 @@ import 'package:http_parser/http_parser.dart';
 import 'package:meta/meta.dart';
 import 'package:mime/mime.dart';
 import 'package:path/path.dart';
+import 'package:universal_io/io.dart';
 
 @internal
 Future<AttachmentResponseModel?> createAttachmentAsync(

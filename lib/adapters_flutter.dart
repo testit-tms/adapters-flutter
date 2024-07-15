@@ -1,5 +1,8 @@
 #!/usr/bin/env dart
 
+/// Flutter test's TMS adapter.
+library;
+
 export 'package:adapters_flutter/src/enum/link_type_enum.dart';
 export 'package:adapters_flutter/src/manager/adapter_manager.dart';
 export 'package:adapters_flutter/src/manager/step_manager.dart';

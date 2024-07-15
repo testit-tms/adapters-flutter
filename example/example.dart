@@ -1,9 +1,8 @@
 #!/usr/bin/env dart
 
 @Tags(['suite_tag'])
-import 'dart:io';
-
 import 'package:adapters_flutter/adapters_flutter.dart';
+import 'package:universal_io/io.dart';
 
 void main() {
   group('example group', () {

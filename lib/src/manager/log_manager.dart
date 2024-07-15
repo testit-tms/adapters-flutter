@@ -1,11 +1,10 @@
 #!/usr/bin/env dart
 
-import 'dart:io';
-
 import 'package:adapters_flutter/src/model/config_model.dart';
 import 'package:logger/logger.dart';
 import 'package:meta/meta.dart';
 import 'package:synchronized/synchronized.dart';
+import 'package:universal_io/io.dart';
 
 final _isColorsSupported =
     stdout.hasTerminal ? stdout.supportsAnsiEscapes : false;
