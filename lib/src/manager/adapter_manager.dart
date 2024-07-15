@@ -13,6 +13,7 @@ import 'package:path/path.dart';
 
 final _logger = getLogger();
 
+/// Create attachment using api from [filePath], then add it to step or test.
 Future<void> addAttachment(final String filePath) async {
   final config = await createConfigOnceAsync();
 
@@ -31,9 +32,11 @@ Future<void> addAttachment(final String filePath) async {
   }
 }
 
+/// Create attachments using api from [filesPaths], then add them to step or test.
 Future<void> addAttachments(final Set<String> filesPaths) async =>
     await Future.wait(filesPaths.map(addAttachment));
 
+/// Create link from [url] and, optional, [description], [title] or [type], then add it to test.
 Future<void> addLink(final String url,
     {final String? description,
     final String? title,
@@ -46,6 +49,7 @@ Future<void> addLink(final String url,
   }
 }
 
+/// Add [links] to test.
 Future<void> addLinks(final Set<Link> links) async {
   final config = await createConfigOnceAsync();
 
@@ -54,6 +58,7 @@ Future<void> addLinks(final Set<Link> links) async {
   }
 }
 
+/// Add [message] to test.
 Future<void> addMessage(final String message) async {
   final config = await createConfigOnceAsync();
 

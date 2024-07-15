@@ -7,6 +7,7 @@ import 'package:adapters_flutter/src/manager/config_manager.dart';
 import 'package:adapters_flutter/src/model/api/attachment_api_model.dart';
 import 'package:adapters_flutter/src/storage/test_result_storage.dart';
 
+/// Run step [body], then add this step with [title] and, optional, [description] to test.
 FutureOr<T?> step<T>(final String title, final FutureOr<T?> Function() body,
     {final String? description}) async {
   T? result;
