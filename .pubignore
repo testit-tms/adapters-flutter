@@ -2,11 +2,12 @@
 # Attachments
 *.png
 
-# Config
+# Configs
 **/testit.properties
 
 # Examples
 example/**
 
-# Unit tests
+# Tests
+**/dart_test.yaml
 test/**
