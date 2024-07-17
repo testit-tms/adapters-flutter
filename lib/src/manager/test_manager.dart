@@ -11,99 +11,71 @@ import 'package:adapters_flutter/src/service/validation_service.dart';
 import 'package:adapters_flutter/src/storage/test_result_storage.dart';
 import 'package:adapters_flutter/src/util/platform_util.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:logger/logger.dart';
 import 'package:path/path.dart';
 import 'package:synchronized/synchronized.dart';
-import 'package:test_api/src/backend/declarer.dart'; // ignore: depend_on_referenced_packages, implementation_imports
 import 'package:test_api/src/backend/invoker.dart'; // ignore: depend_on_referenced_packages, implementation_imports
 import 'package:universal_io/io.dart';
 
-bool _isPostProcessingAdded = false;
+final Lock _lock = Lock();
+final Logger _logger = getLogger();
+
 bool _isWarningsLogged = false;
-final _lock = Lock();
-final _logger = getLogger();
 
 /// Run flutter test [body] with [description] and, optional, [externalId], [links], [onPlatform], [retry], [skip], [tags], [testOn], [timeout], [title] or [workItemsIds], then upload result to Test IT.
 void tmsTest(final String description, final dynamic Function() body,
-    {final String? externalId,
-    final Set<Link>? links,
-    final Map<String, dynamic>? onPlatform,
-    final int? retry,
-    final String? skip,
-    final Set<String>? tags,
-    final String? testOn,
-    final Timeout? timeout,
-    final String? title,
-    final Set<String>? workItemsIds}) {
-  _addPostProcessingOnceAsync();
-
-  test(
-      description,
-      onPlatform: onPlatform,
-      retry: retry,
-      tags: tags,
-      testOn: testOn,
-      timeout: timeout,
-      () async => await _testAsync(description, () async => await body.call(),
-          externalId: externalId,
-          links: links,
-          skip: skip,
-          tags: tags,
-          title: title,
-          workItemsIds: workItemsIds));
-}
+        {final String? externalId,
+        final Set<Link>? links,
+        final Map<String, dynamic>? onPlatform,
+        final int? retry,
+        final String? skip,
+        final Set<String>? tags,
+        final String? testOn,
+        final Timeout? timeout,
+        final String? title,
+        final Set<String>? workItemsIds}) =>
+    test(
+        description,
+        onPlatform: onPlatform,
+        retry: retry,
+        tags: tags,
+        testOn: testOn,
+        timeout: timeout,
+        () async => await _testAsync(description, () async => await body.call(),
+            externalId: externalId,
+            links: links,
+            skip: skip,
+            tags: tags,
+            title: title,
+            workItemsIds: workItemsIds));
 
 /// Run flutter testWidgets [callback] with [description] and, optional, [externalId], [links], [semanticsEnabled], [skip], [tags], [timeout], [title], [variant] or [workItemsIds], then upload result to Test IT.
-void tmsTestWidgets(
-    final String description, final WidgetTesterCallback callback,
-    {final String? externalId,
-    final Set<Link>? links,
-    final bool semanticsEnabled = true,
-    final String? skip,
-    final Set<String>? tags,
-    final Timeout? timeout,
-    final String? title,
-    final TestVariant<Object?> variant = const DefaultTestVariant(),
-    final Set<String>? workItemsIds}) {
-  _addPostProcessingOnceAsync();
-
-  testWidgets(
-      description,
-      semanticsEnabled: semanticsEnabled,
-      skip: skip?.isNotEmpty,
-      tags: tags,
-      timeout: timeout,
-      variant: variant,
-      (tester) async => await tester.runAsync(() async => await _testAsync(
-          description, () async => await callback(tester),
-          externalId: externalId,
-          links: links,
-          skip: skip,
-          tags: tags,
-          title: title,
-          workItemsIds: workItemsIds)));
-}
-
-void _addPostProcessingOnceAsync() {
-  Declarer.current?.addTearDownAll(() async {
-    final config = await createConfigOnceAsync();
-    final processingTestIds = await getProcessingTestIdsAsync();
-
-    if (processingTestIds.isEmpty) {
-      await tryCompleteTestRunAsync(config);
-
-      return;
-    }
-
-    for (final testId in processingTestIds) {
-      await addSetupAllsToTestResultAsync(testId);
-      await addTeardownAllsToTestResultAsync(testId);
-      final testResult = await getTestResultByTestIdAsync(testId);
-      await processTestResultAsync(config, testResult);
-    }
-
-    await removeAllTestResultsAsync();
-  });
-}
+Future<void> tmsTestWidgets(
+        final String description, final WidgetTesterCallback callback,
+        {final String? externalId,
+        final Set<Link>? links,
+        final bool semanticsEnabled = true,
+        final String? skip,
+        final Set<String>? tags,
+        final Timeout? timeout,
+        final String? title,
+        final TestVariant<Object?> variant = const DefaultTestVariant(),
+        final Set<String>? workItemsIds}) async =>
+    testWidgets(
+        description,
+        semanticsEnabled: semanticsEnabled,
+        skip: skip?.isNotEmpty,
+        tags: tags,
+        timeout: timeout,
+        variant: variant,
+        (tester) async => await tester.runAsync(() async => await _testAsync(
+            description, () async => await callback(tester),
+            externalId: externalId,
+            links: links,
+            skip: skip,
+            tags: tags,
+            title: title,
+            workItemsIds: workItemsIds)));
 
 String? _getSafeExternalId(final String? externalId, final String? testName) {
   var output =
@@ -162,6 +134,7 @@ Future<void> _testAsync(
     final safeExternalId = _getSafeExternalId(externalId, liveTest?.test.name);
 
     if (!await isTestNeedsToBeRunAsync(config, safeExternalId)) {
+      await tryCompleteTestRunAsync(config);
       await excludeTestIdFromProcessingAsync();
 
       return;
@@ -217,11 +190,19 @@ Future<void> _testAsync(
       localResult.duration = completedOn.difference(startedOn).inMilliseconds;
 
       await updateTestResultAsync(localResult);
+      final testId = getTestIdForProcessing();
 
-      if (exception != null) {
-        _logger.e('$exception$lineSeparator$stacktrace.');
-        throw exception;
+      if (testId != null) {
+        await addSetupAllsToTestResultAsync(testId);
+        await addTeardownAllsToTestResultAsync(testId);
+        final testResult = await removeTestResultByTestIdAsync(testId);
+        await processTestResultAsync(config, testResult);
       }
+    }
+
+    if (exception != null) {
+      _logger.e('$exception$lineSeparator$stacktrace.');
+      throw exception;
     }
   } else {
     await body.call();

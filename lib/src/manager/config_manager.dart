@@ -11,8 +11,9 @@ import 'package:path/path.dart';
 import 'package:synchronized/synchronized.dart';
 import 'package:universal_io/io.dart';
 
+final Lock _lock = Lock();
+
 ConfigModel? _config;
-final _lock = Lock();
 
 @internal
 Future<ConfigModel> createConfigOnceAsync() async {

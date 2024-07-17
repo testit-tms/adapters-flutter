@@ -12,12 +12,12 @@ import 'package:synchronized/synchronized.dart';
 import 'package:test_api/src/backend/invoker.dart'; // ignore: depend_on_referenced_packages, implementation_imports
 import 'package:universal_io/io.dart';
 
-const _setupAllKey = '(setupall)';
-const _teardownAllKey = '(teardownall)';
+const String _setupAllKey = '(setupall)';
+const String _teardownAllKey = '(teardownall)';
 
-final _excludedTestIds = <String>{};
-final _lock = Lock();
-final _testResults = <String, TestResultModel>{};
+final Set<String> _excludedTestIds = {};
+final Lock _lock = Lock();
+final Map<String, TestResultModel> _testResults = {};
 
 @internal
 Future<void> addSetupAllsToTestResultAsync(final String testId) async {
@@ -103,21 +103,20 @@ Future<void> excludeTestIdFromProcessingAsync() async =>
     await _lock.synchronized(() => _excludedTestIds.add(_getTestId()));
 
 @internal
-Future<Iterable<String>> getProcessingTestIdsAsync() async =>
-    await _lock.synchronized<Iterable<String>>(() => _testResults.keys.where(
-        (key) =>
-            !key.endsWith(_setupAllKey) &&
-            !key.endsWith(_teardownAllKey) &&
-            !_excludedTestIds.contains(key)));
+String? getTestIdForProcessing() {
+  String? testId = _getTestId();
+
+  if (_excludedTestIds.contains(testId)) {
+    testId = null;
+  }
+
+  return testId;
+}
 
 @internal
-Future<TestResultModel> getTestResultByTestIdAsync(String testId) async =>
+Future<TestResultModel> removeTestResultByTestIdAsync(String testId) async =>
     await _lock.synchronized<TestResultModel>(
-        () => _testResults[testId] as TestResultModel);
-
-@internal
-Future<void> removeAllTestResultsAsync() async =>
-    await _lock.synchronized(() => _testResults.clear());
+        () => _testResults.remove(testId) as TestResultModel);
 
 @internal
 Future<void> updateCurrentStepAsync(

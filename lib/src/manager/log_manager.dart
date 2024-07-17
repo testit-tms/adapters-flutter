@@ -6,11 +6,12 @@ import 'package:meta/meta.dart';
 import 'package:synchronized/synchronized.dart';
 import 'package:universal_io/io.dart';
 
-final _isColorsSupported =
+final bool _isColorsSupported =
     stdout.hasTerminal ? stdout.supportsAnsiEscapes : false;
-var _isLogLevelSet = false;
-final _lineLength = stdout.hasTerminal ? stdout.terminalColumns : 120;
-final _lock = Lock();
+final int _lineLength = stdout.hasTerminal ? stdout.terminalColumns : 120;
+final Lock _lock = Lock();
+
+bool _isLogLevelSet = false;
 
 @internal
 Logger getLogger() {
