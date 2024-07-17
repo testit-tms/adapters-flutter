@@ -7,10 +7,11 @@ import 'package:adapters_flutter/src/manager/config_manager.dart';
 import 'package:adapters_flutter/src/manager/log_manager.dart';
 import 'package:adapters_flutter/src/model/api/link_api_model.dart';
 import 'package:adapters_flutter/src/storage/test_result_storage.dart';
+import 'package:logger/logger.dart';
 import 'package:path/path.dart';
 import 'package:universal_io/io.dart';
 
-final _logger = getLogger();
+final Logger _logger = getLogger();
 
 /// Create attachment using api from [filePath], then add it to step or test.
 Future<void> addAttachment(final String filePath) async {

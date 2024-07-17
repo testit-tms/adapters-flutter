@@ -12,10 +12,11 @@ import 'package:meta/meta.dart';
 import 'package:synchronized/synchronized.dart';
 import 'package:universal_io/io.dart';
 
-var _isTestRunCreated = false;
-var _isTestRunExternalIdsGot = false;
-final _lock = Lock();
-final _testRunExternalIds = [];
+final Lock _lock = Lock();
+final List<String> _testRunExternalIds = [];
+
+bool _isTestRunCreated = false;
+bool _isTestRunExternalIdsGot = false;
 
 @internal
 Future<String?> getFirstNotFoundWorkItemIdAsync(

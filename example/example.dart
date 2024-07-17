@@ -25,7 +25,7 @@ void main() {
         links: {Link('https://www.example.org/')},
         tags: {'example_tag'},
         title: 'example_title',
-        workItemsIds: {'46890'}, () async {
+        workItemsIds: {'47100'}, () async {
       await step('success step', () {
         expect(0, 0);
       });
@@ -59,12 +59,12 @@ void main() {
       });
     });
 
-    tmsTestWidgets('example test widgets',
+    tmsTestWidgets('example widgets test',
         externalId: 'example_widgets_externalId',
         links: {Link('https://www.example.org/')},
         tags: {'example_tag_widgets'},
         title: 'example_title_widgets',
-        workItemsIds: {'46890'}, (tester) async {
+        workItemsIds: {'47100'}, (tester) async {
       await step('success step', () {
         expect(0, 0);
       });
