@@ -92,7 +92,7 @@ Use metadata to specify information about autotest.
 
 * `addAttachment` - add single attachment to the autotest result.
 * `addAttachments` - add attachments to the autotest result.
-* `addLinks` - add single link to the autotest result.
+* `addLink` - add single link to the autotest result.
 * `addLinks` - add links to the autotest result.
 * `addMessage` - add message to the autotest result.
 
