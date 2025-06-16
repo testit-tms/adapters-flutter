@@ -1,13 +1,12 @@
 #!/usr/bin/env dart
 
-import 'package:adapters_flutter/src/enum/outcome_enum.dart';
-import 'package:adapters_flutter/src/model/api/attachment_api_model.dart';
-import 'package:adapters_flutter/src/model/api/link_api_model.dart';
+import 'package:testit_adapter_flutter/src/model/api/link_api_model.dart';
 import 'package:meta/meta.dart';
+import 'package:testit_api_client_dart/api.dart' as api;
 
 @internal
 final class TestResultModel {
-  List<AttachmentPutModel> attachments = [];
+  List<api.AttachmentPutModel> attachments = [];
   String? classname;
   DateTime? completedOn;
   String? description;
@@ -20,14 +19,15 @@ final class TestResultModel {
   String? methodName;
   String? name;
   String? namespace;
-  Outcome? outcome;
+  api.AvailableTestResultOutcome? outcome;
   Map<String, String> parameters = {};
   Map<String, String> properties = {};
-  List<AutoTestStepResultsModel> setup = [];
+  List<api.AttachmentPutModelAutoTestStepResultsModel> setup = [];
   DateTime? startedOn;
-  List<AutoTestStepResultsModel> steps = [];
-  List<AutoTestStepResultsModel> teardown = [];
+  List<api.AttachmentPutModelAutoTestStepResultsModel> steps = [];
+  List<api.AttachmentPutModelAutoTestStepResultsModel> teardown = [];
   String? title;
   String? traces;
   Set<String> workItemIds = {};
+  List<api.FailureCategoryModel>? failureReasonNames;
 }

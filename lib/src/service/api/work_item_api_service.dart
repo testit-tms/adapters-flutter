@@ -1,31 +1,25 @@
 #!/usr/bin/env dart
 
-import 'dart:convert';
-
-import 'package:adapters_flutter/src/model/config_model.dart';
-import 'package:adapters_flutter/src/util/http_util.dart';
-import 'package:http/http.dart';
+import 'package:testit_adapter_flutter/src/model/config_model.dart';
 import 'package:meta/meta.dart';
+import 'package:testit_api_client_dart/api.dart';
+
+WorkItemsApi? workItemsApi;
 
 @internal
-Future<Map<String, dynamic>?> getWorkItemByIdAsync(
-    final ConfigModel config, final String? workItemId) async {
-  Map<String, dynamic>? workItem;
+void initClient(final ConfigModel config) {
+  if (workItemsApi == null) {
+    var defaultApiClient = ApiClient(
+      basePath: '${config.url}',
+      authentication: ApiKeyAuth('PrivateToken', config.privateToken ?? ''),
+    );
 
-  final headers = {
-    'accept': '*/*',
-    'Content-Type': 'application/json',
-    'Authorization': 'PrivateToken ${config.privateToken}'
-  };
-  final url = '${config.url}/api/v2/workItems/$workItemId';
-  final request = Request('GET', Uri.parse(url));
-  request.headers.addAll(headers);
-
-  final response = await getOkResponseOrNullAsync(request);
-
-  if (response != null) {
-    workItem = jsonDecode(response.body) as Map<String, dynamic>;
+    workItemsApi = WorkItemsApi(defaultApiClient);
   }
+}
 
-  return workItem;
+Future<WorkItemModel?> getWorkItemById(
+    final ConfigModel config, final String? workItemId) async {
+  initClient(config);
+  return workItemsApi?.getWorkItemById(workItemId!);
 }

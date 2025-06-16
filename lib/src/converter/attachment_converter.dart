@@ -1,12 +1,12 @@
 #!/usr/bin/env dart
 
-import 'package:adapters_flutter/src/model/api/attachment_api_model.dart';
 import 'package:meta/meta.dart';
+import 'package:testit_api_client_dart/api.dart' as api;
 
 @internal
-AttachmentPutModel toAttachmentPutModel(
-    final AttachmentResponseModel? attachment) {
-  final model = AttachmentPutModel(attachment?.id);
+api.AttachmentPutModel toAttachmentPutModel(
+    final api.AttachmentModel? attachment) {
+  final model = api.AttachmentPutModel(id: attachment!.id);
 
   return model;
 }

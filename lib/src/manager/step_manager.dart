@@ -2,10 +2,9 @@
 
 import 'dart:async';
 
-import 'package:adapters_flutter/src/enum/outcome_enum.dart';
-import 'package:adapters_flutter/src/manager/config_manager.dart';
-import 'package:adapters_flutter/src/model/api/attachment_api_model.dart';
-import 'package:adapters_flutter/src/storage/test_result_storage.dart';
+import 'package:testit_adapter_flutter/src/manager/config_manager.dart';
+import 'package:testit_adapter_flutter/src/storage/test_result_storage.dart';
+import 'package:testit_api_client_dart/api.dart';
 
 /// Run step [body], then add this step with [title] and, optional, [description] to test.
 FutureOr<T?> step<T>(final String title, final FutureOr<T?> Function() body,
@@ -17,14 +16,14 @@ FutureOr<T?> step<T>(final String title, final FutureOr<T?> Function() body,
   if ((config.testIt ?? true)) {
     await createEmptyStepAsync();
 
-    final localStep = AutoTestStepResultsModel();
+    final localStep = AttachmentPutModelAutoTestStepResultsModel();
     final startedOn = DateTime.now();
 
     try {
       result = await body.call();
-      localStep.outcome = Outcome.passed;
+      localStep.outcome = AvailableTestResultOutcome.passed;
     } catch (_) {
-      localStep.outcome = Outcome.failed;
+      localStep.outcome = AvailableTestResultOutcome.failed;
       rethrow;
     } finally {
       final completedOn = DateTime.now();

@@ -2,14 +2,14 @@
 
 import 'dart:async';
 
-import 'package:adapters_flutter/src/model/api/attachment_api_model.dart';
-import 'package:adapters_flutter/src/model/api/link_api_model.dart';
-import 'package:adapters_flutter/src/model/test_result_model.dart';
-import 'package:adapters_flutter/src/util/platform_util.dart';
+import 'package:testit_adapter_flutter/src/model/api/link_api_model.dart';
+import 'package:testit_adapter_flutter/src/model/test_result_model.dart';
+import 'package:testit_adapter_flutter/src/util/platform_util.dart';
 import 'package:meta/meta.dart';
 import 'package:path/path.dart';
 import 'package:synchronized/synchronized.dart';
 import 'package:test_api/src/backend/invoker.dart'; // ignore: depend_on_referenced_packages, implementation_imports
+import 'package:testit_api_client_dart/api.dart' as api;
 import 'package:universal_io/io.dart';
 
 const String _setupAllKey = '(setupall)';
@@ -75,17 +75,19 @@ Future<void> createEmptyStepAsync() async => await _lock.synchronized(() async {
 
       if (currentStep == null) {
         _testResults.update(_getTestId(), (value) {
-          value.steps.add(AutoTestStepResultsModel());
+          value.steps.add(api.AttachmentPutModelAutoTestStepResultsModel());
 
           return value;
         }, ifAbsent: () {
           final testResult = TestResultModel();
-          testResult.steps.add(AutoTestStepResultsModel());
+          testResult.steps
+              .add(api.AttachmentPutModelAutoTestStepResultsModel());
 
           return testResult;
         });
       } else {
-        currentStep.stepResults.add(AutoTestStepResultsModel());
+        currentStep.stepResults!
+            .add(api.AttachmentPutModelAutoTestStepResultsModel());
       }
     });
 
@@ -120,7 +122,7 @@ Future<TestResultModel> removeTestResultByTestIdAsync(String testId) async =>
 
 @internal
 Future<void> updateCurrentStepAsync(
-        final AutoTestStepResultsModel step) async =>
+        final api.AttachmentPutModelAutoTestStepResultsModel step) async =>
     await _lock.synchronized(() async {
       final currentStep = _getCurrentStep();
 
@@ -131,6 +133,7 @@ Future<void> updateCurrentStepAsync(
       currentStep?.outcome = step.outcome;
       currentStep?.startedOn = step.startedOn;
       currentStep?.title = step.title;
+      currentStep?.stepResults = step.stepResults;
     });
 
 @internal
@@ -164,7 +167,7 @@ Future<void> updateTestResultAsync(final TestResultModel testResult) async =>
 
 @internal
 Future<void> updateTestResultAttachmentsAsync(
-        final AttachmentPutModel attachment) async =>
+        final api.AttachmentPutModel attachment) async =>
     await _lock.synchronized(() async {
       final currentStep = _getCurrentStep();
 
@@ -195,7 +198,7 @@ Future<void> updateTestResultMessageAsync(final String message) async =>
           return value;
         }, ifAbsent: () => TestResultModel()));
 
-AutoTestStepResultsModel? _getCurrentStep() {
+api.AttachmentPutModelAutoTestStepResultsModel? _getCurrentStep() {
   final testId = _getTestId();
   final currentStep = _testResults.containsKey(testId)
       ? _getLastNotFinishedChildStep(_testResults[testId]?.steps)
@@ -204,9 +207,9 @@ AutoTestStepResultsModel? _getCurrentStep() {
   return currentStep;
 }
 
-AutoTestStepResultsModel? _getLastNotFinishedChildStep(
-    final List<AutoTestStepResultsModel?>? steps) {
-  AutoTestStepResultsModel? targetStep;
+api.AttachmentPutModelAutoTestStepResultsModel? _getLastNotFinishedChildStep(
+    final List<api.AttachmentPutModelAutoTestStepResultsModel?>? steps) {
+  api.AttachmentPutModelAutoTestStepResultsModel? targetStep;
 
   if (steps == null || steps.isEmpty) {
     return targetStep;
@@ -242,12 +245,17 @@ String _getTestId() {
   return testId;
 }
 
-void _updateCurrentStepAttachments(final AttachmentPutModel attachment) {
+// TODO: complete attachments in steps
+void _updateCurrentStepAttachments(final api.AttachmentPutModel attachment) {
   final currentStep = _getCurrentStep();
-  currentStep?.attachments.add(attachment);
+
+  if (currentStep != null) {
+    currentStep.attachments ??= [];
+    currentStep.attachments!.add(attachment);
+  }
 }
 
-void _updateTestResultAttachments(final AttachmentPutModel attachment) =>
+void _updateTestResultAttachments(final api.AttachmentPutModel attachment) =>
     _testResults.update(_getTestId(), (value) {
       value.attachments.add(attachment);
 

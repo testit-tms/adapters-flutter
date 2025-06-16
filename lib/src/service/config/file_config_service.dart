@@ -1,6 +1,6 @@
 #!/usr/bin/env dart
 
-import 'package:adapters_flutter/src/model/config_model.dart';
+import 'package:testit_adapter_flutter/src/model/config_model.dart';
 import 'package:meta/meta.dart';
 import 'package:properties/properties.dart';
 import 'package:universal_io/io.dart';

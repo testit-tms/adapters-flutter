@@ -1,20 +1,20 @@
 #!/usr/bin/env dart
 
-import 'package:adapters_flutter/src/enum/outcome_enum.dart';
-import 'package:adapters_flutter/src/manager/api_manager_.dart';
-import 'package:adapters_flutter/src/manager/config_manager.dart';
-import 'package:adapters_flutter/src/manager/log_manager.dart';
-import 'package:adapters_flutter/src/model/api/link_api_model.dart';
-import 'package:adapters_flutter/src/model/test_result_model.dart';
-import 'package:adapters_flutter/src/service/config/file_config_service.dart';
-import 'package:adapters_flutter/src/service/validation_service.dart';
-import 'package:adapters_flutter/src/storage/test_result_storage.dart';
-import 'package:adapters_flutter/src/util/platform_util.dart';
+import 'package:testit_adapter_flutter/src/manager/api_manager_.dart';
+import 'package:testit_adapter_flutter/src/manager/config_manager.dart';
+import 'package:testit_adapter_flutter/src/manager/log_manager.dart';
+import 'package:testit_adapter_flutter/src/model/api/link_api_model.dart';
+import 'package:testit_adapter_flutter/src/model/test_result_model.dart';
+import 'package:testit_adapter_flutter/src/service/config/file_config_service.dart';
+import 'package:testit_adapter_flutter/src/service/validation_service.dart';
+import 'package:testit_adapter_flutter/src/storage/test_result_storage.dart';
+import 'package:testit_adapter_flutter/src/util/platform_util.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:logger/logger.dart';
 import 'package:path/path.dart';
 import 'package:synchronized/synchronized.dart';
 import 'package:test_api/src/backend/invoker.dart'; // ignore: depend_on_referenced_packages, implementation_imports
+import 'package:testit_api_client_dart/api.dart' as api;
 import 'package:universal_io/io.dart';
 
 final Lock _lock = Lock();
@@ -172,14 +172,14 @@ Future<void> _testAsync(
     try {
       if (skip != null && skip.isNotEmpty) {
         localResult.message = skip;
-        localResult.outcome = Outcome.skipped;
+        localResult.outcome = api.AvailableTestResultOutcome.skipped;
       } else {
         await body.call();
-        localResult.outcome = Outcome.passed;
+        localResult.outcome = api.AvailableTestResultOutcome.passed;
       }
     } on Exception catch (e, s) {
       localResult.message = e.toString();
-      localResult.outcome = Outcome.failed;
+      localResult.outcome = api.AvailableTestResultOutcome.failed;
       localResult.traces = s.toString();
 
       exception = e;
