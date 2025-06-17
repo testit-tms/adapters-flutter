@@ -24,19 +24,19 @@ T createApiClient<T>(final ConfigModel config) {
   dynamic apiClient;
   
   switch (T) {
-    case WorkItemsApi:
+    case const (WorkItemsApi):
       apiClient = WorkItemsApi(defaultApiClient);
       break;
-    case TestRunsApi:
+    case const (TestRunsApi):
       apiClient = TestRunsApi(defaultApiClient);
       break;
-    case AutoTestsApi:
+    case const (AutoTestsApi):
       apiClient = AutoTestsApi(defaultApiClient);
       break;
-    case ConfigurationsApi:
+    case const (ConfigurationsApi):
       apiClient = ConfigurationsApi(defaultApiClient);
       break;
-    case AttachmentsApi:
+    case const (AttachmentsApi):
       apiClient = AttachmentsApi(defaultApiClient);
       break;
     default:

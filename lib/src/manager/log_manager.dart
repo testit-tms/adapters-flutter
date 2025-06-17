@@ -19,7 +19,7 @@ Logger getLogger() {
       printer: PrefixPrinter(PrettyPrinter(
           colors: _isColorsSupported,
           lineLength: _lineLength,
-          printTime: true)));
+          dateTimeFormat: DateTimeFormat.onlyTimeAndSinceStart)));
 
   return logger;
 }

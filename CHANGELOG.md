@@ -3,6 +3,11 @@
 All notable changes to this project will be documented in this file.  
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
 
+## [3.1.0] - 2025-06-17
+
+* some internal fixes, cloud support
+
+
 ## [3.0.0] - 2025-06-17
 
 * new pub repo, new api-client
