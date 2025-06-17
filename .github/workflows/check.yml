@@ -18,9 +18,9 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: ${{ secrets.FLUTTER_VERSION }}
+          flutter-version: 3.27.1
 
       - name: Test
         run: |
-          flutter --disable-telemetry
+          flutter
           flutter test --dart-define=disableValidation=true ./test/

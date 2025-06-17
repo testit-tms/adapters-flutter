@@ -1,47 +1,35 @@
 #!/usr/bin/env dart
 
+import 'package:testit_adapter_flutter/src/manager/config_manager.dart' as configManager;
 import 'package:testit_adapter_flutter/src/model/config_model.dart';
-import 'package:meta/meta.dart';
+import 'package:testit_adapter_flutter/src/service/api/api_client_factory.dart';
 import 'package:testit_api_client_dart/api.dart';
 
-TestRunsApi? testRunsApi;
-
-@internal
-void initClient(final ConfigModel config) {
-  if (testRunsApi == null) {
-    var defaultApiClient = ApiClient(
-      basePath: '${config.url}',
-      authentication: ApiKeyAuth('PrivateToken', config.privateToken ?? ''),
-    );
-
-    testRunsApi = TestRunsApi(defaultApiClient);
-  }
-}
-
 Future<void> completeTestRun(final ConfigModel config) async {
-  initClient(config);
-  await testRunsApi?.completeTestRun(config.testRunId!);
+  final testRunsApi = createApiClient<TestRunsApi>(config);
+  await testRunsApi.completeTestRun(config.testRunId!);
 }
 
 Future<void> createEmptyTestRun(final ConfigModel config) async {
-  initClient(config);
-  await testRunsApi?.createEmpty(
+  final testRunsApi = createApiClient<TestRunsApi>(config);
+  var testRun = await testRunsApi.createEmpty(
       createEmptyTestRunApiModel: CreateEmptyTestRunApiModel(
     projectId: config.projectId!,
-    name: config.testRunName!,
+    name: config.testRunName ?? 'TestRun',
   ));
+  await configManager.updateTestRunIdAsync(testRun!.id);
 }
 
 Future<TestRunV2ApiResult?> getTestRunById(final ConfigModel config) async {
-  initClient(config);
-  return testRunsApi?.getTestRunById(config.testRunId!);
+  final testRunsApi = createApiClient<TestRunsApi>(config);
+  return testRunsApi.getTestRunById(config.testRunId!);
 }
 
 Future<void> submitResultToTestRun(final ConfigModel config,
     final AutoTestResultsForTestRunModel autoTestResultForTestRunModel) async {
-  initClient(config);
+  final testRunsApi = createApiClient<TestRunsApi>(config);
 
-  await testRunsApi?.setAutoTestResultsForTestRun(
+  await testRunsApi.setAutoTestResultsForTestRun(
     config.testRunId!,
     autoTestResultsForTestRunModel: [autoTestResultForTestRunModel],
   );

@@ -2,7 +2,7 @@
 
 import 'dart:async';
 
-import 'package:testit_adapter_flutter/adapters_flutter.dart';
+import 'package:testit_adapter_flutter/testit_adapter_flutter.dart';
 import 'package:universal_io/io.dart';
 
 Future<void> _stepSuccess({final String? description}) async {
