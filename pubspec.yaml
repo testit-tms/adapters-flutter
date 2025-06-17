@@ -1,6 +1,6 @@
 name: testit_adapter_flutter
 description: The repository contains new versions of adapters for dart test frameworks.
-version: 3.0.0
+version: 3.1.0
 repository: https://github.com/testit-tms/adapters-flutter/
 homepage: https://testit.software/
 

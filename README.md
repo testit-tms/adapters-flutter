@@ -28,7 +28,7 @@ flutter pub add testit_adapter_flutter
 | Test IT | testit_adapter_flutter |
 |---------|------------------------|
 | 5.0     | 2.1.9+                 | 
-| Cloud   | 3.0.0                  | 
+| Cloud   | 3.1.0                  | 
 
 
 Legacy versions published as adapters_flutter package
