@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.  
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
 
+## [3.0.0] - 2025-06-17
+
+* new pub repo, new api-client
+
+###  legacy pub: https://pub.dev/packages/adapters_flutter:
+
 ## [2.1.9] - 2024-07-23
 
 ### Fixed

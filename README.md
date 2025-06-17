@@ -14,20 +14,24 @@ flutter: '>=3.10.0'
 With Dart:
 
 ```bash
-dart pub add adapters_flutter
+dart pub add testit_adapter_flutter
 ```
 
 With Flutter:
 
 ```bash
-flutter pub add adapters_flutter
+flutter pub add testit_adapter_flutter
 ```
 
 ## Compatibility
 
-| Test IT | adapters_flutter |
-|---------|------------------|
-| 5.0     | 2.1.9+           | 
+| Test IT | testit_adapter_flutter |
+|---------|------------------------|
+| 5.0     | 2.1.9+                 | 
+| Cloud   | 3.0.0                  | 
+
+
+Legacy versions published as adapters_flutter package
 
 ## Usage
 

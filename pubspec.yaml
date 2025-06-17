@@ -5,7 +5,7 @@ repository: https://github.com/testit-tms/adapters-flutter/
 homepage: https://testit.software/
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
+  sdk: '>=3.3.0 <4.0.0'
   flutter: '>=3.10.0'
 
 dependencies:
@@ -20,10 +20,7 @@ dependencies:
   properties: ^2.1.1
   synchronized: ^3.1.0+1
   test_api: '>=0.5.1 <2.0.0'
-  testit_api_client_dart:
-    git:
-      url: https://github.com/testit-tms/api-client-dart.git
-      ref: 1.0.0
+  testit_api_client_dart: '>=1.1.1 < 1.1.2'
   universal_io: ^2.2.2
   uuid: ^4.2.2
 

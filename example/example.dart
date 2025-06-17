@@ -1,7 +1,7 @@
 #!/usr/bin/env dart
 
 @Tags(['suite_tag'])
-import 'package:testit_adapter_flutter/adapters_flutter.dart';
+import 'package:testit_adapter_flutter/testit_adapter_flutter.dart';
 import 'package:universal_io/io.dart';
 
 void main() {

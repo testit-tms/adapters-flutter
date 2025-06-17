@@ -1,6 +1,6 @@
 #!/usr/bin/env dart
 
-import 'package:testit_adapter_flutter/adapters_flutter.dart';
+import 'package:testit_adapter_flutter/testit_adapter_flutter.dart';
 import 'package:path/path.dart';
 import 'package:universal_io/io.dart';
 
