@@ -1,11 +1,11 @@
 #!/usr/bin/env dart
 
-import 'package:adapters_flutter/src/manager/log_manager.dart';
-import 'package:adapters_flutter/src/model/config_model.dart';
-import 'package:adapters_flutter/src/service/config/cli_config_service.dart';
-import 'package:adapters_flutter/src/service/config/env_config_service.dart';
-import 'package:adapters_flutter/src/service/config/file_config_service.dart';
-import 'package:adapters_flutter/src/service/validation_service.dart';
+import 'package:testit_adapter_flutter/src/manager/log_manager.dart';
+import 'package:testit_adapter_flutter/src/model/config_model.dart';
+import 'package:testit_adapter_flutter/src/service/config/cli_config_service.dart';
+import 'package:testit_adapter_flutter/src/service/config/env_config_service.dart';
+import 'package:testit_adapter_flutter/src/service/config/file_config_service.dart';
+import 'package:testit_adapter_flutter/src/service/validation_service.dart';
 import 'package:meta/meta.dart';
 import 'package:path/path.dart';
 import 'package:synchronized/synchronized.dart';

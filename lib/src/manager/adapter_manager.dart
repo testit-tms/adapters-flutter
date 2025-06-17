@@ -1,12 +1,13 @@
 #!/usr/bin/env dart
 
-import 'package:adapters_flutter/src/converter/attachment_converter.dart';
-import 'package:adapters_flutter/src/enum/link_type_enum.dart';
-import 'package:adapters_flutter/src/manager/api_manager_.dart';
-import 'package:adapters_flutter/src/manager/config_manager.dart';
-import 'package:adapters_flutter/src/manager/log_manager.dart';
-import 'package:adapters_flutter/src/model/api/link_api_model.dart';
-import 'package:adapters_flutter/src/storage/test_result_storage.dart';
+import 'package:testit_adapter_flutter/src/converter/attachment_converter.dart';
+import 'package:testit_adapter_flutter/src/enum/link_type_enum.dart';
+import 'package:testit_adapter_flutter/src/manager/api_manager_.dart';
+import 'package:testit_adapter_flutter/src/manager/config_manager.dart';
+import 'package:testit_adapter_flutter/src/manager/log_manager.dart';
+import 'package:testit_adapter_flutter/src/model/api/link_api_model.dart';
+import 'package:testit_adapter_flutter/src/storage/test_result_storage.dart';
+import 'package:http/http.dart';
 import 'package:logger/logger.dart';
 import 'package:path/path.dart';
 import 'package:universal_io/io.dart';
@@ -24,7 +25,8 @@ Future<void> addAttachment(final String filePath) async {
         ? file
         : File(join(Directory.current.path, filePath));
     if (await file.exists()) {
-      final attachment = await tryCreateAttachmentAsync(config, file);
+      var multipartFile = await MultipartFile.fromPath("file", file.path);
+      final attachment = await tryCreateAttachmentAsync(config, multipartFile);
       await updateTestResultAttachmentsAsync(toAttachmentPutModel(attachment));
     } else {
       _logger.i('Attachment file $filePath not exists.');

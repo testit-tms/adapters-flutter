@@ -1,34 +1,31 @@
 #!/usr/bin/env dart
 
-import 'dart:convert';
-
-import 'package:adapters_flutter/src/model/config_model.dart';
-import 'package:adapters_flutter/src/util/http_util.dart';
-import 'package:http/http.dart';
+import 'package:testit_adapter_flutter/src/model/config_model.dart';
 import 'package:meta/meta.dart';
+import 'package:testit_api_client_dart/api.dart';
+
+ConfigurationsApi? configurationsApi;
 
 @internal
-Future<Iterable<String>> getConfigurationsByProjectIdAsync(
-    final ConfigModel config) async {
-  final Set<String> configurations = {};
+void initClient(final ConfigModel config) {
+  if (configurationsApi == null) {
+    var defaultApiClient = ApiClient(
+      basePath: '${config.url}',
+      authentication: ApiKeyAuth('PrivateToken', config.privateToken ?? ''),
+    );
 
-  final headers = {
-    'accept': '*/*',
-    'Content-Type': 'application/json',
-    'Authorization': 'PrivateToken ${config.privateToken}'
-  };
-  final url =
-      '${config.url}/api/v2/projects/${config.projectId}/configurations';
-  final request = Request('GET', Uri.parse(url));
-  request.headers.addAll(headers);
-
-  final response = await getOkResponseOrNullAsync(request);
-
-  if (response != null) {
-    configurations.addAll((jsonDecode(response.body) as Iterable)
-        .where((configuration) => !configuration['isDeleted'])
-        .map((configuration) => configuration['id']));
+    configurationsApi = ConfigurationsApi(defaultApiClient);
   }
+}
 
-  return configurations;
+Future<Iterable<String>> getConfigurationsByProjectId(
+    final ConfigModel config) async {
+  initClient(config);
+  final response = await configurationsApi?.apiV2ConfigurationsSearchPost(
+    configurationFilterModel: ConfigurationFilterModel(
+      projectIds: {config.projectId!},
+      isDeleted: false,
+    ),
+  );
+  return response?.map((configuration) => configuration.id) ?? [];
 }

@@ -1,9 +1,9 @@
 #!/usr/bin/env dart
 
-import 'package:adapters_flutter/src/manager/api_manager_.dart';
-import 'package:adapters_flutter/src/manager/log_manager.dart';
-import 'package:adapters_flutter/src/model/config_model.dart';
-import 'package:adapters_flutter/src/model/exception_model.dart';
+import 'package:testit_adapter_flutter/src/manager/api_manager_.dart';
+import 'package:testit_adapter_flutter/src/manager/log_manager.dart';
+import 'package:testit_adapter_flutter/src/model/config_model.dart';
+import 'package:testit_adapter_flutter/src/model/exception_model.dart';
 import 'package:logger/logger.dart';
 import 'package:meta/meta.dart';
 import 'package:uuid/uuid.dart';

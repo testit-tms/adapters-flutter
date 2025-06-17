@@ -1,16 +1,22 @@
 #!/usr/bin/env dart
 
-import 'package:adapters_flutter/src/model/api/attachment_api_model.dart';
-import 'package:adapters_flutter/src/model/config_model.dart';
-import 'package:adapters_flutter/src/model/test_result_model.dart';
-import 'package:adapters_flutter/src/service/api/attachment_api_service.dart';
-import 'package:adapters_flutter/src/service/api/autotest_api_service.dart';
-import 'package:adapters_flutter/src/service/api/configuration_api_service.dart';
-import 'package:adapters_flutter/src/service/api/test_run_api_service.dart';
-import 'package:adapters_flutter/src/service/api/work_item_api_service.dart';
+import 'package:testit_adapter_flutter/src/converter/test_result_converter.dart';
+import 'package:testit_adapter_flutter/src/model/config_model.dart';
+import 'package:testit_adapter_flutter/src/model/test_result_model.dart';
+import 'package:testit_adapter_flutter/src/service/api/attachment_api_service.dart'
+    as attachmentApi;
+import 'package:testit_adapter_flutter/src/service/api/autotest_api_service.dart'
+    as autotestApi;
+import 'package:testit_adapter_flutter/src/service/api/configuration_api_service.dart'
+    as configurationApi;
+import 'package:testit_adapter_flutter/src/service/api/test_run_api_service.dart'
+    as testRunApi;
+import 'package:testit_adapter_flutter/src/service/api/work_item_api_service.dart'
+    as workItemApi;
+import 'package:http/http.dart';
 import 'package:meta/meta.dart';
 import 'package:synchronized/synchronized.dart';
-import 'package:universal_io/io.dart';
+import 'package:testit_api_client_dart/api.dart' as api;
 
 final Lock _lock = Lock();
 final List<String> _testRunExternalIds = [];
@@ -28,9 +34,9 @@ Future<String?> getFirstNotFoundWorkItemIdAsync(
   }
 
   for (final id in workItemsIds) {
-    final workItem = await getWorkItemByIdAsync(config, id);
+    final workItem = await workItemApi.getWorkItemById(config, id);
 
-    if (workItem == null || workItem.isEmpty) {
+    if (workItem == null) {
       firstNotFoundWorkItemId = id;
       break;
     }
@@ -42,12 +48,12 @@ Future<String?> getFirstNotFoundWorkItemIdAsync(
 @internal
 Future<Iterable<String>> getProjectConfigurationsAsync(
         final ConfigModel config) async =>
-    await getConfigurationsByProjectIdAsync(config);
+    await configurationApi.getConfigurationsByProjectId(config);
 
 @internal
-Future<Map<String, dynamic>?> getTestRunOrNullByIdAsync(
+Future<api.TestRunV2ApiResult?> getTestRunOrNullByIdAsync(
         final ConfigModel config) async =>
-    await getTestRunByIdAsync(config);
+    await testRunApi.getTestRunById(config);
 
 @internal
 Future<bool> isTestNeedsToBeRunAsync(
@@ -57,13 +63,17 @@ Future<bool> isTestNeedsToBeRunAsync(
   if (config.adapterMode == 0) {
     await _lock.synchronized(() async {
       if (!_isTestRunExternalIdsGot) {
-        final testRun = await getTestRunByIdAsync(config);
+        final testRun = await testRunApi.getTestRunById(config);
 
         if (testRun != null) {
-          _testRunExternalIds.addAll((testRun['testResults'] as Iterable)
-              .where((testResult) => !testResult['autoTest']['isDeleted'])
-              .map((testResult) =>
-                  testResult['autoTest']['externalId'].toString()));
+          var mappings = (testRun.testResults ?? [])
+              .where((testResult) => !(testResult.autoTest?.isDeleted ?? true))
+              .map((testResult) => testResult.autoTest?.externalId.toString())
+              .where((mapping) => mapping != null)
+              .map((mapping) => mapping!)
+              .toList();
+
+          _testRunExternalIds.addAll(mappings);
         }
 
         _isTestRunExternalIdsGot = true;
@@ -82,38 +92,45 @@ Future<bool> isTestNeedsToBeRunAsync(
 Future<void> processTestResultAsync(
     final ConfigModel config, final TestResultModel testResult) async {
   var autoTest =
-      await getAutoTestByExternalIdAsync(config, testResult.externalId);
+      (await autotestApi.getAutoTestByExternalId(config, testResult.externalId))
+          ?.firstOrNull;
+  var autoTestId = autoTest?.id;
 
+  // create new or update existing auto test
   if (autoTest == null) {
-    autoTest = await createAutoTestAsync(config, testResult);
+    var createdAutoTest = await autotestApi.createAutoTest(
+        config, toAutoTestPostModel(config.projectId, testResult));
+    autoTestId = createdAutoTest?.id;
   } else {
     testResult.isFlaky = autoTest.isFlaky ?? false;
-    await updateAutoTestAsync(config, testResult);
+    await autotestApi.updateAutoTest(
+        config, toAutoTestPutModel(config.projectId, testResult));
   }
 
   if (testResult.workItemIds.isNotEmpty) {
     await _tryUpdateWorkItemsLinkedToAutoTestAsync(
-        autoTest?.id, config, testResult.workItemIds);
+        autoTestId, config, testResult.workItemIds);
   }
 
-  await submitResultToTestRunAsync(config, testResult);
+  await testRunApi.submitResultToTestRun(config,
+      toAutoTestResultsForTestRunModel(config.configurationId, testResult));
 }
 
 @internal
 Future<void> tryCompleteTestRunAsync(final ConfigModel config) async =>
-    await completeTestRunAsync(config);
+    await testRunApi.completeTestRun(config);
 
 @internal
-Future<AttachmentResponseModel?> tryCreateAttachmentAsync(
-        final ConfigModel config, final File file) async =>
-    await createAttachmentAsync(config, file);
+Future<api.AttachmentModel?> tryCreateAttachmentAsync(
+        final ConfigModel config, final MultipartFile file) async =>
+    await attachmentApi.createAttachment(config, file);
 
 @internal
 Future<void> tryCreateTestRunOnceAsync(final ConfigModel config) async {
   if (config.adapterMode == 2) {
     await _lock.synchronized(() async {
       if (!_isTestRunCreated) {
-        await createEmptyTestRunAsync(config);
+        await testRunApi.createEmptyTestRun(config);
         _isTestRunCreated = true;
       }
     });
@@ -122,11 +139,11 @@ Future<void> tryCreateTestRunOnceAsync(final ConfigModel config) async {
 
 Future<void> _tryUpdateWorkItemsLinkedToAutoTestAsync(final String? autoTestId,
     final ConfigModel config, final Iterable<String> workItemIds) async {
-  final linkedIds =
-      await getWorkItemsGlobalIdsLinkedToAutoTestAsync(autoTestId, config);
+  final linkedIds = await autotestApi.getWorkItemsGlobalIdsLinkedToAutoTest(
+      autoTestId, config);
 
   if (config.automaticUpdationLinksToTestCases ?? false) {
-    await unlinkAutoTestFromWorkItemsAsync(
+    await autotestApi.unlinkAutoTestFromWorkItems(
         autoTestId,
         config,
         linkedIds
@@ -134,7 +151,7 @@ Future<void> _tryUpdateWorkItemsLinkedToAutoTestAsync(final String? autoTestId,
             .toList());
   }
 
-  await linkWorkItemsToAutoTestAsync(
+  await autotestApi.linkWorkItemsToAutoTest(
       autoTestId,
       config,
       workItemIds

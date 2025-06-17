@@ -1,7 +1,6 @@
 #!/usr/bin/env dart
 
-import 'package:adapters_flutter/src/enum/link_type_enum.dart';
-import 'package:meta/meta.dart';
+import 'package:testit_adapter_flutter/src/enum/link_type_enum.dart';
 
 /// Link, attached to autotest.
 final class Link {
@@ -17,7 +16,10 @@ final class Link {
   /// Link url.
   final String? url;
 
-  Link(this.url, {this.description, this.title, this.type});
+  /// Optional, link has info.
+  final bool? hasInfo;
+
+  Link(this.url, {this.description, this.title, this.type, this.hasInfo});
 
   @override
   bool operator ==(final Object other) =>
@@ -25,28 +27,9 @@ final class Link {
       description == other.description &&
       title == other.title &&
       type == other.type &&
+      hasInfo == other.hasInfo &&
       url == other.url;
 
   @override
   int get hashCode => 0;
-}
-
-@internal
-final class LinkPostModel {
-  final String? description;
-  final bool? hasInfo;
-  final String? title;
-  final LinkType? type;
-  final String? url;
-
-  const LinkPostModel(this.description, this.title, this.type, this.url,
-      {this.hasInfo = false});
-
-  Map<String, dynamic> toJson() => {
-        'description': description,
-        'hasInfo': hasInfo,
-        'title': title,
-        'type': type?.name,
-        'url': url
-      };
 }
