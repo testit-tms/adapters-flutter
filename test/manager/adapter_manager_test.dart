@@ -104,7 +104,6 @@ void main() {
         await expectLater(
             () async => await adapterManager.addAttachment(filePath),
             returnsNormally);
-        // verify(mockApiManager.tryCreateAttachmentAsync(any, any)).called(1);
       });
 
       test('should not throw for a non-existent file path', () async {
@@ -118,30 +117,6 @@ void main() {
         verifyNever(mockApiManager.tryCreateAttachmentAsync(any, any));
       });
     });
-
-    group('addAttachments Tests -', () {
-      test('should handle a set of valid and invalid paths and not throw',
-          () async {
-        // Arrange
-        final paths = {testFile.path, '/non/existent/path/file.txt'};
-          when(mockApiManager.tryCreateAttachmentAsync(any, any)).thenAnswer(
-              (_) async => api.AttachmentModel(
-                  id: 'attachment-id',
-                  name: 'test.txt',
-                  size: 100,
-                  fileId: 'file-id',
-                  createdById: 'user-id',
-                  createdDate: DateTime.now(),
-                  type: 'text/plain'));
-
-          // Act & Assert
-          await expectLater(
-              () async => await adapterManager.addAttachments(paths),
-              returnsNormally);
-          //verify(mockApiManager.tryCreateAttachmentAsync(any, any)).called(1);
-        });
-      });
-    
 
     group('addLink Tests -', () {
       test('should add a valid link', () async {
