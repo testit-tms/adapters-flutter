@@ -11,7 +11,8 @@ import 'package:uuid/uuid.dart';
 
 final Logger _logger = getLogger();
 final IApiManager _apiManager = ApiManager();
-final ValidationService _validationService = ValidationService(_apiManager);
+final ValidationService _validationService =
+    ValidationService(_apiManager, disableValidation: false);
 
 @internal
 Future<void> validateConfigAsync(final ConfigModel? config) async =>
@@ -33,12 +34,15 @@ Future<void> validateWorkItemsIdsAsync(
 @internal
 class ValidationService {
   final IApiManager _apiManager;
+  final bool _disableValidation;
 
-  ValidationService(this._apiManager);
+  ValidationService(this._apiManager, {final bool? disableValidation})
+      : _disableValidation = disableValidation ??
+            (bool.tryParse(const String.fromEnvironment('disableValidation')) ??
+                false);
 
   Future<void> validateConfigAsync(final ConfigModel? config) async {
-    if (bool.tryParse(const String.fromEnvironment('disableValidation')) ??
-        false) {
+    if (_disableValidation) {
       return;
     }
 

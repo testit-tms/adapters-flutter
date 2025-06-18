@@ -25,7 +25,7 @@ void main() {
         links: {Link('https://www.example.org/')},
         tags: {'example_tag'},
         title: 'example_title',
-        workItemsIds: {'47100'}, () async {
+        workItemsIds: {'3083'}, () async {
       await step('success step', () {
         expect(0, 0);
       });
@@ -64,7 +64,7 @@ void main() {
         links: {Link('https://www.example.org/')},
         tags: {'example_tag_widgets'},
         title: 'example_title_widgets',
-        workItemsIds: {'47100'}, (tester) async {
+        workItemsIds: {'3083'}, (tester) async {
       await step('success step', () {
         expect(0, 0);
       });

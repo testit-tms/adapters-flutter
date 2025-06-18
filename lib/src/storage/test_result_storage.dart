@@ -123,9 +123,9 @@ String? getTestIdForProcessing() {
 }
 
 @internal
-Future<TestResultModel> removeTestResultByTestIdAsync(String testId) async =>
-    await _lock.synchronized<TestResultModel>(
-        () => _testResults.remove(testId) as TestResultModel);
+Future<TestResultModel?> removeTestResultByTestIdAsync(String testId) async =>
+    await _lock.synchronized<TestResultModel?>(
+        () => _testResults.remove(testId));
 
 @internal
 Future<void> updateCurrentStepAsync(

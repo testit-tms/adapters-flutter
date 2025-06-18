@@ -1,17 +1,31 @@
 #!/usr/bin/env dart
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:testit_adapter_flutter/src/manager/config_manager.dart';
 import 'package:testit_adapter_flutter/src/manager/step_manager.dart';
+import 'package:testit_adapter_flutter/src/model/config_model.dart';
 
 void main() {
   group('StepManager Tests -', () {
+    setUp(() {
+      final testConfig = ConfigModel()
+        ..url = 'http://localhost'
+        ..privateToken = 'token'
+        ..projectId = 'project-id'
+        ..configurationId = 'config-id'
+        ..testRunId = 'test-run-id'
+        ..testIt = true;
+      setTestConfiguration(testConfig);
+    });
 
-    // Note: Due to the static nature of dependencies (createConfigOnceAsync, 
-    // updateCurrentStepAsync, etc.), we cannot easily mock them.
-    // These tests therefore focus on the logical flow, return values,
-    // and exception handling of the `step` function, rather than the 
-    // side effects of its dependencies. A `testit.json` file is required
-    // in the project root for these tests to run.
+    tearDown(() {
+      clearTestConfiguration();
+    });
+
+    // Note: With the introduction of test configuration, these tests
+    // no longer depend on an external "testit.json" file and can run in isolation.
+    // They focus on the logical flow, return values, and exception handling of the
+    // `step` function.
 
     group('Execution and Return Value Tests -', () {
       test('should_execute_async_body_and_return_its_value', () async {

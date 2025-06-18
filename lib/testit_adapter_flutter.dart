@@ -4,7 +4,7 @@
 library;
 
 export 'package:testit_adapter_flutter/src/enum/link_type_enum.dart';
-export 'package:testit_adapter_flutter/src/manager/adapter_manager.dart';
+export 'package:testit_adapter_flutter/src/manager/adapter_manager.dart' hide AdapterManager;
 export 'package:testit_adapter_flutter/src/manager/step_manager.dart';
 export 'package:testit_adapter_flutter/src/manager/test_manager.dart'
     hide getGroupName, getSafeExternalId, testAsync, tryLogWarningsOnceAsync;

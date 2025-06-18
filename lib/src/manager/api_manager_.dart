@@ -22,7 +22,7 @@ import 'package:testit_api_client_dart/api.dart' as api;
 @internal
 class ApiManager implements IApiManager {
   final Lock _lock = Lock();
-  final List<String> _testRunExternalIds = [];
+  final Set<String> _testRunExternalIds = <String>{};
 
   bool _isTestRunCreated = false;
   bool _isTestRunExternalIdsGot = false;
@@ -120,13 +120,30 @@ class ApiManager implements IApiManager {
   }
 
   @override
-  Future<void> tryCompleteTestRunAsync(final ConfigModel config) async =>
+  Future<void> tryCompleteTestRunAsync(final ConfigModel config) async {
+    if (_isTestRunCreated) {
       await testrun_api.completeTestRun(config);
+    }
+  }
 
   @override
   Future<api.AttachmentModel?> tryCreateAttachmentAsync(
           final ConfigModel config, final MultipartFile file) async =>
       await attachment_api.createAttachment(config, file);
+
+  Future<List<api.AttachmentModel>> tryCreateAttachmentsAsync(
+      final ConfigModel config, final Iterable<MultipartFile> files) async {
+    final attachments = <api.AttachmentModel>[];
+
+    for (final file in files) {
+      final attachment = await tryCreateAttachmentAsync(config, file);
+      if (attachment != null) {
+        attachments.add(attachment);
+      }
+    }
+
+    return attachments;
+  }
 
   @override
   Future<void> tryCreateTestRunOnceAsync(final ConfigModel config) async {

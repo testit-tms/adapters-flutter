@@ -201,7 +201,10 @@ Future<void> testAsync(
         await addSetupAllsToTestResultAsync(testId);
         await addTeardownAllsToTestResultAsync(testId);
         final testResult = await removeTestResultByTestIdAsync(testId);
-        await _apiManager.processTestResultAsync(config, testResult);
+        
+        if (testResult != null) {
+          await _apiManager.processTestResultAsync(config, testResult);
+        }
       }
     }
 

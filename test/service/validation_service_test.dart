@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:logger/logger.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:testit_adapter_flutter/src/manager/i_api_manager.dart';
@@ -15,17 +16,14 @@ void main() {
   group('ValidationService', () {
     late MockIApiManager mockApiManager;
     late ValidationService validationService;
+    late Level originalLogLevel;
+    late ConfigModel config;
 
     // Use a fixed UUID for predictable test data
     const uuid = Uuid();
     final validProjectId = uuid.v4();
     final validConfigId = uuid.v4();
     final validTestRunId = uuid.v4();
-
-    setUp(() {
-      mockApiManager = MockIApiManager();
-      validationService = ValidationService(mockApiManager);
-    });
 
     ConfigModel createValidConfig() {
       return ConfigModel()
@@ -42,11 +40,22 @@ void main() {
         ..url = 'https://test.it';
     }
 
+    setUp(() {
+      mockApiManager = MockIApiManager();
+      validationService = ValidationService(mockApiManager, disableValidation: false);
+      originalLogLevel = Logger.level;
+      Logger.level = Level.off;
+      config = createValidConfig();
+    });
+
+    tearDown(() {
+      Logger.level = originalLogLevel;
+    });
+
     group('validateConfigAsync', () {
       test('should not throw if config is valid and API checks pass',
           () async {
         // Arrange
-        final config = createValidConfig();
         when(mockApiManager.getProjectConfigurationsAsync(config))
             .thenAnswer((_) async => [validConfigId]);
         when(mockApiManager.getTestRunOrNullByIdAsync(config))
@@ -69,14 +78,12 @@ void main() {
       });
 
       test('should throw TmsConfigException if config is null', () async {
-        // Act & Assert
         await expectLater(validationService.validateConfigAsync(null),
             throwsA(isA<TmsConfigException>()));
       });
 
       test('should throw if project is not found', () async {
         // Arrange
-        final config = createValidConfig();
         when(mockApiManager.getProjectConfigurationsAsync(config))
             .thenAnswer((_) async => []);
 
@@ -87,7 +94,6 @@ void main() {
 
       test('should throw if configuration is not found', () async {
         // Arrange
-        final config = createValidConfig();
         when(mockApiManager.getProjectConfigurationsAsync(config))
             .thenAnswer((_) async => ['another-config-id']);
 
@@ -99,7 +105,7 @@ void main() {
       test('should throw if test run is not found for adapter mode 0',
           () async {
         // Arrange
-        final config = createValidConfig()..adapterMode = 0;
+        config.adapterMode = 0;
         when(mockApiManager.getProjectConfigurationsAsync(config))
             .thenAnswer((_) async => [validConfigId]);
         when(mockApiManager.getTestRunOrNullByIdAsync(config))
@@ -112,14 +118,14 @@ void main() {
 
       test('should not check test run for adapter mode 2', () async {
         // Arrange
-        final config = createValidConfig()..adapterMode = 2;
+        config.adapterMode = 2;
         when(mockApiManager.getProjectConfigurationsAsync(config))
             .thenAnswer((_) async => [validConfigId]);
 
         // Act & Assert
         await expectLater(
             validationService.validateConfigAsync(config), completes);
-        verifyNever(mockApiManager.getTestRunOrNullByIdAsync(any));
+        verifyNever(mockApiManager.getTestRunOrNullByIdAsync(config));
       });
     });
 
@@ -157,8 +163,8 @@ void main() {
     group('validateWorkItemsIdsAsync', () {
       test('should not throw if all work items are found', () async {
         // Arrange
-        final config = createValidConfig();
-        when(mockApiManager.getFirstNotFoundWorkItemIdAsync(config, any))
+        when(mockApiManager.getFirstNotFoundWorkItemIdAsync(
+                config, argThat(isA<Iterable<String>>())))
             .thenAnswer((_) async => null);
 
         // Act & Assert
@@ -169,13 +175,14 @@ void main() {
 
       test('should throw if a work item is not found', () async {
         // Arrange
-        final config = createValidConfig();
-        when(mockApiManager.getFirstNotFoundWorkItemIdAsync(config, any))
+        when(mockApiManager.getFirstNotFoundWorkItemIdAsync(
+                config, argThat(isA<Iterable<String>>())))
             .thenAnswer((_) async => 'not-found-id');
 
         // Act & Assert
         await expectLater(
-            validationService.validateWorkItemsIdsAsync(config, ['not-found-id']),
+            validationService.validateWorkItemsIdsAsync(
+                config, ['not-found-id']),
             throwsA(isA<TmsConfigException>()));
       });
     });

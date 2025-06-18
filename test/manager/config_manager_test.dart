@@ -219,46 +219,58 @@ void main() {
     });
 
     group('Public Method Tests -', () {
-      // Note: We cannot easily reset the singleton `_config` between tests 
-      // without refactoring. These tests are structured to run in sequence
-      // and depend on the state from the previous test.
-
-      late ConfigModel configInstance1;
-
-      test('createConfigOnceAsync_should_create_and_return_a_config_instance', () async {
-        // Act
-        configInstance1 = await createConfigOnceAsync();
-
-        // Assert
-        expect(configInstance1, isA<ConfigModel>());
-        // URL and Token might be populated from environment variables.
-        // We check that they are strings, assuming they are set in the test environment.
-        expect(configInstance1.url, isA<String>(), 
-          reason: "URL should be a string, possibly from environment variables.");
-        expect(configInstance1.privateToken, isA<String>(),
-          reason: "Token should be a string, possibly from environment variables.");
+      setUp(() {
+        final testConfig = ConfigModel()
+          ..url = 'http://localhost'
+          ..privateToken = 'token'
+          ..projectId = 'project-id'
+          ..configurationId = 'config-id'
+          ..testRunId = 'test-run-id'
+          ..testIt = true;
+        setTestConfiguration(testConfig);
       });
 
-      test('createConfigOnceAsync_should_return_the_same_instance_on_subsequent_calls', () async {
+      tearDown(() {
+        clearTestConfiguration();
+      });
+
+      test(
+          'createConfigOnceAsync_should_return_the_preconfigured_instance', () async {
         // Act
+        final config = await createConfigOnceAsync();
+
+        // Assert
+        expect(config.url, 'http://localhost');
+        expect(config.privateToken, 'token');
+      });
+
+      test(
+          'createConfigOnceAsync_should_return_the_same_instance_on_subsequent_calls',
+          () async {
+        // Act
+        final configInstance1 = await createConfigOnceAsync();
         final configInstance2 = await createConfigOnceAsync();
 
         // Assert
         expect(identical(configInstance1, configInstance2), isTrue,
-          reason: 'Should return the exact same object instance.'
-        );
+            reason: 'Should return the exact same object instance.');
       });
 
-      test('updateTestRunIdAsync_should_update_the_id_on_the_existing_config', () async {
+      test(
+          'updateTestRunIdAsync_should_update_the_id_on_the_existing_config', () async {
         // Arrange
-        const newTestRunId = 'new-test-run-12345';
-        
+        const newTestRunId = 'new-id-123';
+        final initialConfig = await createConfigOnceAsync();
+        expect(initialConfig.testRunId, isNot(newTestRunId));
+
         // Act
         await updateTestRunIdAsync(newTestRunId);
-        final currentConfig = await createConfigOnceAsync();
+        final updatedConfig = await createConfigOnceAsync();
 
         // Assert
-        expect(currentConfig.testRunId, equals(newTestRunId));
+        expect(updatedConfig.testRunId, newTestRunId);
+        expect(identical(initialConfig, updatedConfig), isTrue,
+          reason: 'Should be the same instance.');
       });
     });
   });

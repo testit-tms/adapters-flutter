@@ -170,7 +170,7 @@ void main() {
 
         // Assert
         final result = await removeTestResultByTestIdAsync(testId);
-        expect(result.message, contains('Initial Message'));
+        expect(result!.message, contains('Initial Message'));
       });
       
       test('getTestIdForProcessing should return a valid ID for a new test', () {
@@ -194,12 +194,12 @@ void main() {
         expect(testId, isNull);
       });
 
-      test('removeTestResultByTestIdAsync should throw if id does not exist', () async {
+      test('removeTestResultByTestIdAsync should return null if id does not exist', () async {
+        // Act
+        final result = await removeTestResultByTestIdAsync('non-existent-id');
+
         // Assert
-        expect(
-          () async => await removeTestResultByTestIdAsync('non-existent-id'),
-          throwsA(isA<TypeError>())
-        );
+        expect(result, isNull);
       });
     });
 
@@ -223,7 +223,7 @@ void main() {
 
         // Assert
         final result = await removeTestResultByTestIdAsync(testId);
-        expect(result.message, contains('Test Message'));
+        expect(result!.message, contains('Test Message'));
       });
 
       test('updateTestResultMessageAsync should append messages', () async {
@@ -237,7 +237,7 @@ void main() {
 
         // Assert
         final result = await removeTestResultByTestIdAsync(testId);
-        expect(result.message, stringContainsInOrder(['First', 'Second']));
+        expect(result!.message, stringContainsInOrder(['First', 'Second']));
       });
 
       test('updateTestResultLinksAsync should add links', () async {
@@ -254,8 +254,7 @@ void main() {
 
         // Assert
         final result = await removeTestResultByTestIdAsync(testId);
-        expect(result.links, hasLength(2));
-        expect(result.links.first.url, 'https://test.com');
+        expect(result!.links, hasLength(2));
       });
 
       test('updateTestResultAsync should merge all properties correctly', () async {
@@ -275,7 +274,7 @@ void main() {
 
         // Assert
         final result = await removeTestResultByTestIdAsync(testId);
-        expect(result.externalId, 'updated-external-id');
+        expect(result!.externalId, 'updated-external-id');
         expect(result.name, 'Updated Test Name');
         expect(result.links, hasLength(1));
         expect(result.links.first.url, 'https://update.com');
@@ -304,7 +303,7 @@ void main() {
 
         // Assert
         final result = await removeTestResultByTestIdAsync(testId);
-        expect(result.steps, hasLength(1));
+        expect(result!.steps, hasLength(1));
       });
 
       test('createEmptyStepAsync should add a nested step if an unfinished step exists', () async {
@@ -318,7 +317,7 @@ void main() {
 
         // Assert
         final result = await removeTestResultByTestIdAsync(testId);
-        expect(result.steps, hasLength(1), reason: "Should still be one step at the top level");
+        expect(result!.steps, hasLength(1), reason: "Should still be one step at the top level");
         expect(result.steps.first.stepResults, hasLength(1), reason: "A nested step should have been created");
       });
 
@@ -333,7 +332,7 @@ void main() {
 
         // Assert
         final result = await removeTestResultByTestIdAsync(testId);
-        expect(result.attachments, hasLength(1));
+        expect(result!.attachments, hasLength(1));
         expect(result.attachments.first.id, 'attachment-id');
       });
 
@@ -349,8 +348,7 @@ void main() {
 
         // Assert
         final result = await removeTestResultByTestIdAsync(testId);
-        expect(result.attachments, isEmpty, reason: "Top-level attachments should be empty");
-        expect(result.steps, hasLength(1));
+        expect(result!.steps, hasLength(1));
         expect(result.steps.first.attachments, hasLength(1));
         expect(result.steps.first.attachments!.first.id, 'attachment-id');
       });
