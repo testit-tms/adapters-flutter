@@ -6,11 +6,10 @@ import 'package:meta/meta.dart';
 import 'package:universal_io/io.dart';
 
 @internal
-Future<ConfigModel> getConfigFromEnvAsync() async {
-  final environment = Platform.environment;
-  final filePath = environment['TMS_CONFIG_FILE'];
-  final config = await getConfigFromFileAsync(filePath);
-
+ConfigModel applyEnvParameters(
+  ConfigModel config,
+  Map<String, String> environment,
+) {
   config.adapterMode = int.tryParse(environment['TMS_ADAPTER_MODE'] ?? '');
 
   config.automaticCreationTestCases = bool.tryParse(
@@ -44,4 +43,13 @@ Future<ConfigModel> getConfigFromEnvAsync() async {
   config.url = environment['TMS_URL'];
 
   return config;
+}
+
+@internal
+Future<ConfigModel> getConfigFromEnvAsync() async {
+  final environment = Platform.environment;
+  final filePath = environment['TMS_CONFIG_FILE'];
+  final config = await getConfigFromFileAsync(filePath);
+
+  return applyEnvParameters(config, environment);
 }

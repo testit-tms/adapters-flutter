@@ -49,11 +49,11 @@ void main() {
         expect(0, 1);
       });
 
-      tmsTest('with workItemsIds - success', workItemsIds: {'47100'}, () {
+      tmsTest('with workItemsIds - success', workItemsIds: {'3083'}, () {
         return {};
       });
 
-      tmsTest('with workItemsIds - failed', workItemsIds: {'47100'}, () {
+      tmsTest('with workItemsIds - failed', workItemsIds: {'3083'}, () {
         expect(0, 1);
       });
 
@@ -71,7 +71,7 @@ void main() {
             links: {Link('https://www.example.org/')},
             tags: {'tag1'},
             title: 'title',
-            workItemsIds: {'47100'}, () {
+            workItemsIds: {'3083'}, () {
           return {};
         });
 
@@ -80,7 +80,7 @@ void main() {
             links: {Link('https://www.example.org/')},
             tags: {'tag1'},
             title: 'title',
-            workItemsIds: {'47100'}, () {
+            workItemsIds: {'3083'}, () {
           expect(0, 1);
         });
       }
@@ -131,12 +131,12 @@ void main() {
         expect(0, 1);
       });
 
-      tmsTestWidgets('with workItemsIds - success', workItemsIds: {'47100'},
+      tmsTestWidgets('with workItemsIds - success', workItemsIds: {'3083'},
           (tester) async {
         return;
       });
 
-      tmsTestWidgets('with workItemsIds - failed', workItemsIds: {'47100'},
+      tmsTestWidgets('with workItemsIds - failed', workItemsIds: {'3083'},
           (tester) async {
         expect(0, 1);
       });
@@ -157,7 +157,7 @@ void main() {
             links: {Link('https://www.example.org/')},
             tags: {'tag1'},
             title: 'title',
-            workItemsIds: {'47100'}, (tester) async {
+            workItemsIds: {'3083'}, (tester) async {
           return;
         });
 
@@ -166,7 +166,7 @@ void main() {
             links: {Link('https://www.example.org/')},
             tags: {'tag1'},
             title: 'title',
-            workItemsIds: {'47100'}, (tester) async {
+            workItemsIds: {'3083'}, (tester) async {
           expect(0, 1);
         });
       }

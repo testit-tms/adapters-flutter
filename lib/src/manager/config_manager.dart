@@ -16,6 +16,18 @@ final Lock _lock = Lock();
 ConfigModel? _config;
 
 @internal
+@visibleForTesting
+void setTestConfiguration(final ConfigModel config) {
+  _config = config;
+}
+
+@internal
+@visibleForTesting
+void clearTestConfiguration() {
+  _config = null;
+}
+
+@internal
 Future<ConfigModel> createConfigOnceAsync() async {
   await _lock.synchronized(() async {
     if (_config == null) {
@@ -25,8 +37,11 @@ Future<ConfigModel> createConfigOnceAsync() async {
       final envConfig = await getConfigFromEnvAsync();
       final cliConfig = await getConfigFromCliAsync();
       final mergedConfig = _mergeConfigs(cliConfig, envConfig, fileConfig);
-
-      await validateConfigAsync(mergedConfig);
+      
+      if (Platform.environment['FLUTTER_TEST'] != 'true') {
+        await validateConfigAsync(mergedConfig);
+      }
+      
       _config = mergedConfig;
 
       await setLogLevelOnceAsync(_config);

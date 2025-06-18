@@ -11,6 +11,9 @@ final Set<String> _configFileWarnings = {};
 Iterable<String> getConfigFileWarnings() => _configFileWarnings;
 
 @internal
+void clearConfigFileWarnings() => _configFileWarnings.clear();
+
+@internal
 Future<ConfigModel> getConfigFromFileAsync(final String? filePath) async {
   final fileConfig = ConfigModel();
 

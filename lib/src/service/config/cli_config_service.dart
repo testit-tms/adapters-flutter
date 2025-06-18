@@ -13,45 +13,47 @@ extension on String {
 }
 
 @internal
-Future<ConfigModel> getConfigFromCliAsync() async {
-  const filePath = String.fromEnvironment('tmsConfigFile');
-  final config = await getConfigFromFileAsync(filePath);
-
-  config.adapterMode =
-      int.tryParse(const String.fromEnvironment('tmsAdapterMode'));
+ConfigModel applyCliParameters(
+  ConfigModel config,
+  String Function(String name) getEnv,
+) {
+  config.adapterMode = int.tryParse(getEnv('tmsAdapterMode'));
 
   config.automaticCreationTestCases = bool.tryParse(
-      const String.fromEnvironment('tmsAutomaticCreationTestCases'),
+      getEnv('tmsAutomaticCreationTestCases'),
       caseSensitive: false);
 
   config.automaticUpdationLinksToTestCases = bool.tryParse(
-      const String.fromEnvironment('tmsAutomaticUpdationLinksToTestCases'),
+      getEnv('tmsAutomaticUpdationLinksToTestCases'),
       caseSensitive: false);
 
-  config.certValidation = bool.tryParse(
-      const String.fromEnvironment('tmsCertValidation'),
-      caseSensitive: false);
+  config.certValidation =
+      bool.tryParse(getEnv('tmsCertValidation'), caseSensitive: false);
 
-  config.configurationId =
-      const String.fromEnvironment('tmsConfigurationId').nullIfEmpty();
+  config.configurationId = getEnv('tmsConfigurationId').nullIfEmpty();
 
-  config.isDebug = bool.tryParse(const String.fromEnvironment('tmsIsDebug'),
-      caseSensitive: false);
+  config.isDebug = bool.tryParse(getEnv('tmsIsDebug'), caseSensitive: false);
 
-  config.privateToken =
-      const String.fromEnvironment('tmsPrivateToken').nullIfEmpty();
+  config.privateToken = getEnv('tmsPrivateToken').nullIfEmpty();
 
-  config.projectId = const String.fromEnvironment('tmsProjectId').nullIfEmpty();
+  config.projectId = getEnv('tmsProjectId').nullIfEmpty();
 
-  config.testIt = bool.tryParse(const String.fromEnvironment('tmsTestIt'),
-      caseSensitive: false);
+  config.testIt = bool.tryParse(getEnv('tmsTestIt'), caseSensitive: false);
 
-  config.testRunId = const String.fromEnvironment('tmsTestRunId').nullIfEmpty();
+  config.testRunId = getEnv('tmsTestRunId').nullIfEmpty();
 
-  config.testRunName =
-      const String.fromEnvironment('tmsTestRunName').nullIfEmpty();
+  config.testRunName = getEnv('tmsTestRunName').nullIfEmpty();
 
-  config.url = const String.fromEnvironment('tmsUrl').nullIfEmpty();
+  config.url = getEnv('tmsUrl').nullIfEmpty();
 
   return config;
+}
+
+@internal
+Future<ConfigModel> getConfigFromCliAsync() async {
+  const filePath = String.fromEnvironment('tmsConfigFile', defaultValue: '');
+  final config = await getConfigFromFileAsync(filePath);
+
+  return applyCliParameters(
+      config, (name) => String.fromEnvironment(name, defaultValue: ''));
 }
