@@ -38,9 +38,7 @@ Future<ConfigModel> createConfigOnceAsync() async {
       final cliConfig = await getConfigFromCliAsync();
       final mergedConfig = _mergeConfigs(cliConfig, envConfig, fileConfig);
       
-      if (Platform.environment['FLUTTER_TEST'] != 'true') {
-        await validateConfigAsync(mergedConfig);
-      }
+      await validateConfigAsync(mergedConfig);
       
       _config = mergedConfig;
 
