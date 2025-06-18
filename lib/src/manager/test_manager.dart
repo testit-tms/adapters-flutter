@@ -1,5 +1,6 @@
 #!/usr/bin/env dart
 
+import 'package:meta/meta.dart';
 import 'package:testit_adapter_flutter/src/manager/api_manager_.dart';
 import 'package:testit_adapter_flutter/src/manager/config_manager.dart';
 import 'package:testit_adapter_flutter/src/manager/log_manager.dart';
@@ -19,6 +20,7 @@ import 'package:universal_io/io.dart';
 
 final Lock _lock = Lock();
 final Logger _logger = getLogger();
+final ApiManager _apiManager = ApiManager();
 
 bool _isWarningsLogged = false;
 
@@ -41,7 +43,7 @@ void tmsTest(final String description, final dynamic Function() body,
         tags: tags,
         testOn: testOn,
         timeout: timeout,
-        () async => await _testAsync(description, () async => await body.call(),
+        () async => await testAsync(description, () async => await body.call(),
             externalId: externalId,
             links: links,
             skip: skip,
@@ -68,7 +70,7 @@ Future<void> tmsTestWidgets(
         tags: tags,
         timeout: timeout,
         variant: variant,
-        (tester) async => await tester.runAsync(() async => await _testAsync(
+        (tester) async => await tester.runAsync(() async => await testAsync(
             description, () async => await callback(tester),
             externalId: externalId,
             links: links,
@@ -77,7 +79,8 @@ Future<void> tmsTestWidgets(
             title: title,
             workItemsIds: workItemsIds)));
 
-String? _getSafeExternalId(final String? externalId, final String? testName) {
+@internal
+String? getSafeExternalId(final String? externalId, final String? testName) {
   var output =
       (externalId == null || externalId.isEmpty) ? testName : externalId;
 
@@ -101,7 +104,8 @@ String? _getSafeExternalId(final String? externalId, final String? testName) {
   return output;
 }
 
-String? _getGroupName() {
+@internal
+String? getGroupName() {
   final liveTest = Invoker.current?.liveTest;
 
   var className = liveTest?.groups
@@ -117,7 +121,8 @@ String? _getGroupName() {
   return className;
 }
 
-Future<void> _testAsync(
+@internal
+Future<void> testAsync(
     final String description, final Future<void> Function() body,
     {final String? externalId,
     final Set<Link>? links,
@@ -127,14 +132,14 @@ Future<void> _testAsync(
     final Set<String>? workItemsIds}) async {
   HttpOverrides.global = null;
   final config = await createConfigOnceAsync();
-  await _tryLogWarningsOnceAsync();
+  await tryLogWarningsOnceAsync();
 
   if (config.testIt ?? true) {
     final liveTest = Invoker.current?.liveTest;
-    final safeExternalId = _getSafeExternalId(externalId, liveTest?.test.name);
+    final safeExternalId = getSafeExternalId(externalId, liveTest?.test.name);
 
-    if (!await isTestNeedsToBeRunAsync(config, safeExternalId)) {
-      await tryCompleteTestRunAsync(config);
+    if (!await _apiManager.isTestNeedsToBeRunAsync(config, safeExternalId)) {
+      await _apiManager.tryCompleteTestRunAsync(config);
       await excludeTestIdFromProcessingAsync();
 
       return;
@@ -145,20 +150,20 @@ Future<void> _testAsync(
     tags?.forEach((final tag) => validateStringArgument('Tag', tag));
     await validateWorkItemsIdsAsync(config, workItemsIds);
 
-    await tryCreateTestRunOnceAsync(config);
+    await _apiManager.tryCreateTestRunOnceAsync(config);
     await createEmptyTestResultAsync();
 
     final localResult = TestResultModel();
     final startedOn = DateTime.now();
 
-    localResult.classname = _getGroupName();
+    localResult.classname = getGroupName();
     localResult.description = description;
     localResult.externalId = safeExternalId;
     localResult.labels = liveTest?.test.metadata.tags ?? {};
     localResult.links = links ?? {};
     localResult.methodName = liveTest?.test.name ?? '';
     localResult.name = (liveTest?.test.name ?? '')
-        .replaceAll(_getGroupName() ?? '', '')
+        .replaceAll(getGroupName() ?? '', '')
         .trim();
     localResult.namespace =
         basenameWithoutExtension(liveTest?.suite.path ?? '');
@@ -196,7 +201,7 @@ Future<void> _testAsync(
         await addSetupAllsToTestResultAsync(testId);
         await addTeardownAllsToTestResultAsync(testId);
         final testResult = await removeTestResultByTestIdAsync(testId);
-        await processTestResultAsync(config, testResult);
+        await _apiManager.processTestResultAsync(config, testResult);
       }
     }
 
@@ -209,7 +214,8 @@ Future<void> _testAsync(
   }
 }
 
-Future<void> _tryLogWarningsOnceAsync() async {
+@internal
+Future<void> tryLogWarningsOnceAsync() async {
   await _lock.synchronized(() async {
     if (!_isWarningsLogged) {
       for (final warning in getConfigFileWarnings()) {

@@ -13,6 +13,7 @@ import 'package:path/path.dart';
 import 'package:universal_io/io.dart';
 
 final Logger _logger = getLogger();
+final ApiManager _apiManager = ApiManager();
 
 /// Create attachment using api from [filePath], then add it to step or test.
 Future<void> addAttachment(final String filePath) async {
@@ -26,7 +27,8 @@ Future<void> addAttachment(final String filePath) async {
         : File(join(Directory.current.path, filePath));
     if (await file.exists()) {
       var multipartFile = await MultipartFile.fromPath("file", file.path);
-      final attachment = await tryCreateAttachmentAsync(config, multipartFile);
+      final attachment =
+          await _apiManager.tryCreateAttachmentAsync(config, multipartFile);
       await updateTestResultAttachmentsAsync(toAttachmentPutModel(attachment));
     } else {
       _logger.i('Attachment file $filePath not exists.');
@@ -45,7 +47,7 @@ Future<void> addLink(final String url,
     final LinkType? type}) async {
   final config = await createConfigOnceAsync();
 
-  if (config.testIt ?? true) {
+  if ((config.testIt ?? true) && url.isNotEmpty) {
     final link = Link(url, description: description, title: title, type: type);
     await updateTestResultLinksAsync([link]);
   }

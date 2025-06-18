@@ -5,7 +5,7 @@ import 'package:meta/meta.dart';
 import 'package:testit_api_client_dart/api.dart' as api;
 
 @internal
-final class TestResultModel {
+class TestResultModel {
   List<api.AttachmentPutModel> attachments = [];
   String? classname;
   DateTime? completedOn;

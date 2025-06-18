@@ -3,7 +3,7 @@
 import 'package:meta/meta.dart';
 
 @internal
-final class ConfigModel {
+class ConfigModel {
   int? adapterMode;
   bool? automaticCreationTestCases;
   bool? automaticUpdationLinksToTestCases;

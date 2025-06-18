@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.  
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
 
+## [3.1.2] - 2025-06-18
+
+* Introduce tests and documentation
+
 ## [3.1.1-TMS-5.3] - 2025-06-17
 
 * TMS 5.3 support

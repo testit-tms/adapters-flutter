@@ -74,7 +74,8 @@ Future<void> createEmptyStepAsync() async => await _lock.synchronized(() async {
       final currentStep = _getCurrentStep();
 
       if (currentStep == null) {
-        _testResults.update(_getTestId(), (value) {
+        final testId = _getTestId();
+        _testResults.update(testId, (value) {
           value.steps.add(api.AttachmentPutModelAutoTestStepResultsModel());
 
           return value;
@@ -86,8 +87,14 @@ Future<void> createEmptyStepAsync() async => await _lock.synchronized(() async {
           return testResult;
         });
       } else {
-        currentStep.stepResults!
-            .add(api.AttachmentPutModelAutoTestStepResultsModel());
+        final parentStep = _getCurrentStep();
+        if (parentStep != null) {
+          final mutableSteps =
+              List<api.AttachmentPutModelAutoTestStepResultsModel>.from(
+                  parentStep.stepResults ?? []);
+          mutableSteps.add(api.AttachmentPutModelAutoTestStepResultsModel());
+          parentStep.stepResults = mutableSteps;
+        }
       }
     });
 
@@ -245,13 +252,14 @@ String _getTestId() {
   return testId;
 }
 
-// TODO: complete attachments in steps
 void _updateCurrentStepAttachments(final api.AttachmentPutModel attachment) {
   final currentStep = _getCurrentStep();
 
   if (currentStep != null) {
-    currentStep.attachments ??= [];
-    currentStep.attachments!.add(attachment);
+    final mutableAttachments =
+        List<api.AttachmentPutModel>.from(currentStep.attachments ?? []);
+    mutableAttachments.add(attachment);
+    currentStep.attachments = mutableAttachments;
   }
 }
 
