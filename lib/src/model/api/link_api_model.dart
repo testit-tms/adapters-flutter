@@ -1,20 +1,22 @@
 #!/usr/bin/env dart
 
 import 'package:testit_adapter_flutter/src/enum/link_type_enum.dart';
+import 'package:testit_adapter_flutter/src/util/html_escape_utils.dart';
 
 /// Link, attached to autotest.
-final class Link {
+@htmlEscapeReflector // Annotation for reflectable support
+final class Link implements HtmlEscapable {
   /// Optional, link description.
-  final String? description;
+  String? description;
 
   /// Optional, link title.
-  final String? title;
+  String? title;
 
   /// Optional, link type.
   final LinkType? type;
 
   /// Link url.
-  final String? url;
+  String? url;
 
   /// Optional, link has info.
   final bool? hasInfo;
@@ -32,4 +34,11 @@ final class Link {
 
   @override
   int get hashCode => 0;
+
+  @override
+  void escapeHtmlInProperties() {
+    description = HtmlEscapeUtils.escapeHtmlTags(description);
+    title = HtmlEscapeUtils.escapeHtmlTags(title);
+    url = HtmlEscapeUtils.escapeHtmlTags(url);
+  }
 }
