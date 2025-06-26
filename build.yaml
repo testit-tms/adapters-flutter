@@ -1,0 +1,17 @@
+targets:
+  $default:
+    builders:
+      reflectable:
+        generate_for:
+          - lib/**
+          - test/**
+        options:
+          formatted: true
+
+builders:
+  reflectable:
+    import: "package:reflectable/reflectable_builder.dart"
+    builder_factories: ["reflectableBuilder"]
+    build_extensions: {".dart": [".reflectable.dart"]}
+    auto_apply: dependents
+    build_to: source 
