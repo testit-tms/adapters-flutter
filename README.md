@@ -1,5 +1,11 @@
 # Test IT TMS Adapter for Flutter
 
+\>= 3.0.0:
+![Pub Monthly Downloads](https://img.shields.io/pub/dm/testit_adapter_flutter)
+
+< 3.0.0:
+![Pub Monthly Downloads](https://img.shields.io/pub/dm/adapters_flutter)
+
 ## Getting Started
 
 ### Requirements
