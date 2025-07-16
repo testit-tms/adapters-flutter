@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.  
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
 
+## [3.2.0-TMS-5.4] - 2025-07-16
+
+* TMS 5.4 support
+
 ## [3.1.3] - 2025-06-26
 
 * Introduce html escaping
