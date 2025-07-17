@@ -30,7 +30,7 @@ flutter pub add testit_adapter_flutter
 | 5.0     | 2.1.9+                 | 
 | 5.3     | 3.1.1-TMS-5.3          |
 | 5.4     | 3.2.0-TMS-5.4          |
-| Cloud   | 3.1.3                  | 
+| Cloud   | 3.2.1                  | 
 
 
 Legacy versions published as adapters_flutter package
