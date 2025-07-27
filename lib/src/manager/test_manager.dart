@@ -17,6 +17,7 @@ import 'package:synchronized/synchronized.dart';
 import 'package:test_api/src/backend/invoker.dart'; // ignore: depend_on_referenced_packages, implementation_imports
 import 'package:testit_api_client_dart/api.dart' as api;
 import 'package:universal_io/io.dart';
+import 'package:patrol/patrol.dart'; // ignore: depend_on_referenced_packages
 
 final Lock _lock = Lock();
 final Logger _logger = getLogger();
@@ -78,6 +79,29 @@ Future<void> tmsTestWidgets(
             tags: tags,
             title: title,
             workItemsIds: workItemsIds)));
+
+/// Run patrol test [body] with [description] and, optional, [externalId], [links], [skip], [tags], [timeout], [title] or [workItemsIds], then upload result to Test IT.
+/// This function always uses native Patrol integration.
+void tmsPatrolTest(final String description, final dynamic Function() body,
+        {final String? externalId,
+        final Set<Link>? links,
+        final String? skip,
+        final Set<String>? tags,
+        final String? testOn,
+        final Timeout? timeout,
+        final String? title,
+        final Set<String>? workItemsIds}) =>
+    patrolTest(
+        description,
+        tags: tags,
+        timeout: timeout,
+        ($) async => await testAsync(description, () async => await body.call(),
+            externalId: externalId,
+            links: links,
+            skip: skip,
+            tags: tags,
+            title: title,
+            workItemsIds: workItemsIds));
 
 @internal
 String? getSafeExternalId(final String? externalId, final String? testName) {
