@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.  
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
 
+## [3.2.3] - 2025-09-18
+
+* Last Cloud support
+
 ## [3.2.2] - 2025-09-11
 
 * Last Cloud support
