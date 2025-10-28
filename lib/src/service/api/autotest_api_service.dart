@@ -49,7 +49,7 @@ Future<void> linkWorkItemsToAutoTest(final String? autoTestId,
   final autoTestsApi = createApiClient<AutoTestsApi>(config);
   for (final id in workItemIds) {
     await autoTestsApi.linkAutoTestToWorkItem(autoTestId!,
-        workItemIdModel: WorkItemIdModel(id: id));
+        workItemIdApiModel: WorkItemIdApiModel(id: id));
   }
 }
 
