@@ -25,6 +25,11 @@ Future<TestRunV2ApiResult?> getTestRunById(final ConfigModel config) async {
   return testRunsApi.getTestRunById(config.testRunId!);
 }
 
+Future<void> updateTestRun(final ConfigModel config, final UpdateEmptyTestRunApiModel testRun) async {
+  final testRunsApi = createApiClient<TestRunsApi>(config);
+  await testRunsApi.updateEmpty(updateEmptyTestRunApiModel: testRun);
+}
+
 Future<void> submitResultToTestRun(final ConfigModel config,
     final AutoTestResultsForTestRunModel autoTestResultForTestRunModel) async {
   final testRunsApi = createApiClient<TestRunsApi>(config);

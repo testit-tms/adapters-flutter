@@ -151,6 +151,7 @@ Future<void> testAsync(
     await validateWorkItemsIdsAsync(config, workItemsIds);
 
     await _apiManager.tryCreateTestRunOnceAsync(config);
+    await _apiManager.tryUpdateTestRunAsync(config);
     await createEmptyTestResultAsync();
 
     final localResult = TestResultModel();
