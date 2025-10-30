@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.  
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
 
+## [3.2.5] - 2025-10-30
+
+* feat: TMS-35016: support for updating the test run name for all adapter modes.
+
 ## [3.2.4] - 2025-10-28
 
 * Last Cloud support
