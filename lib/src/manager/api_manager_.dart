@@ -1,6 +1,7 @@
 #!/usr/bin/env dart
 
 import 'package:testit_adapter_flutter/src/converter/test_result_converter.dart';
+import 'package:testit_adapter_flutter/src/converter/test_run_converter.dart';
 import 'package:testit_adapter_flutter/src/manager/i_api_manager.dart';
 import 'package:testit_adapter_flutter/src/model/config_model.dart';
 import 'package:testit_adapter_flutter/src/model/test_result_model.dart';
@@ -155,6 +156,25 @@ class ApiManager implements IApiManager {
         }
       });
     }
+  }
+
+  Future<void> tryUpdateTestRunAsync(final ConfigModel config) async {
+    if (config.adapterMode == 2 || config.testRunName == null) {
+      return;
+    }
+
+    await _lock.synchronized(() async {
+          var testRun = await testrun_api.getTestRunById(config);
+
+          if (testRun == null || testRun.name == config.testRunName) {
+            return;
+          }
+
+          testRun.name = config.testRunName!;
+
+          await testrun_api.updateTestRun(config, toUpdateEmptyTestRunApiModel(testRun));
+          _isTestRunCreated = true;
+      });
   }
 
   Future<void> _tryUpdateWorkItemsLinkedToAutoTestAsync(final String? autoTestId,
