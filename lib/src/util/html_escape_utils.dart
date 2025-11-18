@@ -26,8 +26,8 @@ class HtmlEscapeUtils {
   static final RegExp _htmlTagPattern = RegExp(r'<\S.*?(?:>|\/>)');
 
   // Regex patterns to escape only non-escaped characters
-  static final RegExp _lessThanPattern = RegExp(r'(?<!\\)<');
-  static final RegExp _greaterThanPattern = RegExp(r'(?<!\\)>');
+  static final RegExp _lessThanPattern = RegExp(r'<');
+  static final RegExp _greaterThanPattern = RegExp(r'>');
 
   /// Escapes HTML tags to prevent XSS attacks.
   /// First checks if the string contains HTML tags using regex pattern.
@@ -45,8 +45,8 @@ class HtmlEscapeUtils {
     }
 
     // Use regex with negative lookbehind to escape only non-escaped characters
-    var result = text.replaceAll(_lessThanPattern, r'\<');
-    result = result.replaceAll(_greaterThanPattern, r'\>');
+    var result = text.replaceAll(_lessThanPattern, r'&lt;');
+    result = result.replaceAll(_greaterThanPattern, r'&gt;');
 
     return result;
   }

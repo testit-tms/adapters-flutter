@@ -83,30 +83,30 @@ void main() {
 
     test('should escape HTML tags', () {
       const input = '<script>alert("xss")</script>';
-      const expected = r'\<script\>alert("xss")\</script\>';
+      const expected = r'&lt;script&gt;alert("xss")&lt;/script&gt;';
       expect(HtmlEscapeUtils.escapeHtmlTags(input), equals(expected));
     });
 
     test('should escape self-closing HTML tags', () {
       const input = '<img src="test.jpg" />';
-      const expected = r'\<img src="test.jpg" /\>';
+      const expected = r'&lt;img src="test.jpg" /&gt;';
       expect(HtmlEscapeUtils.escapeHtmlTags(input), equals(expected));
     });
 
     test('should not double-escape already escaped tags', () {
-      const input = r'\<script\>alert("xss")\</script\>';
+      const input = r'&lt;script&gt;alert("xss")&lt;/script&gt;';
       expect(HtmlEscapeUtils.escapeHtmlTags(input), equals(input));
     });
 
     test('should handle mixed content with HTML tags', () {
       const input = 'Hello <b>world</b> and <i>test</i>';
-      const expected = r'Hello \<b\>world\</b\> and \<i\>test\</i\>';
+      const expected = r'Hello &lt;b&gt;world&lt;/b&gt; and &lt;i&gt;test&lt;/i&gt;';
       expect(HtmlEscapeUtils.escapeHtmlTags(input), equals(expected));
     });
 
     test('should handle complex HTML with attributes', () {
       const input = '<div class="test" id="main">Content</div>';
-      const expected = r'\<div class="test" id="main"\>Content\</div\>';
+      const expected = r'&lt;div class="test" id="main"&gt;Content&lt;/div&gt;';
       expect(HtmlEscapeUtils.escapeHtmlTags(input), equals(expected));
     });
 
@@ -114,9 +114,9 @@ void main() {
       final list = ['<script>test</script>', 'normal text', '<div>content</div>'];
       HtmlEscapeUtils.escapeHtmlInStringList(list);
       
-      expect(list[0], equals(r'\<script\>test\</script\>'));
+      expect(list[0], equals(r'&lt;script&gt;test&lt;/script&gt;'));
       expect(list[1], equals('normal text'));
-      expect(list[2], equals(r'\<div\>content\</div\>'));
+      expect(list[2], equals(r'&lt;div&gt;content&lt;/div&gt;'));
     });
 
     test('should handle null string list', () {
@@ -133,8 +133,8 @@ void main() {
 
       HtmlEscapeUtils.escapeHtmlInObject(model);
 
-      expect(model.title, equals(r'\<h1\>Title\</h1\>'));
-      expect(model.description, equals(r'\<p\>Description with \<b\>bold\</b\> text\</p\>'));
+      expect(model.title, equals(r'&lt;h1&gt;Title&lt;/h1&gt;'));
+      expect(model.description, equals(r'&lt;p&gt;Description with &lt;b&gt;bold&lt;/b&gt; text&lt;/p&gt;'));
       expect(model.normalText, equals('Just normal text'));
       expect(model.number, equals(42));
     });
@@ -170,10 +170,10 @@ void main() {
 
       HtmlEscapeUtils.escapeHtmlInObjectList(list);
 
-      expect(list[0].title, equals(r'\<h1\>First\</h1\>'));
+      expect(list[0].title, equals(r'&lt;h1&gt;First&lt;/h1&gt;'));
       expect(list[0].description, equals('Normal'));
       expect(list[1].title, equals('Normal'));
-      expect(list[1].description, equals(r'\<p\>Second\</p\>'));
+      expect(list[1].description, equals(r'&lt;p&gt;Second&lt;/p&gt;'));
     });
 
     test('should handle null object list', () {
@@ -191,11 +191,11 @@ void main() {
 
       HtmlEscapeUtils.escapeHtmlInObject(model);
 
-      expect(model.title, equals(r'\<h1\>Main\</h1\>'));
-      expect(model.nestedModels[0].name, equals(r'\<span\>Nested 1\</span\>'));
+      expect(model.title, equals(r'&lt;h1&gt;Main&lt;/h1&gt;'));
+      expect(model.nestedModels[0].name, equals(r'&lt;span&gt;Nested 1&lt;/span&gt;'));
       expect(model.nestedModels[0].value, equals('Normal'));
       expect(model.nestedModels[1].name, equals('Normal'));
-      expect(model.nestedModels[1].value, equals(r'\<div\>Nested 2\</div\>'));
+      expect(model.nestedModels[1].value, equals(r'&lt;div&gt;Nested 2&lt;/div&gt;'));
     });
 
     test('should escape HTML in string tags list', () {
@@ -206,9 +206,9 @@ void main() {
 
       HtmlEscapeUtils.escapeHtmlInObject(model);
 
-      expect(model.tags[0], equals(r'\<tag1\>'));
+      expect(model.tags[0], equals(r'&lt;tag1&gt;'));
       expect(model.tags[1], equals('normal-tag'));
-      expect(model.tags[2], equals(r'\<script\>evil\</script\>'));
+      expect(model.tags[2], equals(r'&lt;script&gt;evil&lt;/script&gt;'));
     });
 
     group('Reflection vs HtmlEscapable fallback', () {
@@ -222,8 +222,8 @@ void main() {
         HtmlEscapeUtils.escapeHtmlInObject(model);
 
         // Should work regardless of reflection setup due to HtmlEscapable fallback
-        expect(model.title, equals(r'\<h1\>Test\</h1\>'));
-        expect(model.description, equals(r'\<p\>Test description\</p\>'));
+        expect(model.title, equals(r'&lt;h1&gt;Test&lt;/h1&gt;'));
+        expect(model.description, equals(r'&lt;p&gt;Test description&lt;/p&gt;'));
       });
     });
   });
