@@ -37,8 +37,11 @@ flutter pub add testit_adapter_flutter
 | 5.3     | 3.1.1-TMS-5.3          |
 | 5.4     | 3.2.0-TMS-5.4          |
 | 5.5     | 3.2.4-TMS-5.5          |
-| Cloud   | 3.2.4                  | 
+| Cloud   | 3.2.4 +                | 
 
+1. For current versions, see the releases tab. 
+2. Starting with 5.2, we have added a TMS postscript, which means that the utility is compatible with a specific enterprise version. 
+3. If you are in doubt about which version to use, check with the support staff. support@yoonion.ru
 
 Legacy versions published as adapters_flutter package
 
