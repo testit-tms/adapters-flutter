@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.  
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
 
+## [3.2.7] - 2026-01-30
+
+* fix mime version
+
 ## [3.2.6] - 2025-11-18
 
 * fix: TMS-35774: fix the utils for escape html tags.
