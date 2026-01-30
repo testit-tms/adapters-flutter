@@ -14,8 +14,8 @@ dependencies:
   http: ^1.1.0
   http_parser: ^4.0.2
   logger: ^2.3.0
-  meta: ^1.9.1
-  mime: ^1.0.4
+  meta: ^1.10.0
+  mime: ^2.0.0
   path: ^1.8.3
   properties: ^2.1.1
   reflectable: ^4.0.13
