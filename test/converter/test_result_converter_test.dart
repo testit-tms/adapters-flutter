@@ -51,8 +51,8 @@ void main() {
       });
     });
 
-    group('toAutoTestPostModel', () {
-      test('should convert TestResultModel to AutoTestPostModel', () {
+    group('toAutoTestCreateApiModel', () {
+      test('should convert TestResultModel to AutoTestCreateApiModel', () {
         // Arrange
         final testResult = TestResultModel()
           ..externalId = 'ext-1'
@@ -68,7 +68,7 @@ void main() {
         const projectId = 'project-id';
 
         // Act
-        final model = toAutoTestPostModel(projectId, testResult);
+        final model = toAutoTestCreateApiModel(projectId, testResult);
 
         // Assert
         expect(model.externalId, testResult.externalId);
@@ -83,8 +83,8 @@ void main() {
       });
     });
 
-    group('toAutoTestPutModel', () {
-      test('should convert TestResultModel to AutoTestPutModel', () {
+    group('toAutoTestUpdateApiModel', () {
+      test('should convert TestResultModel to AutoTestUpdateApiModel', () {
         // Arrange
         final testResult = TestResultModel()
           ..externalId = 'ext-1'
@@ -100,7 +100,7 @@ void main() {
         const projectId = 'project-id';
 
         // Act
-        final model = toAutoTestPutModel(projectId, testResult);
+        final model = toAutoTestUpdateApiModel(projectId, testResult);
 
         // Assert
         expect(model.externalId, testResult.externalId);
@@ -115,7 +115,7 @@ void main() {
       });
     });
 
-    group('toAutoTestStepModel', () {
+    group('toAutoTestStepApiModel', () {
       test('should convert AttachmentPutModelAutoTestStepResultsModel', () {
         // Arrange
         final stepResult = api.AttachmentPutModelAutoTestStepResultsModel(
@@ -127,7 +127,7 @@ void main() {
             ]);
 
         // Act
-        final model = toAutoTestStepModel(stepResult);
+        final model = toAutoTestStepApiModel(stepResult);
 
         // Assert
         expect(model.title, stepResult.title);
@@ -141,7 +141,7 @@ void main() {
             api.AttachmentPutModelAutoTestStepResultsModel(title: 'Step Title');
 
         // Act
-        final model = toAutoTestStepModel(stepResult);
+        final model = toAutoTestStepApiModel(stepResult);
 
         // Assert
         expect(model.title, stepResult.title);

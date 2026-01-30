@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:testit_adapter_flutter/src/util/html_escape_utils.dart';
 

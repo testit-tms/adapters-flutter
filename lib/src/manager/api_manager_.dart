@@ -103,12 +103,12 @@ class ApiManager implements IApiManager {
     // create new or update existing auto test
     if (autoTest == null) {
       var createdAutoTest = await autotest_api.createAutoTest(
-          config, toAutoTestPostModel(config.projectId, testResult));
+          config, toAutoTestCreateApiModel(config.projectId, testResult));
       autoTestId = createdAutoTest?.id;
     } else {
       testResult.isFlaky = autoTest.isFlaky;
       await autotest_api.updateAutoTest(
-          config, toAutoTestPutModel(config.projectId, testResult));
+          config, toAutoTestUpdateApiModel(config.projectId, testResult));
     }
 
     if (testResult.workItemIds.isNotEmpty) {

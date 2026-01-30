@@ -56,19 +56,19 @@ api.AutoTestResultsForTestRunModel toAutoTestResultsForTestRunModel(
   return autoTestResultForTestRunModel;
 }
 
-api.AutoTestPostModel toAutoTestPostModel(
+api.AutoTestCreateApiModel toAutoTestCreateApiModel(
     final String? projectId, final TestResultModel testResult) {
-  final model = api.AutoTestPostModel(
+  final model = api.AutoTestCreateApiModel(
       classname: testResult.classname,
       description: testResult.description,
       externalId: testResult.externalId!,
       externalKey: null,
       isFlaky: null,
       labels: testResult.labels
-          .map((final name) => api.LabelPostModel(name: name))
+          .map((final name) => api.LabelApiModel(name: name))
           .toList(),
       links: testResult.links
-          .map((final link) => api.LinkPostModel(
+          .map((final link) => api.LinkCreateApiModel(
               description: link.description,
               title: link.title,
               type: _convertLinkType(link.type),
@@ -79,14 +79,14 @@ api.AutoTestPostModel toAutoTestPostModel(
       namespace: testResult.namespace,
       projectId: projectId!,
       setup: testResult.setup
-          .map((final setup) => toAutoTestStepModel(setup))
+          .map((final setup) => toAutoTestStepApiModel(setup))
           .toList(),
       shouldCreateWorkItem: null,
       steps: testResult.steps
-          .map((final steps) => toAutoTestStepModel(steps))
+          .map((final steps) => toAutoTestStepApiModel(steps))
           .toList(),
       teardown: testResult.teardown
-          .map((final teardown) => toAutoTestStepModel(teardown))
+          .map((final teardown) => toAutoTestStepApiModel(teardown))
           .toList(),
       title: testResult.title,
       workItemIdsForLinkWithAutoTest: null);
@@ -94,31 +94,31 @@ api.AutoTestPostModel toAutoTestPostModel(
   return model;
 }
 
-api.AutoTestStepModel toAutoTestStepModel(
+api.AutoTestStepApiModel toAutoTestStepApiModel(
     api.AttachmentPutModelAutoTestStepResultsModel model) {
-  var autoTestStepModel = api.AutoTestStepModel(
+  var autoTestStepApiModel = api.AutoTestStepApiModel(
       title: model.title!,
       description: model.description,
       steps: model.stepResults
-          ?.map((final step) => toAutoTestStepModel(step))
+          ?.map((final step) => toAutoTestStepApiModel(step))
           .toList());
 
-  return autoTestStepModel;
+  return autoTestStepApiModel;
 }
 
-api.AutoTestPutModel toAutoTestPutModel(
+api.AutoTestUpdateApiModel toAutoTestUpdateApiModel(
     final String? projectId, final TestResultModel testResult) {
-  final model = api.AutoTestPutModel(
+  final model = api.AutoTestUpdateApiModel(
       classname: testResult.classname,
       description: testResult.description,
       externalId: testResult.externalId!,
       externalKey: null,
       isFlaky: null,
       labels: testResult.labels
-          .map((final name) => api.LabelPostModel(name: name))
+          .map((final name) => api.LabelApiModel(name: name))
           .toList(),
       links: testResult.links
-          .map((final link) => api.LinkPutModel(
+          .map((final link) => api.LinkUpdateApiModel(
               description: link.description,
               title: link.title,
               type: _convertLinkType(link.type),
@@ -129,13 +129,13 @@ api.AutoTestPutModel toAutoTestPutModel(
       namespace: testResult.namespace,
       projectId: projectId!,
       setup: testResult.setup
-          .map((final setup) => toAutoTestStepModel(setup))
+          .map((final setup) => toAutoTestStepApiModel(setup))
           .toList(),
       steps: testResult.steps
-          .map((final steps) => toAutoTestStepModel(steps))
+          .map((final steps) => toAutoTestStepApiModel(steps))
           .toList(),
       teardown: testResult.teardown
-          .map((final teardown) => toAutoTestStepModel(teardown))
+          .map((final teardown) => toAutoTestStepApiModel(teardown))
           .toList(),
       title: testResult.title,
       workItemIdsForLinkWithAutoTest: null);
