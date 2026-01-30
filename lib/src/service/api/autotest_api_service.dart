@@ -6,10 +6,10 @@ import 'package:meta/meta.dart';
 import 'package:testit_api_client_dart/api.dart';
 
 @internal
-Future<AutoTestModel?> createAutoTest(
-    final ConfigModel config, final AutoTestPostModel autoTestPostModel) async {
+Future<AutoTestApiResult?> createAutoTest(
+    final ConfigModel config, final AutoTestCreateApiModel autoTestCreateApiModel) async {
   final autoTestsApi = createApiClient<AutoTestsApi>(config);
-  return autoTestsApi.createAutoTest(autoTestPostModel: autoTestPostModel);
+  return autoTestsApi.createAutoTest(autoTestCreateApiModel: autoTestCreateApiModel);
 }
 
 @internal
@@ -63,7 +63,7 @@ Future<void> unlinkAutoTestFromWorkItems(final String? autoTestId,
 }
 
 Future<void> updateAutoTest(
-    final ConfigModel config, final AutoTestPutModel autoTestPutModel) async {
+    final ConfigModel config, final AutoTestUpdateApiModel autoTestUpdateApiModel) async {
   final autoTestsApi = createApiClient<AutoTestsApi>(config);
-  await autoTestsApi.updateAutoTest(autoTestPutModel: autoTestPutModel);
+  await autoTestsApi.updateAutoTest(autoTestUpdateApiModel: autoTestUpdateApiModel);
 }
