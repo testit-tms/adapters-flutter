@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.  
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
 
+## [3.2.5-TMS-5.5] - 2026-01-30
+
+* fix mime version
+
 ## [3.2.4-TMS-5.5] - 2025-10-10
 
 * TMS 5.5 support
