@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.  
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
 
+## [3.4.0] - 2026-02-06
+
+* Last Cloud support
+
 ## [3.3.0-TMS-5.6] - 2026-01-30
 
 * TMS 5.6 support
