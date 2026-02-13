@@ -16,6 +16,7 @@ class TestResultModel implements HtmlEscapable {
   String? externalId;
   bool? isFlaky;
   Set<String> labels = {};
+  Set<String> tags = {};
   Set<Link> links = {};
   String? message;
   String? methodName;
@@ -46,6 +47,9 @@ class TestResultModel implements HtmlEscapable {
     
     // Escape HTML in labels set
     labels = labels.map((label) => HtmlEscapeUtils.escapeHtmlTags(label) ?? label).toSet();
+
+    // Escape HTML in labels set
+    tags = tags.map((tag) => HtmlEscapeUtils.escapeHtmlTags(tag) ?? tag).toSet();
     
     // Escape HTML in workItemIds set
     workItemIds = workItemIds.map((id) => HtmlEscapeUtils.escapeHtmlTags(id) ?? id).toSet();

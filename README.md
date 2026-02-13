@@ -100,6 +100,7 @@ Use metadata to specify information about autotest.
 * `description` - autotest description specified in the autotest card.
 * `externalId` - unique internal autotest ID (used in Test IT).
 * `links` - links listed in the autotest card.
+* `labels` - labels listed in the autotest card.
 * `tags` - tags listed in the autotest card.
 * `title` - autotest name specified in the autotest card. If not specified, the test name is used.
 * `workItemsIds` - a method that links autotests with manual tests. Receives the set of manual

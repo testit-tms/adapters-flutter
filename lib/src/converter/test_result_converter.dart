@@ -67,6 +67,7 @@ api.AutoTestCreateApiModel toAutoTestCreateApiModel(
       labels: testResult.labels
           .map((final name) => api.LabelApiModel(name: name))
           .toList(),
+      tags: testResult.tags.toList(),
       links: testResult.links
           .map((final link) => api.LinkCreateApiModel(
               description: link.description,
@@ -117,6 +118,7 @@ api.AutoTestUpdateApiModel toAutoTestUpdateApiModel(
       labels: testResult.labels
           .map((final name) => api.LabelApiModel(name: name))
           .toList(),
+      tags: testResult.tags.toList(),
       links: testResult.links
           .map((final link) => api.LinkUpdateApiModel(
               description: link.description,
