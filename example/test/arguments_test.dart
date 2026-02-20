@@ -69,6 +69,7 @@ void main() {
         tmsTest('all arguments [$input] - success',
             externalId: 'all_arguments_${input}_success',
             links: {Link('https://www.example.org/')},
+            labels: {'label1'},
             tags: {'tag1'},
             title: 'title',
             workItemsIds: {'3083'}, () {
@@ -78,6 +79,7 @@ void main() {
         tmsTest('all arguments [$input] - failed',
             externalId: 'all_arguments_${input}_failed',
             links: {Link('https://www.example.org/')},
+            labels: {'label1'},
             tags: {'tag1'},
             title: 'title',
             workItemsIds: {'3083'}, () {
@@ -155,6 +157,7 @@ void main() {
         tmsTestWidgets('all arguments [$input] - success',
             externalId: 'all_arguments_${input}_success',
             links: {Link('https://www.example.org/')},
+            labels: {'label1'},
             tags: {'tag1'},
             title: 'title',
             workItemsIds: {'3083'}, (tester) async {
@@ -164,6 +167,7 @@ void main() {
         tmsTestWidgets('all arguments [$input] - failed',
             externalId: 'all_arguments_${input}_failed',
             links: {Link('https://www.example.org/')},
+            labels: {'label1'},
             tags: {'tag1'},
             title: 'title',
             workItemsIds: {'3083'}, (tester) async {

@@ -31,6 +31,7 @@ void tmsTest(final String description, final dynamic Function() body,
         final Map<String, dynamic>? onPlatform,
         final int? retry,
         final String? skip,
+        final Set<String>? labels,
         final Set<String>? tags,
         final String? testOn,
         final Timeout? timeout,
@@ -47,6 +48,7 @@ void tmsTest(final String description, final dynamic Function() body,
             externalId: externalId,
             links: links,
             skip: skip,
+            labels: labels,
             tags: tags,
             title: title,
             workItemsIds: workItemsIds));
@@ -58,6 +60,7 @@ Future<void> tmsTestWidgets(
         final Set<Link>? links,
         final bool semanticsEnabled = true,
         final String? skip,
+        final Set<String>? labels,
         final Set<String>? tags,
         final Timeout? timeout,
         final String? title,
@@ -75,6 +78,7 @@ Future<void> tmsTestWidgets(
             externalId: externalId,
             links: links,
             skip: skip,
+            labels: labels,
             tags: tags,
             title: title,
             workItemsIds: workItemsIds)));
@@ -127,6 +131,7 @@ Future<void> testAsync(
     {final String? externalId,
     final Set<Link>? links,
     final String? skip,
+    final Set<String>? labels,
     final Set<String>? tags,
     final String? title,
     final Set<String>? workItemsIds}) async {
@@ -147,6 +152,7 @@ Future<void> testAsync(
 
     validateStringArgument('Description', description);
     links?.forEach((final link) => validateUriArgument('Link url', link.url));
+    labels?.forEach((final label) => validateStringArgument('Label', label));
     tags?.forEach((final tag) => validateStringArgument('Tag', tag));
     await validateWorkItemsIdsAsync(config, workItemsIds);
 
@@ -161,6 +167,7 @@ Future<void> testAsync(
     localResult.description = description;
     localResult.externalId = safeExternalId;
     localResult.labels = liveTest?.test.metadata.tags ?? {};
+    localResult.tags = tags ?? {};
     localResult.links = links ?? {};
     localResult.methodName = liveTest?.test.name ?? '';
     localResult.name = (liveTest?.test.name ?? '')

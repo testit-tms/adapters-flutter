@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.  
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
 
+## [3.4.1] - 2026-02-30
+
+* feat: TMS-37545: separation annotation of tags and labels.
+
 ## [3.4.0] - 2026-02-06
 
 * Last Cloud support
