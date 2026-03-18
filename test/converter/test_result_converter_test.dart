@@ -37,7 +37,7 @@ void main() {
         // Assert
         expect(model.configurationId, configId);
         expect(model.autoTestExternalId, testResult.externalId);
-        expect(model.outcome, testResult.outcome);
+        expect(model.statusType, api.TestStatusType.succeeded);
         expect(model.links!.first.url, testResult.links.first.url);
         expect(model.message, testResult.message);
         expect(model.traces, testResult.traces);

@@ -24,12 +24,22 @@ api.LinkType? _convertLinkType(local.LinkType? localType) {
   }
 }
 
+// Passed Failed Skipped InProgress Blocked
+api.TestStatusType _mapToStatusType(String status) {
+  if (status == "Passed") return api.TestStatusType.succeeded;
+  if (status == "Failed") return api.TestStatusType.failed;
+  if (status == "Skipped") return api.TestStatusType.incomplete;
+  if (status == "InProgress") return api.TestStatusType.inProgress;
+  if (status == "Blocked") return api.TestStatusType.incomplete;
+  return api.TestStatusType.incomplete;
+}
+
 api.AutoTestResultsForTestRunModel toAutoTestResultsForTestRunModel(
     final String? configurationId, final TestResultModel testResult) {
   var autoTestResultForTestRunModel = api.AutoTestResultsForTestRunModel(
     configurationId: configurationId!,
     autoTestExternalId: testResult.externalId!,
-    outcome: testResult.outcome as api.AvailableTestResultOutcome,
+    statusType: _mapToStatusType(testResult.outcome?.value ?? ""),
     links: testResult.links
         .map((final link) => api.LinkPostModel(
               url: link.url!,
