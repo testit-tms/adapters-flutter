@@ -1,4 +1,5 @@
 # Test IT TMS Adapter for Flutter
+![Test IT](https://raw.githubusercontent.com/testit-tms/adapters-flutter/main/images/banner.png)
 
 \>= 3.0.0:
 ![Pub Monthly Downloads](https://img.shields.io/pub/dm/testit_adapter_flutter)
