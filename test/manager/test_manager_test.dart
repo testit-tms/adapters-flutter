@@ -93,9 +93,20 @@ void main() {
         final result = getSafeExternalId(externalId, testName);
 
         // Assert
-        expect(result, equals('idwithspecialchars'),
+        expect(result, equals('idwithspecial<>chars'),
           reason: 'Should strip all special characters.'
         );
+      });
+
+      test('should_not_escape_angle_brackets_in_externalId', () {
+        // Arrange
+        const externalId = '<test>';
+
+        // Act
+        final result = getSafeExternalId(externalId, 'ignored');
+
+        // Assert
+        expect(result, equals('<test>'));
       });
 
       // Test case 7: Sanitization - spaces
