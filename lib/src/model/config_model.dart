@@ -12,6 +12,8 @@ class ConfigModel {
   bool? isDebug;
   String? privateToken;
   String? projectId;
+  /// Port for the Sync Storage subprocess. Defaults to 49152 when not set.
+  String? syncStoragePort;
   bool? testIt;
   String? testRunId;
   String? testRunName;

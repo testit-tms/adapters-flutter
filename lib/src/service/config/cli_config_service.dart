@@ -40,6 +40,8 @@ ConfigModel applyCliParameters(
 
   config.testIt = bool.tryParse(getEnv('tmsTestIt'), caseSensitive: false);
 
+  config.syncStoragePort = getEnv('tmsSyncStoragePort').nullIfEmpty();
+
   config.testRunId = getEnv('tmsTestRunId').nullIfEmpty();
 
   config.testRunName = getEnv('tmsTestRunName').nullIfEmpty();

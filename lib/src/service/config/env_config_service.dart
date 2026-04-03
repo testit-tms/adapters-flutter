@@ -36,6 +36,8 @@ ConfigModel applyEnvParameters(
   config.testIt =
       bool.tryParse(environment['TMS_TEST_IT'] ?? '', caseSensitive: false);
 
+  config.syncStoragePort = environment['TMS_SYNC_STORAGE_PORT'];
+
   config.testRunId = environment['TMS_TEST_RUN_ID'];
 
   config.testRunName = environment['TMS_TEST_RUN_NAME'];

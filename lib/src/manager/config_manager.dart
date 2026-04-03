@@ -95,6 +95,10 @@ ConfigModel _mergeConfigs(final ConfigModel cliConfig,
   config.testIt =
       cliConfig.testIt ?? envConfig.testIt ?? fileConfig.testIt ?? true;
 
+  config.syncStoragePort = cliConfig.syncStoragePort ??
+      envConfig.syncStoragePort ??
+      fileConfig.syncStoragePort;
+
   config.testRunId =
       cliConfig.testRunId ?? envConfig.testRunId ?? fileConfig.testRunId;
 

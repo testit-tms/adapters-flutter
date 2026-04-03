@@ -119,4 +119,31 @@ class MockIApiManager extends _i1.Mock implements _i2.IApiManager {
             returnValueForMissingStub: _i3.Future<void>.value(),
           )
           as _i3.Future<void>);
+
+  @override
+  _i3.Future<void> initSyncStorageAsync(_i4.ConfigModel? config) =>
+      (super.noSuchMethod(
+            Invocation.method(#initSyncStorageAsync, [config]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
+  _i3.Future<void> onRunningStartedAsync(_i4.ConfigModel? config) =>
+      (super.noSuchMethod(
+            Invocation.method(#onRunningStartedAsync, [config]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
+  _i3.Future<void> onBlockCompletedAsync(_i4.ConfigModel? config) =>
+      (super.noSuchMethod(
+            Invocation.method(#onBlockCompletedAsync, [config]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
 }
