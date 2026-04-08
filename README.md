@@ -47,17 +47,17 @@ flutter pub add testit_adapter_flutter
 
 Legacy versions published as adapters_flutter package
 
-## What's new in 1.0.0?
+## What's new in 4.0.0?
 
 - New logic with a fix for test results loading
 - Added sync-storage subprocess usage for worker synchronization on port **49152** by defailt.
 
-### How to run 1.0+ locally?
+### How to run 4.0+ locally?
 
 You can change nothing, it's full compatible with previous versions of adapters for local run on all OS.
 
 
-### How to run 1.0+ with CI/CD?
+### How to run 4.0+ with CI/CD?
 
 For CI/CD pipelines, we recommend starting the sync-storage instance before the adapter and waiting for its completion within the same job.
 
