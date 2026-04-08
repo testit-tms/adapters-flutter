@@ -47,6 +47,35 @@ flutter pub add testit_adapter_flutter
 
 Legacy versions published as adapters_flutter package
 
+## What's new in 1.0.0?
+
+- New logic with a fix for test results loading
+- Added sync-storage subprocess usage for worker synchronization on port **49152** by defailt.
+
+### How to run 1.0+ locally?
+
+You can change nothing, it's full compatible with previous versions of adapters for local run on all OS.
+
+
+### How to run 1.0+ with CI/CD?
+
+For CI/CD pipelines, we recommend starting the sync-storage instance before the adapter and waiting for its completion within the same job.
+
+You can see how we implement this [here.](https://github.com/testit-tms/adapters-flutter/blob/main/.github/workflows/test.yml#L84) 
+
+1. Create an empty test run using `testit-cli` or use an existing one, and save the `testRunId`.
+2. Start **sync-storage** with the correct parameters as a background process (alternatives to nohup can be used). Stream the log output to the `service.log` file:
+```bash
+nohup .caches/syncstorage-linux-amd64 --testRunId ${{ env.TMS_TEST_RUN_ID }} --port 49152 \
+    --baseURL ${{ env.TMS_URL }} --privateToken ${{ env.TMS_PRIVATE_TOKEN }}  > service.log 2>&1 & 
+```
+3. Start the adapter using adapterMode=1 or adapterMode=0 for the selected testRunId.
+4. Wait for sync-storage to complete background jobs by calling:
+```bash
+curl -v http://127.0.0.1:49152/wait-completion?testRunId=${{ env.TMS_TEST_RUN_ID }} || true
+```
+5. You can read the sync-storage logs from the service.log file.
+
 ## Usage
 
 ### Configuration
