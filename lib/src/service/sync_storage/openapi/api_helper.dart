@@ -102,4 +102,3 @@ DateTime? mapDateTime(dynamic map, String key, [String? pattern]) {
   }
   return null;
 }
-

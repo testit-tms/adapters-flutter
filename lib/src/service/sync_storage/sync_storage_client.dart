@@ -53,10 +53,12 @@ class SyncStorageClient {
   Future<RegisterResponse?> registerAsync({
     required String pid,
     required String testRunId,
+    required String baseUrl,
+    required String privateToken,
   }) async {
     try {
       final resp = await _workersApi
-          .registerPost(api.RegisterRequest(pid: pid, testRunId: testRunId))
+          .registerPost(api.RegisterRequest(pid: pid, testRunId: testRunId, baseUrl: baseUrl, privateToken: privateToken))
           .timeout(const Duration(seconds: 10));
 
       return RegisterResponse(isMaster: resp?.isMaster == true);

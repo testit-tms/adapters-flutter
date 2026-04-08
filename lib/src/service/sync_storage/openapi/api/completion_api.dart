@@ -136,4 +136,3 @@ class CompletionApi {
     return null;
   }
 }
-

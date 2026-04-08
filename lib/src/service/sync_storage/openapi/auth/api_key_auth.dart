@@ -38,4 +38,3 @@ class ApiKeyAuth implements Authentication {
     }
   }
 }
-

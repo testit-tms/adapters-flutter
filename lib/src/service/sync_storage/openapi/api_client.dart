@@ -272,4 +272,3 @@ Future<dynamic> deserializeAsync(DeserializationMessage message) async {
 
 /// Primarily intended for use in an isolate.
 Future<String> serializeAsync(Object? value) async => value == null ? '' : json.encode(value);
-

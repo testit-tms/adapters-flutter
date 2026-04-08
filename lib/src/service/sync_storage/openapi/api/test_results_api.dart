@@ -80,4 +80,3 @@ class TestResultsApi {
     return null;
   }
 }
-

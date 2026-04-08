@@ -64,4 +64,3 @@ class HealthApi {
     return null;
   }
 }
-

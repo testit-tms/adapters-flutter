@@ -15,6 +15,8 @@ class RegisterRequest {
   RegisterRequest({
     this.pid,
     this.testRunId,
+    this.baseUrl,
+    this.privateToken,
   });
 
   ///
@@ -33,19 +35,39 @@ class RegisterRequest {
   ///
   String? testRunId;
 
+  ///
+  /// Please note: This property should have been non-nullable! Since the specification file
+  /// does not include a default value (using the "default:" property), however, the generated
+  /// source code must fall back to having a nullable type.
+  /// Consider adding a "default:" property in the specification file to hide this note.
+  ///
+  String? baseUrl;
+
+  ///
+  /// Please note: This property should have been non-nullable! Since the specification file
+  /// does not include a default value (using the "default:" property), however, the generated
+  /// source code must fall back to having a nullable type.
+  /// Consider adding a "default:" property in the specification file to hide this note.
+  ///
+  String? privateToken;
+
   @override
   bool operator ==(Object other) => identical(this, other) || other is RegisterRequest &&
     other.pid == pid &&
-    other.testRunId == testRunId;
+    other.testRunId == testRunId &&
+    other.baseUrl == baseUrl &&
+    other.privateToken == privateToken;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
     (pid == null ? 0 : pid!.hashCode) +
-    (testRunId == null ? 0 : testRunId!.hashCode);
+    (testRunId == null ? 0 : testRunId!.hashCode) +
+    (baseUrl == null ? 0 : baseUrl!.hashCode) +
+    (privateToken == null ? 0 : privateToken!.hashCode);
 
   @override
-  String toString() => 'RegisterRequest[pid=$pid, testRunId=$testRunId]';
+  String toString() => 'RegisterRequest[pid=$pid, testRunId=$testRunId, baseUrl=$baseUrl, privateToken=$privateToken]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -58,6 +80,16 @@ class RegisterRequest {
       json[r'testRunId'] = this.testRunId;
     } else {
       json[r'testRunId'] = null;
+    }
+    if (this.baseUrl != null) {
+      json[r'baseUrl'] = this.baseUrl;
+    } else {
+      json[r'baseUrl'] = null;
+    }
+    if (this.privateToken != null) {
+      json[r'privateToken'] = this.privateToken;
+    } else {
+      json[r'privateToken'] = null;
     }
     return json;
   }
@@ -83,6 +115,8 @@ class RegisterRequest {
       return RegisterRequest(
         pid: mapValueOfType<String>(json, r'pid'),
         testRunId: mapValueOfType<String>(json, r'testRunId'),
+        baseUrl: mapValueOfType<String>(json, r'baseUrl'),
+        privateToken: mapValueOfType<String>(json, r'privateToken'),
       );
     }
     return null;
@@ -132,5 +166,4 @@ class RegisterRequest {
   static const requiredKeys = <String>{
   };
 }
-
 

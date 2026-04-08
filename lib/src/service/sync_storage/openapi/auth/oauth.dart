@@ -22,4 +22,3 @@ class OAuth implements Authentication {
     }
   }
 }
-

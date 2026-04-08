@@ -128,4 +128,3 @@ class WorkersApi {
     return null;
   }
 }
-
