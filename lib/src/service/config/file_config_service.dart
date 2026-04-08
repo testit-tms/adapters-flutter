@@ -48,6 +48,8 @@ Future<ConfigModel> getConfigFromFileAsync(final String? filePath) async {
 
   fileConfig.testIt = props.getBool('testIt', defval: null);
 
+  fileConfig.syncStoragePort = props.get('syncStoragePort', defval: null);
+
   fileConfig.testRunId = props.get('testRunId', defval: null);
 
   fileConfig.testRunName = props.get('testRunName', defval: null);

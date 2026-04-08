@@ -158,6 +158,8 @@ Future<void> testAsync(
 
     await _apiManager.tryCreateTestRunOnceAsync(config);
     await _apiManager.tryUpdateTestRunAsync(config);
+    // Initialise Sync Storage once the test-run ID is guaranteed to be set.
+    await _apiManager.initSyncStorageAsync(config);
     await createEmptyTestResultAsync();
 
     final localResult = TestResultModel();
@@ -182,6 +184,9 @@ Future<void> testAsync(
     Exception? exception;
     StackTrace? stacktrace;
 
+    // Notify Sync Storage that this worker is now actively running a test.
+    await _apiManager.onRunningStartedAsync(config);
+
     try {
       if (skip != null && skip.isNotEmpty) {
         localResult.message = skip;
@@ -202,17 +207,22 @@ Future<void> testAsync(
       localResult.completedOn = completedOn;
       localResult.duration = completedOn.difference(startedOn).inMilliseconds;
 
-      await updateTestResultAsync(localResult);
-      final testId = getTestIdForProcessing();
+      try {
+        await updateTestResultAsync(localResult);
+        final testId = getTestIdForProcessing();
 
-      if (testId != null) {
-        await addSetupAllsToTestResultAsync(testId);
-        await addTeardownAllsToTestResultAsync(testId);
-        final testResult = await removeTestResultByTestIdAsync(testId);
-        
-        if (testResult != null) {
-          await _apiManager.processTestResultAsync(config, testResult);
+        if (testId != null) {
+          await addSetupAllsToTestResultAsync(testId);
+          await addTeardownAllsToTestResultAsync(testId);
+          final testResult = await removeTestResultByTestIdAsync(testId);
+
+          if (testResult != null) {
+            await _apiManager.processTestResultAsync(config, testResult);
+          }
         }
+      } finally {
+        // Notify Sync Storage that this worker has finished processing the test.
+        await _apiManager.onBlockCompletedAsync(config);
       }
     }
 

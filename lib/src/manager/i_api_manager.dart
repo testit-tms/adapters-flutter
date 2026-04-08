@@ -23,4 +23,20 @@ abstract class IApiManager {
       ConfigModel config, MultipartFile file);
 
   Future<void> tryCreateTestRunOnceAsync(ConfigModel config);
+
+  // ---------------------------------------------------------------------------
+  // Sync Storage lifecycle hooks
+  // ---------------------------------------------------------------------------
+
+  /// Initialises the Sync Storage runner if it has not been started yet.
+  /// Must be called after the test-run ID is known.
+  Future<void> initSyncStorageAsync(ConfigModel config);
+
+  /// Signals that this worker has started processing a new test/block.
+  /// Sends "in_progress" status to Sync Storage when available.
+  Future<void> onRunningStartedAsync(ConfigModel config);
+
+  /// Signals that this worker has finished a test/block.
+  /// Sends "completed" status to Sync Storage when available.
+  Future<void> onBlockCompletedAsync(ConfigModel config);
 }

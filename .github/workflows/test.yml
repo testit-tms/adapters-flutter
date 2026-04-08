@@ -81,7 +81,26 @@ jobs:
 
       - name: Test
         run: |
-          flutter test ./example/test/ || exit 0
+          export SYNC_STORAGE_VERSION=$(grep -o "_version = '[^']*'" lib/src/service/sync_storage/sync_storage_runner.dart | cut -d"'" -f2)
+
+          mkdir -p .caches
+          wget -O .caches/syncstorage-linux-amd64 \
+          "https://github.com/testit-tms/sync-storage-public/releases/download/${SYNC_STORAGE_VERSION}/syncstorage-${SYNC_STORAGE_VERSION}-linux_amd64"
+          chmod +x .caches/syncstorage-linux-amd64
+          nohup .caches/syncstorage-linux-amd64 --testRunId ${{ env.TMS_TEST_RUN_ID }} --port 49152 \
+          --baseURL ${{ env.TMS_URL }} --privateToken ${{ env.TMS_PRIVATE_TOKEN }}  > service.log 2>&1 & 
+          
+          sleep 1
+          
+          curl -v http://127.0.0.1:49152/health || true
+
+          flutter test ./example/test/ --dart-define=tmsIsDebug=true || true
+
+          sleep 1
+          
+          curl -v http://127.0.0.1:49152/wait-completion?testRunId=${{ env.TMS_TEST_RUN_ID }} || true
+          
+          cat service.log
 
       - name: Validate
         run: |
