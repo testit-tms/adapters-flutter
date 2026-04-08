@@ -1,8 +1,8 @@
-import 'dart:convert';
-
-import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
+import 'package:testit_adapter_flutter/src/converter/test_result_converter.dart';
 import 'package:testit_adapter_flutter/src/manager/log_manager.dart';
+import 'package:testit_adapter_flutter/src/service/sync_storage/openapi/api.dart'
+    as api;
 
 /// Simple HTTP client for communicating with the Sync Storage service.
 ///
@@ -12,13 +12,19 @@ import 'package:testit_adapter_flutter/src/manager/log_manager.dart';
 /// - POST /in_progress_test_result   — send an in-progress test result
 /// - POST /set_worker_status         — update worker status
 class SyncStorageClient {
-  final String _baseUrl;
-  final http.Client _http;
+  final api.ApiClient _apiClient;
+  late final api.HealthApi _healthApi;
+  late final api.WorkersApi _workersApi;
+  late final api.TestResultsApi _testResultsApi;
   final Logger _logger = getLogger();
 
   SyncStorageClient(String baseUrl)
-      : _baseUrl = baseUrl.replaceAll(RegExp(r'/$'), ''),
-        _http = http.Client();
+      : _apiClient =
+            api.ApiClient(basePath: baseUrl.replaceAll(RegExp(r'/$'), '')) {
+    _healthApi = api.HealthApi(_apiClient);
+    _workersApi = api.WorkersApi(_apiClient);
+    _testResultsApi = api.TestResultsApi(_apiClient);
+  }
 
   // ---------------------------------------------------------------------------
   // Health
@@ -27,8 +33,8 @@ class SyncStorageClient {
   /// Returns true if the Sync Storage service responds with HTTP 200.
   Future<bool> isHealthyAsync() async {
     try {
-      final response = await _http
-          .get(Uri.parse('$_baseUrl/health'))
+      final response = await _healthApi
+          .healthGetWithHttpInfo()
           .timeout(const Duration(seconds: 5));
       return response.statusCode == 200;
     } catch (_) {
@@ -49,21 +55,11 @@ class SyncStorageClient {
     required String testRunId,
   }) async {
     try {
-      final response = await _http
-          .post(
-            Uri.parse('$_baseUrl/register'),
-            headers: {'Content-Type': 'application/json'},
-            body: jsonEncode({'pid': pid, 'testRunId': testRunId}),
-          )
+      final resp = await _workersApi
+          .registerPost(api.RegisterRequest(pid: pid, testRunId: testRunId))
           .timeout(const Duration(seconds: 10));
 
-      if (response.statusCode == 200) {
-        final json = jsonDecode(response.body) as Map<String, dynamic>;
-        return RegisterResponse(isMaster: json['is_master'] == true);
-      }
-
-      _logger.w('SyncStorage register returned ${response.statusCode}: ${response.body}');
-      return null;
+      return RegisterResponse(isMaster: resp?.isMaster == true);
     } catch (e) {
       _logger.w('SyncStorage register failed: $e');
       return null;
@@ -77,15 +73,13 @@ class SyncStorageClient {
     required String status,
   }) async {
     try {
-      await _http
-          .post(
-            Uri.parse('$_baseUrl/set_worker_status'),
-            headers: {'Content-Type': 'application/json'},
-            body: jsonEncode({
-              'pid': pid,
-              'testRunId': testRunId,
-              'status': status,
-            }),
+      await _workersApi
+          .setWorkerStatusPost(
+            api.SetWorkerStatusRequest(
+              pid: pid,
+              testRunId: testRunId,
+              status: status,
+            ),
           )
           .timeout(const Duration(seconds: 10));
     } catch (e) {
@@ -102,42 +96,39 @@ class SyncStorageClient {
   /// Returns true if the request was accepted (2xx), false otherwise.
   Future<bool> sendInProgressTestResultAsync({
     required String testRunId,
+    required String projectId,
     required String autoTestExternalId,
     required String statusCode,
     DateTime? startedOn,
   }) async {
     try {
-      final body = <String, dynamic>{
-        'autoTestExternalId': autoTestExternalId,
-        'statusCode': statusCode,
-        if (startedOn != null) 'startedOn': startedOn.toIso8601String(),
-      };
-
-      final uri = Uri.parse('$_baseUrl/in_progress_test_result')
-          .replace(queryParameters: {'testRunId': testRunId});
-
-      final response = await _http
-          .post(
-            uri,
-            headers: {'Content-Type': 'application/json'},
-            body: jsonEncode(body),
+      final response = await _testResultsApi
+          .inProgressTestResultPostWithHttpInfo(
+            testRunId,
+            api.TestResultCutApiModel(
+              projectId: projectId,
+              autoTestExternalId: autoTestExternalId,
+              statusCode: statusCode,
+              statusType: mapToStatusType(statusCode).toString(),
+              startedOn: startedOn,
+            ),
           )
           .timeout(const Duration(seconds: 10));
 
-      if (response.statusCode >= 200 && response.statusCode < 300) {
-        return true;
+      final ok = response.statusCode >= 200 && response.statusCode < 300;
+      if (!ok) {
+        _logger.w(
+          'SyncStorage inProgressTestResult not accepted: HTTP ${response.statusCode}',
+        );
       }
-
-      _logger.w(
-          'SyncStorage sendInProgressTestResult returned ${response.statusCode}: ${response.body}');
-      return false;
+      return ok;
     } catch (e) {
       _logger.w('SyncStorage sendInProgressTestResult failed: $e');
       return false;
     }
   }
 
-  void close() => _http.close();
+  void close() => _apiClient.client.close();
 }
 
 // ---------------------------------------------------------------------------

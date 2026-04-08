@@ -186,6 +186,10 @@ class ApiManager implements IApiManager {
       final ConfigModel config, final TestResultModel testResult) async {
     final runner = _syncStorageRunner;
 
+    _logger.d(
+      'processTestResultAsync externalId=${testResult.externalId} outcome=${testResult.outcome}',
+    );
+
     // Sync Storage fast path: master worker sends in-progress result first.
     if (runner != null &&
         runner.isRunning &&
@@ -204,9 +208,8 @@ class ApiManager implements IApiManager {
       if (sent) {
         // Write to Test IT as "InProgress" so the UI reflects real-time state.
         final savedOutcome = testResult.outcome;
-        testResult.outcome = api.AvailableTestResultOutcome.inProgress;
-
         try {
+          testResult.outcome = api.AvailableTestResultOutcome.inProgress;
           await _processTestResultInternalAsync(config, testResult);
           return;
         } catch (e) {
@@ -214,6 +217,7 @@ class ApiManager implements IApiManager {
           _logger.w(
               'Sync Storage in-progress write failed, falling back: $e');
           runner.isAlreadyInProgress = false;
+        } finally {
           testResult.outcome = savedOutcome;
         }
       }
@@ -262,9 +266,10 @@ class ApiManager implements IApiManager {
 
       final testRunId = config.testRunId;
       final url = config.url;
+      final projectId = config.projectId;
       final token = config.privateToken;
 
-      if (testRunId == null || url == null || token == null) {
+      if (testRunId == null || url == null || projectId == null || token == null) {
         _logger.w(
             'SyncStorage init skipped: testRunId/url/privateToken not available');
         return;
@@ -275,6 +280,7 @@ class ApiManager implements IApiManager {
           testRunId: testRunId,
           port: config.syncStoragePort,
           baseUrl: url,
+          projectId: projectId,
           privateToken: token,
         );
 

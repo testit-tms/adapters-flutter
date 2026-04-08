@@ -16,7 +16,7 @@ import 'package:testit_adapter_flutter/src/service/sync_storage/sync_storage_cli
 ///
 /// Only the master worker sends in-progress test results to Sync Storage.
 class SyncStorageRunner {
-  static const _version = 'v0.1.18';
+  static const _version = 'v0.2.0';
   static const _repoUrl =
       'https://github.com/testit-tms/sync-storage-public/releases/download/';
   static const _defaultPort = '49152';
@@ -26,6 +26,7 @@ class SyncStorageRunner {
   final String testRunId;
   final String port;
   final String baseUrl;
+  final String projectId;
   final String privateToken;
 
   final Logger _logger = getLogger();
@@ -36,24 +37,23 @@ class SyncStorageRunner {
 
   // State
   bool _isMaster = false;
-  bool _isAlreadyInProgress = false;
+  bool isAlreadyInProgress = false;
   bool _isRunning = false;
 
   Process? _process;
 
   bool get isMaster => _isMaster;
   bool get isRunning => _isRunning;
-  bool get isAlreadyInProgress => _isAlreadyInProgress;
-  set isAlreadyInProgress(bool value) => _isAlreadyInProgress = value;
 
   SyncStorageRunner({
     required this.testRunId,
     String? port,
     required this.baseUrl,
+    required this.projectId,
     required this.privateToken,
   })  : port = port ?? _defaultPort,
         _workerPid =
-            'worker-${pid}-${DateTime.now().millisecondsSinceEpoch}' {
+            'worker-$pid-${DateTime.now().millisecondsSinceEpoch}' {
     _client = SyncStorageClient('http://localhost:${port ?? _defaultPort}');
   }
 
@@ -135,20 +135,21 @@ class SyncStorageRunner {
       _logger.d('Not master — skipping sendInProgressTestResult');
       return false;
     }
-    if (_isAlreadyInProgress) {
+    if (isAlreadyInProgress) {
       _logger.d('Test already in-progress — skipping duplicate send');
       return false;
     }
 
     final ok = await _client.sendInProgressTestResultAsync(
       testRunId: testRunId,
+      projectId: projectId,
       autoTestExternalId: autoTestExternalId,
       statusCode: statusCode,
       startedOn: startedOn,
     );
 
     if (ok) {
-      _isAlreadyInProgress = true;
+      isAlreadyInProgress = true;
       _logger.d('Sent in-progress result for $autoTestExternalId');
     }
     return ok;
