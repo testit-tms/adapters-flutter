@@ -94,7 +94,7 @@ jobs:
           
           curl -v http://127.0.0.1:49152/health || true
 
-          flutter test ./example/test/ || exit 0
+          flutter test ./example/test/ --dart-define=tmsIsDebug=true || exit 0
 
           sleep 1
           
