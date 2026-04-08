@@ -81,7 +81,7 @@ jobs:
 
       - name: Test
         run: |
-          export SYNC_STORAGE_VERSION=$(grep -o "_version = '[^']*'" lib/src/service/sync_storage/sync_storage_runner.dart | cut -d'"' -f2)
+          export SYNC_STORAGE_VERSION=$(grep -o "_version = '[^']*'" lib/src/service/sync_storage/sync_storage_runner.dart | cut -d"'" -f2)
 
           mkdir -p .caches
           wget -O .caches/syncstorage-linux-amd64 \
