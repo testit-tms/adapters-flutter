@@ -207,21 +207,23 @@ Future<void> testAsync(
       localResult.completedOn = completedOn;
       localResult.duration = completedOn.difference(startedOn).inMilliseconds;
 
-      await updateTestResultAsync(localResult);
-      final testId = getTestIdForProcessing();
+      try {
+        await updateTestResultAsync(localResult);
+        final testId = getTestIdForProcessing();
 
-      if (testId != null) {
-        await addSetupAllsToTestResultAsync(testId);
-        await addTeardownAllsToTestResultAsync(testId);
-        final testResult = await removeTestResultByTestIdAsync(testId);
+        if (testId != null) {
+          await addSetupAllsToTestResultAsync(testId);
+          await addTeardownAllsToTestResultAsync(testId);
+          final testResult = await removeTestResultByTestIdAsync(testId);
 
-        if (testResult != null) {
-          await _apiManager.processTestResultAsync(config, testResult);
+          if (testResult != null) {
+            await _apiManager.processTestResultAsync(config, testResult);
+          }
         }
+      } finally {
+        // Notify Sync Storage that this worker has finished processing the test.
+        await _apiManager.onBlockCompletedAsync(config);
       }
-
-      // Notify Sync Storage that this worker has finished processing the test.
-      await _apiManager.onBlockCompletedAsync(config);
     }
 
     if (exception != null) {
