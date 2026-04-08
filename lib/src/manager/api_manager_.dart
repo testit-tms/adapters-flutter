@@ -199,6 +199,10 @@ class ApiManager implements IApiManager {
       final statusCode =
           _outcomeToStatusCode(testResult.outcome);
 
+      _logger.d(
+        'processTestResultAsync externalId=${testResult.externalId} outcome=${testResult.outcome} mapStatus=${statusCode}',
+      );
+
       final sent = await runner.sendInProgressTestResultAsync(
         autoTestExternalId: testResult.externalId!,
         statusCode: statusCode,

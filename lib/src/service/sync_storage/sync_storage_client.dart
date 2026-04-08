@@ -102,6 +102,11 @@ class SyncStorageClient {
     DateTime? startedOn,
   }) async {
     try {
+      final type = mapToStatusType(statusCode).toString();
+      _logger.d(
+        'sendInProgressTestResultAsync projectId=${projectId} type=${type} status=${statusCode}',
+      );
+      
       final response = await _testResultsApi
           .inProgressTestResultPostWithHttpInfo(
             testRunId,
