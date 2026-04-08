@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.  
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
 
+## [4.0.0-TMS-5.7] - 2026-04-08
+
+* TMS 5.7 support
+
 ## [4.0.0] - 2026-04-08
 
 * support sync-storage
