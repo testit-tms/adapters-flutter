@@ -98,6 +98,11 @@ String? getSafeExternalId(final String? externalId, final String? testName) {
   for (final rune in output.runes) {
     final char = String.fromCharCode(rune);
 
+    if (char == '<' || char == '>') {
+      buffer.write(char);
+      continue;
+    }
+
     if (expression.hasMatch(char)) {
       buffer.write(char);
     }
