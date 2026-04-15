@@ -16,6 +16,66 @@ class TestResultsApi {
 
   final ApiClient apiClient;
 
+  /// Get in-progress published state
+  ///
+  ///  Get whether in-progress status has already been published by master node.
+  ///
+  /// Note: This method returns the HTTP [Response].
+  ///
+  /// Parameters:
+  ///
+  /// * [String] testRunId (required):
+  ///   Test Run ID
+  Future<Response> inProgressPublishedGetWithHttpInfo(String testRunId,) async {
+    // ignore: prefer_const_declarations
+    final path = r'/in_progress_published';
+
+    // ignore: prefer_final_locals
+    Object? postBody;
+
+    final queryParams = <QueryParam>[];
+    final headerParams = <String, String>{};
+    final formParams = <String, String>{};
+
+      queryParams.addAll(_queryParams('', 'testRunId', testRunId));
+
+    const contentTypes = <String>[];
+
+
+    return apiClient.invokeAPI(
+      path,
+      'GET',
+      queryParams,
+      postBody,
+      headerParams,
+      formParams,
+      contentTypes.isEmpty ? null : contentTypes.first,
+    );
+  }
+
+  /// Get in-progress published state
+  ///
+  ///  Get whether in-progress status has already been published by master node.
+  ///
+  /// Parameters:
+  ///
+  /// * [String] testRunId (required):
+  ///   Test Run ID
+  Future<InProgressPublishedResponse?> inProgressPublishedGet(String testRunId,) async {
+    final response = await inProgressPublishedGetWithHttpInfo(testRunId,);
+    if (response.statusCode >= HttpStatus.badRequest) {
+      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
+    }
+    // When a remote server returns no body with a status of 204, we shall not decode it.
+    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
+    // FormatException when trying to decode an empty string.
+    if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'InProgressPublishedResponse',) as InProgressPublishedResponse;
+    
+    }
+    return null;
+  }
+
   /// Save in-progress test result
   ///
   ///  Save a test result with InProgress status.

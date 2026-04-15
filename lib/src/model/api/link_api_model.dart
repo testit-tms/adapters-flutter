@@ -12,8 +12,8 @@ final class Link implements HtmlEscapable {
   /// Optional, link title.
   String? title;
 
-  /// Optional, link type.
-  final LinkType? type;
+  /// Link type. Defaults to [LinkType.related] when not provided.
+  final LinkType type;
 
   /// Link url.
   String? url;
@@ -21,7 +21,9 @@ final class Link implements HtmlEscapable {
   /// Optional, link has info.
   final bool? hasInfo;
 
-  Link(this.url, {this.description, this.title, this.type, this.hasInfo});
+  Link(this.url,
+      {this.description, this.title, final LinkType? type, this.hasInfo})
+      : type = type ?? LinkType.related;
 
   @override
   bool operator ==(final Object other) =>

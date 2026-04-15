@@ -4,11 +4,12 @@ import 'package:testit_adapter_flutter/src/model/test_result_model.dart';
 import 'package:testit_adapter_flutter/src/enum/link_type_enum.dart' as local;
 import 'package:testit_api_client_dart/api.dart' as api;
 
-/// Converts local LinkType enum to API LinkType enum
-api.LinkType? _convertLinkType(local.LinkType? localType) {
-  if (localType == null) return null;
+/// Converts local LinkType enum to API LinkType enum.
+/// Defaults to [local.LinkType.related] when type is not provided.
+api.LinkType _convertLinkType(local.LinkType? localType) {
+  final value = localType ?? local.LinkType.related;
 
-  switch (localType) {
+  switch (value) {
     case local.LinkType.related:
       return api.LinkType.related;
     case local.LinkType.blockedBy:

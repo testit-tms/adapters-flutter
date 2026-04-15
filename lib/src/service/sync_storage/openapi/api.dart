@@ -36,6 +36,7 @@ part 'api/workers_api.dart';
 
 part 'model/completion_response.dart';
 part 'model/health_status_response.dart';
+part 'model/in_progress_published_response.dart';
 part 'model/register_request.dart';
 part 'model/register_response.dart';
 part 'model/set_worker_status_request.dart';

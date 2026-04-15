@@ -214,7 +214,7 @@ void main() {
             api.LinkType.repository);
       });
 
-      test('should handle null link type', () {
+      test('should default null link type to related', () {
         expect(
             toAutoTestResultsForTestRunModel(
                     'c',
@@ -222,7 +222,7 @@ void main() {
                       ..externalId = 'e'
                       ..outcome = api.AvailableTestResultOutcome.passed
                       ..links = {Link('u', type: null)}).links!.first.type,
-            isNull);
+            api.LinkType.related);
       });
     });
   });

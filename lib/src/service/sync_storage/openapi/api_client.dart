@@ -186,6 +186,8 @@ class ApiClient {
           return CompletionResponse.fromJson(value);
         case 'HealthStatusResponse':
           return HealthStatusResponse.fromJson(value);
+        case 'InProgressPublishedResponse':
+          return InProgressPublishedResponse.fromJson(value);
         case 'RegisterRequest':
           return RegisterRequest.fromJson(value);
         case 'RegisterResponse':
