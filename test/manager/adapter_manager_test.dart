@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:testit_adapter_flutter/src/manager/adapter_manager.dart';
 import 'package:testit_adapter_flutter/src/manager/config_manager.dart';
 import 'package:testit_adapter_flutter/src/manager/i_api_manager.dart';
+import 'package:testit_adapter_flutter/src/enum/link_type_enum.dart';
 import 'package:testit_adapter_flutter/src/model/api/link_api_model.dart';
 import 'package:testit_adapter_flutter/src/model/config_model.dart';
 import 'package:testit_adapter_flutter/src/storage/test_result_storage.dart';
@@ -130,6 +131,7 @@ void main() {
         final result = await removeTestResultByTestIdAsync(_getTestId());
         expect(result!.links, hasLength(1));
         expect(result.links.first.url, url);
+        expect(result.links.first.type, LinkType.related);
       });
 
       test('should not add a link if url is empty', () async {

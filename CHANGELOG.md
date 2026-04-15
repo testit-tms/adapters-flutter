@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.  
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
 
+## [4.0.1] - 2026-04-15
+
+* update sync-storage
+
 ## [4.0.0] - 2026-04-08
 
 * support sync-storage
