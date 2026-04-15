@@ -1,6 +1,6 @@
 name: testit_adapter_flutter
 description: The repository contains new versions of adapters for dart test frameworks.
-version: 4.0.1
+version: 4.0.1-TMS-5.7
 repository: https://github.com/testit-tms/adapters-flutter/
 homepage: https://testit.software/
 
@@ -23,7 +23,7 @@ dependencies:
   reflectable: ^4.0.13
   synchronized: ^3.1.0+1
   test_api: '>=0.5.1 <2.0.0'
-  testit_api_client_dart: '>=1.5.3 < 1.5.4'
+  testit_api_client_dart: '>=1.5.4-TMS-5.7 < 1.5.5'
   universal_io: ^2.2.2
   uuid: ^4.2.2
 
