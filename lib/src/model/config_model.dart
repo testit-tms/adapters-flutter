@@ -10,6 +10,9 @@ class ConfigModel {
   bool? certValidation;
   String? configurationId;
   bool? isDebug;
+  /// When true (default), each test result is sent immediately.
+  /// When false, results are buffered and flushed in batch at tearDownAll.
+  bool? importRealtime;
   String? privateToken;
   String? projectId;
   /// Port for the Sync Storage subprocess. Defaults to 49152 when not set.

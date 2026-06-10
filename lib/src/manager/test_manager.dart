@@ -23,6 +23,22 @@ final Logger _logger = getLogger();
 final ApiManager _apiManager = ApiManager();
 
 bool _isWarningsLogged = false;
+bool _isFlushOnTearDownRegistered = false;
+
+/// Flushes buffered test results when [importRealtime] is false.
+/// Called automatically via tearDownAll; may also be invoked explicitly in CI.
+Future<void> tmsFlushPendingResultsAsync() async {
+  final config = await createConfigOnceAsync();
+  if (config.testIt ?? true) {
+    await _apiManager.flushPendingResultsAsync(config);
+  }
+}
+
+void _registerFlushOnTearDownOnce() {
+  if (_isFlushOnTearDownRegistered) return;
+  _isFlushOnTearDownRegistered = true;
+  tearDownAll(() async => await tmsFlushPendingResultsAsync());
+}
 
 /// Run flutter test [body] with [description] and, optional, [externalId], [links], [onPlatform], [retry], [skip], [tags], [testOn], [timeout], [title] or [workItemsIds], then upload result to Test IT.
 void tmsTest(final String description, final dynamic Function() body,
@@ -165,6 +181,9 @@ Future<void> testAsync(
     await _apiManager.tryUpdateTestRunAsync(config);
     // Initialise Sync Storage once the test-run ID is guaranteed to be set.
     await _apiManager.initSyncStorageAsync(config);
+    if (!(config.importRealtime ?? true)) {
+      _registerFlushOnTearDownOnce();
+    }
     await createEmptyTestResultAsync();
 
     final localResult = TestResultModel();
@@ -226,8 +245,9 @@ Future<void> testAsync(
           }
         }
       } finally {
-        // Notify Sync Storage that this worker has finished processing the test.
-        await _apiManager.onBlockCompletedAsync(config);
+        if (config.importRealtime ?? true) {
+          await _apiManager.onBlockCompletedAsync(config);
+        }
       }
     }
 

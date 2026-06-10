@@ -4,6 +4,8 @@
 import 'package:testit_adapter_flutter/testit_adapter_flutter.dart';
 import 'package:universal_io/io.dart';
 
+// For batch import use importRealtime=false (TMS_IMPORT_REALTIME / tmsImportRealtime).
+// Results are flushed automatically via tearDownAll; call tmsFlushPendingResultsAsync() in CI if needed.
 void main() {
   group('example group', () {
     setUpAll(() async {

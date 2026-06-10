@@ -17,6 +17,9 @@ abstract class IApiManager {
   Future<void> processTestResultAsync(
       ConfigModel config, TestResultModel testResult);
 
+  /// Flushes buffered test results when [importRealtime] is false.
+  Future<void> flushPendingResultsAsync(ConfigModel config);
+
   Future<void> tryCompleteTestRunAsync(ConfigModel config);
 
   Future<api.AttachmentModel?> tryCreateAttachmentAsync(

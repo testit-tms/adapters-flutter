@@ -3,6 +3,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:testit_adapter_flutter/src/manager/api_manager_.dart';
 import 'package:testit_adapter_flutter/src/model/config_model.dart';
+import 'package:testit_adapter_flutter/src/model/test_result_model.dart';
+import 'package:testit_api_client_dart/api.dart' as api;
 
 void main() {
   group('ApiManager Tests -', () {
@@ -557,6 +559,58 @@ void main() {
         expect(result2, isTrue, reason: 'Second operation should return true');
         expect(result1, equals(result2),
             reason: 'Results should be independent but consistent');
+      });
+    });
+
+    group('importRealtime Tests -', () {
+      late ApiManager batchManager;
+
+      setUp(() => batchManager = ApiManager());
+
+      TestResultModel sampleResult() => TestResultModel()
+        ..externalId = 'ext-buffer-1'
+        ..outcome = api.AvailableTestResultOutcome.passed
+        ..name = 'Test'
+        ..startedOn = DateTime(2024)
+        ..completedOn = DateTime(2024, 1, 1, 0, 1);
+
+      test('should_buffer_result_when_importRealtime_is_false', () async {
+        final config = ConfigModel()..importRealtime = false;
+
+        await batchManager.processTestResultAsync(config, sampleResult());
+
+        expect(batchManager.pendingResultsCount, 1);
+        expect(batchManager.isFlushDone, isFalse);
+      });
+
+      test('should_mark_flush_done_when_buffer_is_empty', () async {
+        final config = ConfigModel()..importRealtime = false;
+
+        await batchManager.flushPendingResultsAsync(config);
+
+        expect(batchManager.isFlushDone, isTrue);
+        expect(batchManager.pendingResultsCount, 0);
+      });
+
+      test('should_clear_buffer_after_flush', () async {
+        final config = ConfigModel()
+          ..importRealtime = false
+          ..url = 'https://test-api.com'
+          ..privateToken = 'token'
+          ..projectId = 'project-id'
+          ..configurationId = 'config-id'
+          ..testRunId = 'run-id';
+
+        await batchManager.processTestResultAsync(config, sampleResult());
+
+        try {
+          await batchManager.flushPendingResultsAsync(config);
+        } on Exception {
+          // Bulk write may fail without a real TMS instance.
+        }
+
+        expect(batchManager.pendingResultsCount, 0);
+        expect(batchManager.isFlushDone, isTrue);
       });
     });
   });

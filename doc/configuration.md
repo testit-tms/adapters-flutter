@@ -39,6 +39,7 @@
 | `TMS_TEST_RUN_ID` | UUID существующего тест-рана |
 | `TMS_TEST_RUN_NAME` | Имя для нового тест-рана (если `adapterMode=2`) |
 | `TMS_ADAPTER_MODE` | Режим работы адаптера (0, 1 или 2) |
+| `TMS_IMPORT_REALTIME` | Режим проливки: `true` (по умолчанию) — после каждого теста; `false` — batch в конце файла (`tearDownAll`) |
 | `TMS_AUTOMATIC_CREATION_TEST_CASES` | Автоматическое создание тест-кейсов (`true`/`false`) |
 | ... | и другие параметры |
 
@@ -67,6 +68,7 @@ dart test --dart-define=tmsUrl=https://your.testit.domain \\
 | Авто-создание | `automaticCreationTestCases` / `TMS_AUTOMATIC_CREATION_TEST_CASES` / `tmsAutomaticCreationTestCases` | Если `true`, адаптер будет автоматически создавать в Test IT тест-кейсы, которых еще нет. |
 | Валидация сертификата | `certValidation` / `TMS_CERT_VALIDATION` / `tmsCertValidation` | Включает или отключает валидацию SSL-сертификата. По умолчанию `true`. |
 | Режим отладки | `isDebug` / `TMS_IS_DEBUG` / `tmsIsDebug` | Включает расширенное логирование. |
+| Режим проливки | `importRealtime` / `TMS_IMPORT_REALTIME` / `tmsImportRealtime` | `true` (по умолчанию) — realtime; `false` — отложенная batch-проливка. При `false` flush регистрируется автоматически через `tearDownAll`; в CI можно вызвать `tmsFlushPendingResultsAsync()` явно. |
 | Включить адаптер | `testIt` / `TMS_TEST_IT` / `tmsTestIt` | Глобальный переключатель для включения/отключения адаптера. По умолчанию `true`. |
 
 </rewritten_file> 

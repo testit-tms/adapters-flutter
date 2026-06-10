@@ -14,6 +14,7 @@ import 'package:testit_adapter_flutter/src/service/api/configuration_api_service
     as configuration_api;
 import 'package:testit_adapter_flutter/src/service/api/test_run_api_service.dart'
     as testrun_api;
+import 'package:testit_adapter_flutter/src/service/api/bulk_autotest_helper.dart';
 import 'package:testit_adapter_flutter/src/service/api/work_item_api_service.dart'
     as workitem_api;
 import 'package:testit_adapter_flutter/src/service/sync_storage/sync_storage_runner.dart';
@@ -38,6 +39,17 @@ class ApiManager implements IApiManager {
   SyncStorageRunner? _syncStorageRunner;
   bool _syncStorageInitialized = false;
   final Lock _syncStorageLock = Lock();
+
+  // Buffered results for importRealtime=false
+  final List<TestResultModel> _pendingResults = [];
+  bool _flushDone = false;
+  final Lock _pendingLock = Lock();
+
+  @visibleForTesting
+  int get pendingResultsCount => _pendingResults.length;
+
+  @visibleForTesting
+  bool get isFlushDone => _flushDone;
 
   // ---------------------------------------------------------------------------
   // Work items
@@ -184,51 +196,88 @@ class ApiManager implements IApiManager {
   @override
   Future<void> processTestResultAsync(
       final ConfigModel config, final TestResultModel testResult) async {
-    final runner = _syncStorageRunner;
-
     _logger.d(
       'processTestResultAsync externalId=${testResult.externalId} outcome=${testResult.outcome}',
     );
 
-    // Sync Storage fast path: master worker sends in-progress result first.
-    if (runner != null &&
-        runner.isRunning &&
-        runner.isMaster &&
-        !runner.isAlreadyInProgress &&
-        testResult.externalId != null) {
-      final statusCode =
-          _outcomeToStatusCode(testResult.outcome);
-
-      _logger.d(
-        'processTestResultAsync externalId=${testResult.externalId} outcome=${testResult.outcome} mapStatus=${statusCode}',
-      );
-
-      final sent = await runner.sendInProgressTestResultAsync(
-        autoTestExternalId: testResult.externalId!,
-        statusCode: statusCode,
-        startedOn: testResult.startedOn,
-      );
-
-      if (sent) {
-        // Write to Test IT as "InProgress" so the UI reflects real-time state.
-        final savedOutcome = testResult.outcome;
-        try {
-          testResult.outcome = api.AvailableTestResultOutcome.inProgress;
-          await _processTestResultInternalAsync(config, testResult);
-          return;
-        } catch (e) {
-          // Fallback: reset in-progress flag and write normally.
-          _logger.w(
-              'Sync Storage in-progress write failed, falling back: $e');
-          runner.isAlreadyInProgress = false;
-        } finally {
-          testResult.outcome = savedOutcome;
-        }
-      }
+    if (await _trySendInProgressViaSyncStorageAsync(config, testResult)) {
+      return;
     }
 
-    // Normal path.
+    if (!(config.importRealtime ?? true)) {
+      await _pendingLock.synchronized(() {
+        _pendingResults.add(testResult);
+      });
+      _logger.d(
+          'Buffered test result externalId=${testResult.externalId} (importRealtime=false)');
+      return;
+    }
+
     await _processTestResultInternalAsync(config, testResult);
+  }
+
+  @override
+  Future<void> flushPendingResultsAsync(final ConfigModel config) async {
+    if (_flushDone) return;
+
+    var results = <TestResultModel>[];
+    await _pendingLock.synchronized(() {
+      results = List<TestResultModel>.from(_pendingResults);
+      _pendingResults.clear();
+      _flushDone = true;
+    });
+
+    if (results.isEmpty) {
+      _logger.d('No pending test results to flush');
+      await onBlockCompletedAsync(config);
+      return;
+    }
+
+    _logger.i('Flushing ${results.length} pending test result(s)');
+    await writeTestResultsBulkAsync(config, results);
+    await onBlockCompletedAsync(config);
+  }
+
+  /// Sync Storage fast path: master worker sends in-progress result first.
+  /// Returns true when the result was handled via sync-storage (early return).
+  Future<bool> _trySendInProgressViaSyncStorageAsync(
+      final ConfigModel config, final TestResultModel testResult) async {
+    final runner = _syncStorageRunner;
+
+    if (runner == null ||
+        !runner.isRunning ||
+        !runner.isMaster ||
+        runner.isAlreadyInProgress ||
+        testResult.externalId == null) {
+      return false;
+    }
+
+    final statusCode = _outcomeToStatusCode(testResult.outcome);
+
+    _logger.d(
+      'processTestResultAsync externalId=${testResult.externalId} outcome=${testResult.outcome} mapStatus=$statusCode',
+    );
+
+    final sent = await runner.sendInProgressTestResultAsync(
+      autoTestExternalId: testResult.externalId!,
+      statusCode: statusCode,
+      startedOn: testResult.startedOn,
+    );
+
+    if (!sent) return false;
+
+    final savedOutcome = testResult.outcome;
+    try {
+      testResult.outcome = api.AvailableTestResultOutcome.inProgress;
+      await _processTestResultInternalAsync(config, testResult);
+      return true;
+    } catch (e) {
+      _logger.w('Sync Storage in-progress write failed, falling back: $e');
+      runner.isAlreadyInProgress = false;
+      return false;
+    } finally {
+      testResult.outcome = savedOutcome;
+    }
   }
 
   /// Internal helper that does the actual autotest create/update + result submit.

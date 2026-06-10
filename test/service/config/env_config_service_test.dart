@@ -21,6 +21,7 @@ void main() {
         'TMS_CERT_VALIDATION': 'true',
         'TMS_CONFIGURATION_ID': 'config-id',
         'TMS_IS_DEBUG': 'true',
+        'TMS_IMPORT_REALTIME': 'false',
         'TMS_PRIVATE_TOKEN': 'token',
         'TMS_PROJECT_ID': 'project-id',
         'TMS_TEST_IT': 'true',
@@ -39,6 +40,7 @@ void main() {
       expect(result.certValidation, isTrue);
       expect(result.configurationId, 'config-id');
       expect(result.isDebug, isTrue);
+      expect(result.importRealtime, isFalse);
       expect(result.privateToken, 'token');
       expect(result.projectId, 'project-id');
       expect(result.testIt, isTrue);
@@ -63,6 +65,7 @@ void main() {
       expect(result.certValidation, isNull);
       expect(result.configurationId, isNull);
       expect(result.isDebug, isNull);
+      expect(result.importRealtime, isNull);
       expect(result.privateToken, isNull);
       expect(result.projectId, isNull);
       expect(result.testIt, isNull);

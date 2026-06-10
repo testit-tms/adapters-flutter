@@ -1,5 +1,6 @@
 #!/usr/bin/env dart
 
+import 'package:meta/meta.dart';
 import 'package:testit_adapter_flutter/src/manager/config_manager.dart' as config_manager;
 import 'package:testit_adapter_flutter/src/model/config_model.dart';
 import 'package:testit_adapter_flutter/src/service/api/api_client_factory.dart';
@@ -32,10 +33,17 @@ Future<void> updateTestRun(final ConfigModel config, final UpdateEmptyTestRunApi
 
 Future<void> submitResultToTestRun(final ConfigModel config,
     final AutoTestResultsForTestRunModel autoTestResultForTestRunModel) async {
+  await submitResultsToTestRun(config, [autoTestResultForTestRunModel]);
+}
+
+@internal
+Future<void> submitResultsToTestRun(final ConfigModel config,
+    final List<AutoTestResultsForTestRunModel> models) async {
+  if (models.isEmpty) return;
   final testRunsApi = createApiClient<TestRunsApi>(config);
 
   await testRunsApi.setAutoTestResultsForTestRun(
     config.testRunId!,
-    autoTestResultsForTestRunModel: [autoTestResultForTestRunModel],
+    autoTestResultsForTestRunModel: models,
   );
 }

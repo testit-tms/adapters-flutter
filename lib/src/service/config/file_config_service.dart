@@ -37,6 +37,9 @@ Future<ConfigModel> getConfigFromFileAsync(final String? filePath) async {
 
   fileConfig.isDebug = props.getBool('isDebug', defval: null);
 
+  fileConfig.importRealtime =
+      props.getBool('importRealtime', defval: null);
+
   fileConfig.privateToken = props.get('privateToken', defval: null);
 
   if (fileConfig.privateToken != null && fileConfig.privateToken!.isNotEmpty) {

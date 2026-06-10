@@ -34,6 +34,9 @@ ConfigModel applyCliParameters(
 
   config.isDebug = bool.tryParse(getEnv('tmsIsDebug'), caseSensitive: false);
 
+  config.importRealtime =
+      bool.tryParse(getEnv('tmsImportRealtime'), caseSensitive: false);
+
   config.privateToken = getEnv('tmsPrivateToken').nullIfEmpty();
 
   config.projectId = getEnv('tmsProjectId').nullIfEmpty();
