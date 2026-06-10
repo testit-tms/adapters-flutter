@@ -513,36 +513,34 @@ void main() {
       });
 
       test('should_handle_mixed_adapter_mode_operations', () async {
-        // Arrange
-        final configs = [
-          ConfigModel()
-            ..adapterMode = 0
-            ..url = 'https://test.com'
-            ..privateToken = 'token'
-            ..testRunId = 'id',
-          ConfigModel()..adapterMode = 1,
-          ConfigModel()
-            ..adapterMode = 2
-            ..url = 'https://test.com'
-            ..privateToken = 'token'
-            ..projectId = 'proj',
-        ];
+        final configMode1 = ConfigModel()..adapterMode = 1;
+        expect(
+          await apiManager.isTestNeedsToBeRunAsync(configMode1, 'test-1'),
+          isTrue,
+          reason: 'Adapter mode 1 should complete without network',
+        );
 
-        // Act & Assert
-        final futures = configs.asMap().entries.map((entry) {
-          if (entry.value.adapterMode == 2) {
-            return apiManager.tryCreateTestRunOnceAsync(entry.value);
-          } else {
-            return apiManager
-                .isTestNeedsToBeRunAsync(entry.value, 'test-\${entry.key}')
-                .then((_) {});
-          }
-        });
-
+        final configMode0 = ConfigModel()
+          ..adapterMode = 0
+          ..url = 'https://test.com'
+          ..privateToken = 'token'
+          ..testRunId = 'id';
         await expectLater(
-          Future.wait(futures),
+          apiManager.isTestNeedsToBeRunAsync(configMode0, 'test-0'),
           throwsA(isA<Exception>()),
-          reason: 'Should handle mixed adapter mode operations',
+          reason: 'Adapter mode 0 should attempt test run lookup',
+        );
+
+        final configMode2 = ConfigModel()
+          ..adapterMode = 2
+          ..url = 'https://test.com'
+          ..privateToken = 'token'
+          ..projectId = 'proj'
+          ..testRunName = 'Mixed Test';
+        await expectLater(
+          apiManager.tryCreateTestRunOnceAsync(configMode2),
+          throwsA(isA<Exception>()),
+          reason: 'Adapter mode 2 should attempt test run creation',
         );
       });
 
