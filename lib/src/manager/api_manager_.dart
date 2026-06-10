@@ -42,14 +42,10 @@ class ApiManager implements IApiManager {
 
   // Buffered results for importRealtime=false
   final List<TestResultModel> _pendingResults = [];
-  bool _flushDone = false;
   final Lock _pendingLock = Lock();
 
   @visibleForTesting
   int get pendingResultsCount => _pendingResults.length;
-
-  @visibleForTesting
-  bool get isFlushDone => _flushDone;
 
   // ---------------------------------------------------------------------------
   // Work items
@@ -217,25 +213,24 @@ class ApiManager implements IApiManager {
   }
 
   @override
-  Future<void> flushPendingResultsAsync(final ConfigModel config) async {
-    if (_flushDone) return;
-
+  Future<void> flushPendingResultsAsync(final ConfigModel config,
+      {final bool notifySyncStorage = true}) async {
     var results = <TestResultModel>[];
     await _pendingLock.synchronized(() {
+      if (_pendingResults.isEmpty) return;
       results = List<TestResultModel>.from(_pendingResults);
       _pendingResults.clear();
-      _flushDone = true;
     });
 
     if (results.isEmpty) {
       _logger.d('No pending test results to flush');
-      await onBlockCompletedAsync(config);
+      if (notifySyncStorage) await onBlockCompletedAsync(config);
       return;
     }
 
     _logger.i('Flushing ${results.length} pending test result(s)');
     await writeTestResultsBulkAsync(config, results);
-    await onBlockCompletedAsync(config);
+    if (notifySyncStorage) await onBlockCompletedAsync(config);
   }
 
   /// Sync Storage fast path: master worker sends in-progress result first.

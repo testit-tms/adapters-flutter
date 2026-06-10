@@ -92,9 +92,16 @@ class MockIApiManager extends _i1.Mock implements _i2.IApiManager {
           as _i3.Future<void>);
 
   @override
-  _i3.Future<void> flushPendingResultsAsync(_i4.ConfigModel? config) =>
+  _i3.Future<void> flushPendingResultsAsync(
+    _i4.ConfigModel? config, {
+    bool? notifySyncStorage = true,
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#flushPendingResultsAsync, [config]),
+            Invocation.method(
+              #flushPendingResultsAsync,
+              [config],
+              {#notifySyncStorage: notifySyncStorage},
+            ),
             returnValue: _i3.Future<void>.value(),
             returnValueForMissingStub: _i3.Future<void>.value(),
           )

@@ -580,15 +580,13 @@ void main() {
         await batchManager.processTestResultAsync(config, sampleResult());
 
         expect(batchManager.pendingResultsCount, 1);
-        expect(batchManager.isFlushDone, isFalse);
       });
 
-      test('should_mark_flush_done_when_buffer_is_empty', () async {
+      test('should_not_fail_when_buffer_is_empty', () async {
         final config = ConfigModel()..importRealtime = false;
 
         await batchManager.flushPendingResultsAsync(config);
 
-        expect(batchManager.isFlushDone, isTrue);
         expect(batchManager.pendingResultsCount, 0);
       });
 
@@ -610,7 +608,35 @@ void main() {
         }
 
         expect(batchManager.pendingResultsCount, 0);
-        expect(batchManager.isFlushDone, isTrue);
+      });
+
+      test('should_allow_second_flush_after_first_group_flush', () async {
+        final config = ConfigModel()
+          ..importRealtime = false
+          ..url = 'https://test-api.com'
+          ..privateToken = 'token'
+          ..projectId = 'project-id'
+          ..configurationId = 'config-id'
+          ..testRunId = 'run-id';
+
+        await batchManager.processTestResultAsync(config, sampleResult());
+        try {
+          await batchManager.flushPendingResultsAsync(config,
+              notifySyncStorage: false);
+        } on Exception {
+          // Bulk write may fail without a real TMS instance.
+        }
+
+        await batchManager.processTestResultAsync(config, sampleResult()
+          ..externalId = 'ext-buffer-2');
+        try {
+          await batchManager.flushPendingResultsAsync(config,
+              notifySyncStorage: false);
+        } on Exception {
+          // Bulk write may fail without a real TMS instance.
+        }
+
+        expect(batchManager.pendingResultsCount, 0);
       });
     });
   });

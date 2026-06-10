@@ -3,6 +3,7 @@
 import 'package:testit_adapter_flutter/testit_adapter_flutter.dart';
 
 void main() {
+  tmsConfigureBatchImport();
   group('arguments', () {
     group('tms test', () {
       tmsTest('no args - success', () {

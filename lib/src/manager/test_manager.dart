@@ -23,10 +23,25 @@ final Logger _logger = getLogger();
 final ApiManager _apiManager = ApiManager();
 
 bool _isWarningsLogged = false;
-bool _isFlushOnTearDownRegistered = false;
+final Set<String> _batchFlushGroupKeys = {};
+bool _batchRootFlushRegistered = false;
+
+/// Call at the start of [main] when using importRealtime=false.
+/// Registers a root tearDownAll that flushes remaining results and notifies Sync Storage.
+void tmsConfigureBatchImport() {
+  if (_batchRootFlushRegistered) return;
+  _batchRootFlushRegistered = true;
+
+  tearDownAll(() async {
+    final config = await createConfigOnceAsync();
+    if ((config.testIt ?? true) && !(config.importRealtime ?? true)) {
+      await _apiManager.flushPendingResultsAsync(config);
+    }
+  });
+}
 
 /// Flushes buffered test results when [importRealtime] is false.
-/// Called automatically via tearDownAll; may also be invoked explicitly in CI.
+/// May be invoked explicitly in CI after all test files complete.
 Future<void> tmsFlushPendingResultsAsync() async {
   final config = await createConfigOnceAsync();
   if (config.testIt ?? true) {
@@ -34,10 +49,21 @@ Future<void> tmsFlushPendingResultsAsync() async {
   }
 }
 
-void _registerFlushOnTearDownOnce() {
-  if (_isFlushOnTearDownRegistered) return;
-  _isFlushOnTearDownRegistered = true;
-  tearDownAll(() async => await tmsFlushPendingResultsAsync());
+void _registerBatchFlushForCurrentGroup(final ConfigModel config) {
+  if (config.importRealtime ?? true) return;
+
+  final groups = Invoker.current?.liveTest.groups;
+  if (groups == null || groups.isEmpty) return;
+
+  final groupKey = groups.map((final g) => g.name).join('/');
+  if (_batchFlushGroupKeys.contains(groupKey)) return;
+  _batchFlushGroupKeys.add(groupKey);
+
+  // tearDownAll attaches to the innermost group where the test is declared.
+  tearDownAll(() async {
+    await _apiManager.flushPendingResultsAsync(config,
+        notifySyncStorage: false);
+  });
 }
 
 /// Run flutter test [body] with [description] and, optional, [externalId], [links], [onPlatform], [retry], [skip], [tags], [testOn], [timeout], [title] or [workItemsIds], then upload result to Test IT.
@@ -182,7 +208,7 @@ Future<void> testAsync(
     // Initialise Sync Storage once the test-run ID is guaranteed to be set.
     await _apiManager.initSyncStorageAsync(config);
     if (!(config.importRealtime ?? true)) {
-      _registerFlushOnTearDownOnce();
+      _registerBatchFlushForCurrentGroup(config);
     }
     await createEmptyTestResultAsync();
 

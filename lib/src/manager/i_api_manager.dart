@@ -18,7 +18,8 @@ abstract class IApiManager {
       ConfigModel config, TestResultModel testResult);
 
   /// Flushes buffered test results when [importRealtime] is false.
-  Future<void> flushPendingResultsAsync(ConfigModel config);
+  Future<void> flushPendingResultsAsync(ConfigModel config,
+      {bool notifySyncStorage = true});
 
   Future<void> tryCompleteTestRunAsync(ConfigModel config);
 

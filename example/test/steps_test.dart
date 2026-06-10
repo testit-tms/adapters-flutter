@@ -40,6 +40,7 @@ FutureOr<String?> _stepReturnValue({final String? description}) async {
 }
 
 void main() {
+  tmsConfigureBatchImport();
   group('steps', () {
     group('tms test', () {
       setUpAll(() async {
