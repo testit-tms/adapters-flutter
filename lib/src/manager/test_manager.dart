@@ -24,14 +24,13 @@ final Logger _logger = getLogger();
 final ApiManager _apiManager = ApiManager();
 
 bool _isWarningsLogged = false;
-final Set<String> _batchFlushGroupKeys = {};
-bool _batchRootFlushRegistered = false;
+bool _batchImportConfigured = false;
 
 /// Call at the start of [main] when using importRealtime=false.
 /// Registers a root tearDownAll that flushes remaining results and notifies Sync Storage.
 void tmsConfigureBatchImport() {
-  if (_batchRootFlushRegistered) return;
-  _batchRootFlushRegistered = true;
+  if (_batchImportConfigured) return;
+  _batchImportConfigured = true;
 
   tearDownAll(() async {
     final config = await createConfigOnceAsync();
@@ -50,20 +49,16 @@ Future<void> tmsFlushPendingResultsAsync() async {
   }
 }
 
-void _registerBatchFlushForCurrentGroup(final ConfigModel config) {
-  if (config.importRealtime ?? true) return;
+/// Registers a group-level flush hook at test declaration time (not during test run).
+void _registerBatchFlushHookAtDeclaration() {
+  if (!_batchImportConfigured) return;
 
-  final groups = Invoker.current?.liveTest.groups;
-  if (groups == null || groups.isEmpty) return;
-
-  final groupKey = groups.map((final g) => g.name).join('/');
-  if (_batchFlushGroupKeys.contains(groupKey)) return;
-  _batchFlushGroupKeys.add(groupKey);
-
-  // tearDownAll attaches to the innermost group where the test is declared.
   tearDownAll(() async {
-    await _apiManager.flushPendingResultsAsync(config,
-        notifySyncStorage: false);
+    final config = await createConfigOnceAsync();
+    if ((config.testIt ?? true) && !(config.importRealtime ?? true)) {
+      await _apiManager.flushPendingResultsAsync(config,
+          notifySyncStorage: false);
+    }
   });
 }
 
@@ -79,8 +74,9 @@ void tmsTest(final String description, final dynamic Function() body,
         final String? testOn,
         final Timeout? timeout,
         final String? title,
-        final Set<String>? workItemsIds}) =>
-    test(
+        final Set<String>? workItemsIds}) {
+  _registerBatchFlushHookAtDeclaration();
+  test(
         description,
         onPlatform: onPlatform,
         retry: retry,
@@ -95,9 +91,10 @@ void tmsTest(final String description, final dynamic Function() body,
             tags: tags,
             title: title,
             workItemsIds: workItemsIds));
+}
 
 /// Run flutter testWidgets [callback] with [description] and, optional, [externalId], [links], [semanticsEnabled], [skip], [tags], [timeout], [title], [variant] or [workItemsIds], then upload result to Test IT.
-Future<void> tmsTestWidgets(
+void tmsTestWidgets(
         final String description, final WidgetTesterCallback callback,
         {final String? externalId,
         final Set<Link>? links,
@@ -108,8 +105,9 @@ Future<void> tmsTestWidgets(
         final Timeout? timeout,
         final String? title,
         final TestVariant<Object?> variant = const DefaultTestVariant(),
-        final Set<String>? workItemsIds}) async =>
-    testWidgets(
+        final Set<String>? workItemsIds}) {
+  _registerBatchFlushHookAtDeclaration();
+  testWidgets(
         description,
         semanticsEnabled: semanticsEnabled,
         skip: skip?.isNotEmpty,
@@ -125,6 +123,7 @@ Future<void> tmsTestWidgets(
             tags: tags,
             title: title,
             workItemsIds: workItemsIds)));
+}
 
 @internal
 String? getSafeExternalId(final String? externalId, final String? testName) {
@@ -208,9 +207,6 @@ Future<void> testAsync(
     await _apiManager.tryUpdateTestRunAsync(config);
     // Initialise Sync Storage once the test-run ID is guaranteed to be set.
     await _apiManager.initSyncStorageAsync(config);
-    if (!(config.importRealtime ?? true)) {
-      _registerBatchFlushForCurrentGroup(config);
-    }
     await createEmptyTestResultAsync();
 
     final localResult = TestResultModel();

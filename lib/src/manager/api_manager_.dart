@@ -14,7 +14,6 @@ import 'package:testit_adapter_flutter/src/service/api/configuration_api_service
     as configuration_api;
 import 'package:testit_adapter_flutter/src/service/api/test_run_api_service.dart'
     as testrun_api;
-import 'package:testit_adapter_flutter/src/service/api/bulk_autotest_helper.dart';
 import 'package:testit_adapter_flutter/src/service/api/work_item_api_service.dart'
     as workitem_api;
 import 'package:testit_adapter_flutter/src/service/sync_storage/sync_storage_runner.dart';
@@ -233,7 +232,9 @@ class ApiManager implements IApiManager {
     }
 
     _logger.i('Flushing ${results.length} pending test result(s)');
-    await writeTestResultsBulkAsync(config, results);
+    for (final result in results) {
+      await _processTestResultInternalAsync(config, result);
+    }
     if (notifySyncStorage) await onBlockCompletedAsync(config);
   }
 
