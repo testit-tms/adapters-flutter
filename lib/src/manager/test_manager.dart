@@ -5,6 +5,7 @@ import 'package:testit_adapter_flutter/src/manager/api_manager_.dart';
 import 'package:testit_adapter_flutter/src/manager/config_manager.dart';
 import 'package:testit_adapter_flutter/src/manager/log_manager.dart';
 import 'package:testit_adapter_flutter/src/model/api/link_api_model.dart';
+import 'package:testit_adapter_flutter/src/model/config_model.dart';
 import 'package:testit_adapter_flutter/src/model/test_result_model.dart';
 import 'package:testit_adapter_flutter/src/service/config/file_config_service.dart';
 import 'package:testit_adapter_flutter/src/service/validation_service.dart';
