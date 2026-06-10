@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.  
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
 
+## [Unreleased]
+
+### Added
+
+* `importRealtime` configuration (`importRealtime` / `TMS_IMPORT_REALTIME` / `tmsImportRealtime`). Default `true` — preserves previous behaviour (send each result immediately after a test).
+* Batch import mode (`importRealtime=false`): buffer results and flush via `flushPendingResultsAsync` on group/file `tearDownAll`.
+* `tmsConfigureBatchImport()` — register root `tearDownAll` for batch mode; call at the start of `main()`.
+* `tmsFlushPendingResultsAsync()` — explicit flush for CI or multi-file suites.
+* `BulkAutotestHelper` (`writeTestResultsBulkAsync`): bulk autotest create/update; test run results submitted individually to support duplicate `externalId` pairs (`tmsTest` / `tmsTestWidgets`).
+
+### Changed
+
+* `ApiManager.processTestResultAsync`: Sync Storage in-progress path runs before realtime/batch branch in both modes.
+* `onBlockCompletedAsync`: per-test when `importRealtime=true`; once per flush when `importRealtime=false`.
 
 ## [4.0.2] - 2026-05-13
 

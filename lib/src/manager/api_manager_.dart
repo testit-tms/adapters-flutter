@@ -125,14 +125,18 @@ class ApiManager implements IApiManager {
 
   @override
   Future<void> tryCreateTestRunOnceAsync(final ConfigModel config) async {
-    if (config.adapterMode == 2) {
-      await _lock.synchronized(() async {
-        if (!_isTestRunCreated) {
-          await testrun_api.createEmptyTestRun(config);
-          _isTestRunCreated = true;
-        }
-      });
+    if (config.adapterMode != 2 ||
+        config.projectId == null ||
+        config.projectId!.isEmpty) {
+      return;
     }
+
+    await _lock.synchronized(() async {
+      if (!_isTestRunCreated) {
+        await testrun_api.createEmptyTestRun(config);
+        _isTestRunCreated = true;
+      }
+    });
   }
 
   Future<void> tryUpdateTestRunAsync(final ConfigModel config) async {

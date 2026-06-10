@@ -134,4 +134,77 @@ void main() {
 }
 ```
 
-Функция `startStep` принимает описание и асинхронную функцию, которая будет выполнена в рамках этого шага. Вложенные вызовы `startStep` автоматически создают иерархию шагов. 
+Функция `startStep` принимает описание и асинхронную функцию, которая будет выполнена в рамках этого шага. Вложенные вызовы `startStep` автоматически создают иерархию шагов.
+
+## 4. Режим batch-проливки (`importRealtime=false`)
+
+По умолчанию (`importRealtime=true`) адаптер ведёт себя как раньше: каждый результат уходит в Test IT сразу после теста.
+
+Batch-режим уменьшает число HTTP-запросов: результаты накапливаются в буфере и отправляются при завершении группы тестов или всего файла. Поведение согласовано с [adapters-python](https://github.com/testit-tms/adapters-python) и [adapters-go](https://github.com/testit-tms/adapters-go).
+
+### Включение
+
+```properties
+# testit.properties
+importRealtime=false
+```
+
+или
+
+```bash
+export TMS_IMPORT_REALTIME=false
+flutter test
+```
+
+### Обязательная инициализация
+
+В начале `main()`:
+
+```dart
+void main() {
+  tmsConfigureBatchImport();
+
+  group('suite', () {
+    group('tms test', () {
+      tmsTest('no args - success', () { /* ... */ });
+    });
+    group('tms testWidgets', () {
+      tmsTestWidgets('no args - success', (tester) async { /* ... */ });
+    });
+  });
+}
+```
+
+`tmsConfigureBatchImport()` регистрирует корневой `tearDownAll` — финальный сброс буфера в конце файла.
+
+### Жизненный цикл результатов
+
+```mermaid
+flowchart TD
+  testEnd[Тест завершён] --> syncCheck{Sync Storage master\nи первый in-progress?}
+  syncCheck -->|да| inProgress[InProgress в TMS, return]
+  syncCheck -->|нет| mode{importRealtime?}
+  mode -->|true| realtime[Немедленная отправка]
+  mode -->|false| buffer[Буфер _pendingResults]
+  groupEnd[tearDownAll группы] --> flush[flushPendingResultsAsync]
+  fileEnd[Корневой tearDownAll] --> flush
+  flush --> bulk[Bulk create/update автотестов]
+  bulk --> submit[submitResultToTestRun по одному]
+```
+
+### Публичные функции
+
+| Функция | Назначение |
+| --- | --- |
+| `tmsConfigureBatchImport()` | Вызвать в `main()` при `importRealtime=false` |
+| `tmsFlushPendingResultsAsync()` | Явный сброс буфера (CI, несколько test-файлов) |
+
+### Важные инварианты
+
+- **Sync Storage:** первый тест на master-воркере всегда проходит через `InProgress`, независимо от `importRealtime`.
+- **`externalId`:** логика формирования не меняется; пары `tmsTest` / `tmsTestWidgets` с одним именем по-прежнему делят один `externalId`, но дают два результата в test run.
+- **Multi-file:** каждый `*_test.dart` — свой isolate и свой буфер; flush в конце файла. Для прогона всего каталога `flutter test ./test/` при необходимости добавьте явный `tmsFlushPendingResultsAsync()` в пайплайн.
+
+### Пример в репозитории
+
+См. `example/test/arguments_test.dart`, `functions_test.dart`, `steps_test.dart` — в каждом `main()` вызывается `tmsConfigureBatchImport()`. В CI batch-режим проверяется шагом `Test importRealtime false` в `.github/workflows/test.yml`.

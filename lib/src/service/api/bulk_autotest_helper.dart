@@ -69,9 +69,10 @@ Future<void> writeTestResultsBulkAsync(
     }
   }
 
-  for (var i = 0; i < runResults.length; i += _batchSize) {
-    await testrun_api.submitResultsToTestRun(
-        config, runResults.sublist(i, _end(i, runResults.length)));
+  // Submit one result per API call: batch endpoint deduplicates by
+  // autoTestExternalId, but tmsTest/tmsTestWidgets pairs share the same id.
+  for (final runResult in runResults) {
+    await testrun_api.submitResultToTestRun(config, runResult);
   }
 }
 

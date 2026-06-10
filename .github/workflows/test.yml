@@ -43,10 +43,10 @@ jobs:
 
     steps:
       - name: Checkout adapters-flutter
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Checkout api-validator-dotnet
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: testit-tms/api-validator-dotnet
           token: ${{ env.GITHUB_PAT }}

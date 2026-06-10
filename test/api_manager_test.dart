@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:testit_adapter_flutter/src/manager/api_manager_.dart';
 import 'package:testit_adapter_flutter/src/model/config_model.dart';
 import 'package:testit_adapter_flutter/src/model/test_result_model.dart';
+import 'package:testit_adapter_flutter/src/service/api/api_client_factory.dart';
 import 'package:testit_api_client_dart/api.dart' as api;
 
 void main() {
@@ -11,6 +12,7 @@ void main() {
     late ApiManager apiManager;
 
     setUp(() {
+      clearApiCache();
       apiManager = ApiManager();
     });
 
@@ -260,45 +262,41 @@ void main() {
 
     group('tryCreateTestRunOnceAsync Tests -', () {
       test('should_complete_without_error_when_adapter_mode_is_0', () async {
-        // Arrange
-        final config = ConfigModel();
-        config.adapterMode = 0;
+        final config = ConfigModel()..adapterMode = 0;
 
-        // Act & Assert
-        expect(() async => await apiManager.tryCreateTestRunOnceAsync(config),
-            returnsNormally,
-            reason: 'Should complete without error when adapter mode is 0');
+        await expectLater(
+          apiManager.tryCreateTestRunOnceAsync(config),
+          completes,
+          reason: 'Should complete without error when adapter mode is 0',
+        );
       });
 
       test('should_complete_without_error_when_adapter_mode_is_1', () async {
-        // Arrange
-        final config = ConfigModel();
-        config.adapterMode = 1;
+        final config = ConfigModel()..adapterMode = 1;
 
-        // Act & Assert
-        expect(() async => await apiManager.tryCreateTestRunOnceAsync(config),
-            returnsNormally,
-            reason: 'Should complete without error when adapter mode is 1');
+        await expectLater(
+          apiManager.tryCreateTestRunOnceAsync(config),
+          completes,
+          reason: 'Should complete without error when adapter mode is 1',
+        );
       });
 
       test('should_handle_adapter_mode_2_configuration', () async {
-        // Arrange
         final config = ConfigModel()
           ..adapterMode = 2
           ..url = 'https://test-api.com'
           ..privateToken = 'test-token'
           ..projectId = 'project-id';
 
-        // Act & Assert
-        expect(
-            () async => await apiManager.tryCreateTestRunOnceAsync(config),
-            throwsA(isA<Exception>()),
-            reason:
-                'Should attempt a network call and throw for adapter mode 2');
+        await expectLater(
+          apiManager.tryCreateTestRunOnceAsync(config),
+          throwsA(isA<Exception>()),
+          reason:
+              'Should attempt a network call and throw for adapter mode 2',
+        );
       });
 
       test('should_handle_null_test_run_name_gracefully', () async {
-        // Arrange
         final config = ConfigModel()
           ..adapterMode = 2
           ..url = 'https://test-api.com'
@@ -306,48 +304,48 @@ void main() {
           ..projectId = 'project-id'
           ..testRunName = null;
 
-        // Act & Assert
-        expect(
-            () async => await apiManager.tryCreateTestRunOnceAsync(config),
-            throwsA(isA<Exception>()),
-            reason:
-                'Should handle null test run name and still attempt network call');
+        await expectLater(
+          apiManager.tryCreateTestRunOnceAsync(config),
+          throwsA(isA<Exception>()),
+          reason:
+              'Should handle null test run name and still attempt network call',
+        );
       });
 
       test('should_handle_empty_project_id_when_adapter_mode_is_2', () async {
-        // Arrange
-        final config = ConfigModel();
-        config.adapterMode = 2;
-        config.url = 'https://test-api.com';
-        config.privateToken = 'test-token';
-        config.projectId = '';
-        config.testRunName = 'Test Run';
+        final config = ConfigModel()
+          ..adapterMode = 2
+          ..url = 'https://test-api.com'
+          ..privateToken = 'test-token'
+          ..projectId = ''
+          ..testRunName = 'Test Run';
 
-        // Act & Assert
-        expect(() async => await apiManager.tryCreateTestRunOnceAsync(config),
-            returnsNormally,
-            reason: 'Should handle empty project ID gracefully');
+        await expectLater(
+          apiManager.tryCreateTestRunOnceAsync(config),
+          completes,
+          reason: 'Should skip test run creation when project ID is empty',
+        );
       });
 
       test('should_handle_concurrent_calls_with_adapter_mode_2', () async {
-        // Arrange
         final configs = List.generate(3, (index) {
-          final config = ConfigModel();
-          config.adapterMode = 2;
-          config.url = 'https://test-api.com';
-          config.privateToken = 'test-token';
-          config.projectId = 'concurrent-project-$index';
-          config.testRunName = 'Concurrent Test $index';
-          return config;
+          return ConfigModel()
+            ..adapterMode = 2
+            ..url = 'https://test-api.com'
+            ..privateToken = 'test-token'
+            ..projectId = 'concurrent-project-$index'
+            ..testRunName = 'Concurrent Test $index';
         });
 
-        // Act
         final futures =
-            configs.map((config) => apiManager.tryCreateTestRunOnceAsync(config));
+            configs.map(apiManager.tryCreateTestRunOnceAsync).toList();
 
-        // Assert - All calls should complete (may fail due to network, but should not throw null reference errors)
-        expect(() async => await Future.wait(futures), returnsNormally,
-            reason: 'Should handle concurrent calls safely');
+        await expectLater(
+          Future.wait(futures),
+          throwsA(isA<Exception>()),
+          reason:
+              'Should serialize concurrent calls without null reference errors',
+        );
       });
     });
 
