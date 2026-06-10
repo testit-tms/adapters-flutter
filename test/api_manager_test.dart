@@ -59,8 +59,8 @@ void main() {
         // Act & Assert
         // We expect an ApiException because a real network call is made.
         // This confirms the method attempts to contact the server.
-        expect(
-            () async => await apiManager.getFirstNotFoundWorkItemIdAsync(
+        await expectLater(
+            apiManager.getFirstNotFoundWorkItemIdAsync(
                 config, workItemsIds),
             throwsA(isA<Exception>()),
             reason:
@@ -75,8 +75,8 @@ void main() {
         final workItemsIds = ['item-1', 'item-2', 'item-3'];
 
         // Act & Assert
-        expect(
-            () async => await apiManager.getFirstNotFoundWorkItemIdAsync(
+        await expectLater(
+            apiManager.getFirstNotFoundWorkItemIdAsync(
                 config, workItemsIds),
             throwsA(isA<Exception>()),
             reason:
@@ -91,8 +91,8 @@ void main() {
         final workItemsIds = ['', 'valid-id', ''];
 
         // Act & Assert
-        expect(
-            () async => await apiManager.getFirstNotFoundWorkItemIdAsync(
+        await expectLater(
+            apiManager.getFirstNotFoundWorkItemIdAsync(
                 config, workItemsIds),
             throwsA(isA<Exception>()),
             reason:
@@ -107,8 +107,8 @@ void main() {
         final workItemsIds = ['工作项-1', 'элемент_работы_🚀', 'عنصر_العمل'];
 
         // Act & Assert
-        expect(
-            () async => await apiManager.getFirstNotFoundWorkItemIdAsync(
+        await expectLater(
+            apiManager.getFirstNotFoundWorkItemIdAsync(
                 config, workItemsIds),
             throwsA(isA<Exception>()),
             reason:
@@ -255,7 +255,8 @@ void main() {
 
         // Act & Assert
         // The method will try a network call which will fail, throwing an exception.
-        expect(() async => await apiManager.isTestNeedsToBeRunAsync(config, externalId),
+        await expectLater(
+            apiManager.isTestNeedsToBeRunAsync(config, externalId),
             throwsA(isA<Exception>()));
       });
     });
@@ -359,10 +360,9 @@ void main() {
         config.adapterMode = 1;
 
         // Act & Assert
-        expect(
-            () async =>
-                await apiManager.isTestNeedsToBeRunAsync(config, 'тест_ID_🚀'),
-            returnsNormally,
+        final result = await apiManager.isTestNeedsToBeRunAsync(
+            config, 'тест_ID_🚀');
+        expect(result, isTrue,
             reason: 'Should handle config with special characters');
       });
 
@@ -374,11 +374,12 @@ void main() {
         config.projectId = 'project_${'y' * 500}';
         config.adapterMode = 1;
 
-        // Act & Assert
-        expect(
-            () async =>
-                await apiManager.isTestNeedsToBeRunAsync(config, 'external-id'),
-            returnsNormally,
+        // Act
+        final result = await apiManager.isTestNeedsToBeRunAsync(
+            config, 'external-id');
+
+        // Assert
+        expect(result, isTrue,
             reason: 'Should handle config with very long values');
       });
 
@@ -411,10 +412,10 @@ void main() {
         ];
 
         // Act & Assert
-        expect(
-            () async => await apiManager.getFirstNotFoundWorkItemIdAsync(
+        await expectLater(
+            apiManager.getFirstNotFoundWorkItemIdAsync(
                 config, workItemsIds),
-            returnsNormally,
+            throwsA(isA<Exception>()),
             reason: 'Should handle work item IDs with special formats');
       });
 
@@ -427,10 +428,10 @@ void main() {
             List.generate(100, (index) => 'work-item-\$index');
 
         // Act & Assert
-        expect(
-            () async => await apiManager.getFirstNotFoundWorkItemIdAsync(
+        await expectLater(
+            apiManager.getFirstNotFoundWorkItemIdAsync(
                 config, workItemsIds),
-            returnsNormally,
+            throwsA(isA<Exception>()),
             reason: 'Should handle large collections efficiently');
       });
     });
@@ -445,11 +446,10 @@ void main() {
         config.testRunId = 'test-run-id';
 
         // Act & Assert - May fail due to network, but should not fail due to logic errors
-        expect(
-            () async =>
-                await apiManager.isTestNeedsToBeRunAsync(config, 'external-id'),
-            returnsNormally,
-            reason: 'Should handle zero adapter mode');
+        await expectLater(
+            apiManager.isTestNeedsToBeRunAsync(config, 'external-id'),
+            throwsA(isA<Exception>()),
+            reason: 'Should handle zero adapter mode network call');
       });
 
       test('should_handle_minimum_valid_config', () async {
@@ -539,8 +539,11 @@ void main() {
           }
         });
 
-        expect(() async => await Future.wait(futures), returnsNormally,
-            reason: 'Should handle mixed adapter mode operations');
+        await expectLater(
+          Future.wait(futures),
+          throwsA(isA<Exception>()),
+          reason: 'Should handle mixed adapter mode operations',
+        );
       });
 
       test('should_maintain_independent_operation_results', () async {
