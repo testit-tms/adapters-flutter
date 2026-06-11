@@ -18,7 +18,8 @@ The format is based on Keep a Changelog and this project adheres to Semantic Ver
 * `ApiManager.processTestResultAsync`: Sync Storage in-progress path runs before realtime/batch branch in both modes.
 * `onBlockCompletedAsync`: per-test when `importRealtime=true`; once per flush when `importRealtime=false`.
 
-## [4.0.3] - 2026-06-11
+
+## [4.0.3-TMS-5.7] - 2026-06-11
 
 * update sync-storage, add import realtime false
 
