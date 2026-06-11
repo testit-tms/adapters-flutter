@@ -26,6 +26,7 @@ The format is based on Keep a Changelog and this project adheres to Semantic Ver
 
 * HTML escaping is now applied before test result submission.
 
+
 ## [4.0.3] - 2026-07-07
 
 * delete the reflectable from dependencies.
