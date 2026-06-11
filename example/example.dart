@@ -4,7 +4,9 @@
 import 'package:testit_adapter_flutter/testit_adapter_flutter.dart';
 import 'package:universal_io/io.dart';
 
+// For batch import: TMS_IMPORT_REALTIME=false and tmsConfigureBatchImport() at main start.
 void main() {
+  tmsConfigureBatchImport();
   group('example group', () {
     setUpAll(() async {
       HttpOverrides.global = null;

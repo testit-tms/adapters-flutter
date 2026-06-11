@@ -20,7 +20,8 @@
   "testRunId": "ID-вашего-тест-рана",
   "testRunName": "Мой Тестовый Запуск",
   "adapterMode": "0",
-  "automaticCreationTestCases": "true"
+  "automaticCreationTestCases": "true",
+  "importRealtime": "true"
 }
 ```
 
@@ -39,6 +40,7 @@
 | `TMS_TEST_RUN_ID` | UUID существующего тест-рана |
 | `TMS_TEST_RUN_NAME` | Имя для нового тест-рана (если `adapterMode=2`) |
 | `TMS_ADAPTER_MODE` | Режим работы адаптера (0, 1 или 2) |
+| `TMS_IMPORT_REALTIME` | Режим проливки результатов в Test IT. `true` (по умолчанию) — после каждого теста; `false` — накопление в буфере и batch-проливка (см. [Использование — batch-режим](./usage.md#4-режим-batch-проливки-importrealtimefalse)) |
 | `TMS_AUTOMATIC_CREATION_TEST_CASES` | Автоматическое создание тест-кейсов (`true`/`false`) |
 | ... | и другие параметры |
 
@@ -67,6 +69,55 @@ dart test --dart-define=tmsUrl=https://your.testit.domain \\
 | Авто-создание | `automaticCreationTestCases` / `TMS_AUTOMATIC_CREATION_TEST_CASES` / `tmsAutomaticCreationTestCases` | Если `true`, адаптер будет автоматически создавать в Test IT тест-кейсы, которых еще нет. |
 | Валидация сертификата | `certValidation` / `TMS_CERT_VALIDATION` / `tmsCertValidation` | Включает или отключает валидацию SSL-сертификата. По умолчанию `true`. |
 | Режим отладки | `isDebug` / `TMS_IS_DEBUG` / `tmsIsDebug` | Включает расширенное логирование. |
+| Режим проливки | `importRealtime` / `TMS_IMPORT_REALTIME` / `tmsImportRealtime` | См. раздел ниже. По умолчанию `true`. |
 | Включить адаптер | `testIt` / `TMS_TEST_IT` / `tmsTestIt` | Глобальный переключатель для включения/отключения адаптера. По умолчанию `true`. |
 
-</rewritten_file> 
+## Режим проливки (`importRealtime`)
+
+Параметр управляет тем, **когда** результаты тестов отправляются в Test IT. Формирование `externalId` и привязка к существующим автотестам **не меняются** в обоих режимах.
+
+| Значение | Поведение | Sync Storage | `onBlockCompleted` |
+| --- | --- | --- | --- |
+| `true` (по умолчанию) | После каждого `tmsTest` / `tmsTestWidgets` — create/update автотеста и отправка результата в test run | Первый тест master-воркера → `InProgress`, early return | После **каждого** теста |
+| `false` | Результат попадает в буфер; проливка пачкой при `tearDownAll` | Та же ветка для первого теста на master | Один раз при flush |
+
+### Настройка batch-режима (`importRealtime=false`)
+
+1. Задайте параметр в `testit.properties`, `TMS_IMPORT_REALTIME=false` или `--dart-define=tmsImportRealtime=false`.
+2. В начале `main()` каждого тестового файла вызовите `tmsConfigureBatchImport()` — регистрируется корневой `tearDownAll` для финального сброса буфера.
+3. При первом тесте в группе автоматически регистрируется `tearDownAll` этой группы (сброс накопленных результатов группы).
+
+```dart
+import 'package:testit_adapter_flutter/testit_adapter_flutter.dart';
+
+void main() {
+  tmsConfigureBatchImport();
+
+  group('my tests', () {
+    tmsTest('example', () { /* ... */ });
+  });
+}
+```
+
+### Явный flush в CI
+
+`flutter test` запускает **каждый файл** в отдельном isolate. Буфер и flush — **на уровне файла**. Для полного контроля после всех файлов вызовите публичный API:
+
+```dart
+await tmsFlushPendingResultsAsync();
+```
+
+В CI это можно сделать отдельным шагом или из общего `tearDownAll`, если все тесты в одном `main()`.
+
+### Что происходит при batch-проливке
+
+1. Автотесты создаются/обновляются пачками (`createMultiple` / `updateMultiple`).
+2. Результаты в test run отправляются **по одному** (`submitResultToTestRun`), как в realtime — это нужно, когда `tmsTest` и `tmsTestWidgets` имеют одинаковое имя и один `externalId`, но должны дать **два** результата в test run.
+3. Bulk-эндпоинт `setAutoTestResultsForTestRun` с массивом результатов **не используется**: API дедуплицирует записи по `autoTestExternalId` внутри одного запроса.
+
+### Переменные окружения (пример)
+
+```bash
+export TMS_IMPORT_REALTIME=false
+flutter test ./test/
+``` 

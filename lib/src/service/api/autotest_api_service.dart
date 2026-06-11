@@ -67,3 +67,19 @@ Future<void> updateAutoTest(
   final autoTestsApi = createApiClient<AutoTestsApi>(config);
   await autoTestsApi.updateAutoTest(autoTestUpdateApiModel: autoTestUpdateApiModel);
 }
+
+@internal
+Future<void> createAutoTestsMultiple(final ConfigModel config,
+    final List<AutoTestCreateApiModel> models) async {
+  if (models.isEmpty) return;
+  final autoTestsApi = createApiClient<AutoTestsApi>(config);
+  await autoTestsApi.createMultiple(autoTestCreateApiModel: models);
+}
+
+@internal
+Future<void> updateAutoTestsMultiple(final ConfigModel config,
+    final List<AutoTestUpdateApiModel> models) async {
+  if (models.isEmpty) return;
+  final autoTestsApi = createApiClient<AutoTestsApi>(config);
+  await autoTestsApi.updateMultiple(autoTestUpdateApiModel: models);
+}

@@ -47,7 +47,7 @@ graph TD
 
 ### 2. Core Logic (Основная логика)
 - **`ConfigManager` (`config_manager.dart`)**: Отвечает за сбор и объединение конфигурации из различных источников (файлы, переменные окружения, аргументы командной строки).
-- **`ApiManager` (`api_manager_.dart`)**: Центральный компонент для взаимодействия с API Test IT. Он инкапсулирует логику для создания и обновления автотестов, отправки результатов и управления тест-ранами. Реализует интерфейс `IApiManager` для обеспечения тестируемости.
+- **`ApiManager` (`api_manager_.dart`)**: Центральный компонент для взаимодействия с API Test IT. Он инкапсулирует логику для создания и обновления автотестов, отправки результатов и управления тест-ранами. При `importRealtime=false` буферизует результаты в `_pendingResults` и сбрасывает их через `flushPendingResultsAsync`. Реализует интерфейс `IApiManager` для обеспечения тестируемости.
 - **`ValidationService` (`validation_service.dart`)**: Проводит валидацию конфигурации и данных перед отправкой в Test IT, чтобы предотвратить ошибки на стороне API.
 
 ### 3. Configuration Layer (Слой конфигурации)
@@ -55,6 +55,29 @@ graph TD
 
 ### 4. Data & API Layer (Слой данных и API)
 - **`API Services` (`service/api/*.dart`)**: Набор сервисов, каждый из которых отвечает за определенную область API Test IT (например, `AutotestApiService`, `TestRunApiService`).
+- **`BulkAutotestHelper` (`bulk_autotest_helper.dart`)**: Batch create/update автотестов и последовательная отправка результатов в test run (по одному на вызов `submitResultToTestRun`).
 - **`TestResultStorage` (`storage/test_result_storage.dart`)**: Временное хранилище для данных текущего теста. Используется для накопления информации (вложения, шаги, ссылки) перед отправкой результатов.
 - **`Models` (`model/**/*.dart`)**: Определяют структуры данных, используемые в адаптере, как для внутренних нужд, так и для взаимодействия с API.
-- **`Converters` (`converter/*.dart`)**: Набор чистых функций для преобразования внутренних моделей данных в модели, ожидаемые API Test IT. 
+- **`Converters` (`converter/*.dart`)**: Набор чистых функций для преобразования внутренних моделей данных в модели, ожидаемые API Test IT.
+
+## Режимы проливки (`importRealtime`)
+
+```mermaid
+flowchart LR
+  subgraph realtime ["importRealtime=true"]
+    T1[tmsTest завершён] --> P1[processTestResultAsync]
+    P1 --> S1[_processTestResultInternalAsync]
+    S1 --> O1[onBlockCompleted per test]
+  end
+
+  subgraph batch ["importRealtime=false"]
+    T2[tmsTest завершён] --> P2[processTestResultAsync]
+    P2 --> B2[_pendingResults]
+    B2 --> F2[flushPendingResultsAsync]
+    F2 --> W2[writeTestResultsBulkAsync]
+    W2 --> O2[onBlockCompleted once]
+  end
+```
+
+- **`TestManager`**: при `importRealtime=false` вызывает `_registerBatchFlushForCurrentGroup` (per-group `tearDownAll`) и не вызывает `onBlockCompletedAsync` после каждого теста.
+- **`tmsConfigureBatchImport` / `tmsFlushPendingResultsAsync`**: публичные точки входа для корневого flush и явного сброса в CI.

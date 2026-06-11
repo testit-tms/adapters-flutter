@@ -43,6 +43,11 @@ ConfigModel _mergeConfigs(final ConfigModel cliConfig,
   config.isDebug =
       cliConfig.isDebug ?? envConfig.isDebug ?? fileConfig.isDebug ?? false;
 
+  config.importRealtime = cliConfig.importRealtime ??
+      envConfig.importRealtime ??
+      fileConfig.importRealtime ??
+      true;
+
   config.privateToken = cliConfig.privateToken ??
       envConfig.privateToken ??
       fileConfig.privateToken;
@@ -185,6 +190,7 @@ void main() {
         expect(result.automaticUpdationLinksToTestCases, isFalse);
         expect(result.certValidation, isTrue);
         expect(result.isDebug, isFalse);
+        expect(result.importRealtime, isTrue);
         expect(result.testIt, isTrue);
         expect(result.url, isNull);
       });

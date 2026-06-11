@@ -11,6 +11,17 @@ Flutter test with Test IT adapter examples.
 5. Setup [configuration](https://github.com/testit-tms/adapters-flutter?tab=readme-ov-file#configuration).
 6. Run tests `flutter test ./example/test/`.
 
+### Batch import (`importRealtime=false`)
+
+Example tests call `tmsConfigureBatchImport()` in `main()` so batch mode works when `TMS_IMPORT_REALTIME=false`:
+
+```bash
+export TMS_IMPORT_REALTIME=false
+flutter test ./example/test/
+```
+
+See [Import modes](../README.md#import-modes-importrealtime) in the main README.
+
 ## Project structure
 
 * **attachment/** – attachments files.

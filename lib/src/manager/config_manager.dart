@@ -85,6 +85,11 @@ ConfigModel _mergeConfigs(final ConfigModel cliConfig,
   config.isDebug =
       cliConfig.isDebug ?? envConfig.isDebug ?? fileConfig.isDebug ?? false;
 
+  config.importRealtime = cliConfig.importRealtime ??
+      envConfig.importRealtime ??
+      fileConfig.importRealtime ??
+      true;
+
   config.privateToken = cliConfig.privateToken ??
       envConfig.privateToken ??
       fileConfig.privateToken;

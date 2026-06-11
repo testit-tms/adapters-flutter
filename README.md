@@ -138,6 +138,7 @@ curl -v http://127.0.0.1:49152/wait-completion?testRunId=${{ env.TMS_TEST_RUN_ID
 | Name of the configuration file If it is not provided, it is used default file name (**It's optional**)                                                                                                                                                                                                                              | -                                 | TMS_CONFIG_FILE                            | tmsConfigFile                        |
 | ID of configuration in TMS instance [How to getting configuration ID?](https://github.com/testit-tms/.github/tree/main/configuration#configurationid)                                                                                                                                                                               | configurationId                   | TMS_CONFIGURATION_ID                       | tmsConfigurationId                   |
 | Enable debug logs (**It's optional**). Default value - false                                                                                                                                                                                                                                                                        | isDebug                           | TMS_IS_DEBUG                               | tmsIsDebug                           |
+| Mode of import type selection when launching autotests (**It's optional**). Default value - `true`. See [Import modes](#import-modes-importrealtime) below | importRealtime                    | TMS_IMPORT_REALTIME                        | tmsImportRealtime                    |
 | API secret key [How to getting API secret key?](https://github.com/testit-tms/.github/tree/main/configuration#privatetoken)                                                                                                                                                                                                         | privateToken                      | TMS_PRIVATE_TOKEN                          | tmsPrivateToken                      |
 | ID of project in TMS instance [How to getting project ID?](https://github.com/testit-tms/.github/tree/main/configuration#projectid)                                                                                                                                                                                                 | projectId                         | TMS_PROJECT_ID                             | tmsProjectId                         |
 | It enables/disables TMS integration (**It's optional**). Default value - true                                                                                                                                                                                                                                                       | testIt                            | TMS_TEST_IT                                | tmsTestIt                            |
@@ -156,6 +157,7 @@ automaticUpdationLinksToTestCases={%AUTOMATIC_UPDATION_LINKS_TO_TESTCASES%}
 certValidation={%CERTIFICATE_VALIDATION%}
 configurationId={%CONFIGURATION_ID%}
 isDebug={%IS_DEBUG%}
+importRealtime={%IMPORT_REALTIME%}
 privateToken={%USER_PRIVATE_TOKEN%}
 projectId={%PROJECT_ID%}
 testIt={%TEST_IT%}
@@ -167,8 +169,42 @@ url={%URL%}
 #### Command-line
 
 ```bash
-flutter test --dart-define=tmsAdapterMode={%ADAPTER_MODE%} --dart-define=tmsAutomaticCreationTestCases={%AUTOMATIC_CREATION_TESTCASES%} --dart-define=tmsAutomaticUpdationLinksToTestCases={%AUTOMATIC_UPDATION_LINKS_TO_TESTCASES%} --dart-define=tmsCertValidation={%CERTIFICATE_VALIDATION%} --dart-define=tmsConfigFile={%CONFIG_FILE%}  --dart-define=tmsConfigurationId={%CONFIGURATION_ID%} --dart-define=tmsIsDebug={%IS_DEBUG%} --dart-define=tmsPrivateToken={%USER_PRIVATE_TOKEN%} --dart-define=tmsProjectId={%PROJECT_ID%} --dart-define=tmsTestIt={%TEST_IT%} --dart-define=tmsTestRunId={%TEST_RUN_ID%} --dart-define=tmsTestRunName={%TEST_RUN_NAME%} --dart-define=tmsUrl={%URL%}
+flutter test --dart-define=tmsAdapterMode={%ADAPTER_MODE%} --dart-define=tmsAutomaticCreationTestCases={%AUTOMATIC_CREATION_TESTCASES%} --dart-define=tmsAutomaticUpdationLinksToTestCases={%AUTOMATIC_UPDATION_LINKS_TO_TESTCASES%} --dart-define=tmsCertValidation={%CERTIFICATE_VALIDATION%} --dart-define=tmsConfigFile={%CONFIG_FILE%}  --dart-define=tmsConfigurationId={%CONFIGURATION_ID%} --dart-define=tmsIsDebug={%IS_DEBUG%} --dart-define=tmsImportRealtime={%IMPORT_REALTIME%} --dart-define=tmsPrivateToken={%USER_PRIVATE_TOKEN%} --dart-define=tmsProjectId={%PROJECT_ID%} --dart-define=tmsTestIt={%TEST_IT%} --dart-define=tmsTestRunId={%TEST_RUN_ID%} --dart-define=tmsTestRunName={%TEST_RUN_NAME%} --dart-define=tmsUrl={%URL%}
 ```
+
+### Import modes (`importRealtime`)
+
+Aligned with [adapters-python](https://github.com/testit-tms/adapters-python) and [adapters-go](https://github.com/testit-tms/adapters-go). **`externalId` formation is unchanged** in both modes.
+
+| `importRealtime` | When results are sent | Sync Storage (first master test) | `onBlockCompleted` |
+| --- | --- | --- | --- |
+| `true` (default) | After each test — same as before this feature | `InProgress` + early return | After **each** test |
+| `false` | Buffered; flushed on `tearDownAll` | Same | Once per flush |
+
+#### Batch mode setup (`importRealtime=false`)
+
+1. Set `importRealtime=false` / `TMS_IMPORT_REALTIME=false` / `tmsImportRealtime=false`.
+2. Call `tmsConfigureBatchImport()` at the start of `main()` in each test file.
+3. Optionally call `tmsFlushPendingResultsAsync()` after all test files in CI.
+
+```dart
+import 'package:testit_adapter_flutter/testit_adapter_flutter.dart';
+
+void main() {
+  tmsConfigureBatchImport();
+
+  group('my suite', () {
+    tmsTest('unit test', () { /* ... */ });
+    tmsTestWidgets('widget test', (tester) async { /* ... */ });
+  });
+}
+```
+
+**Flush scope:** `flutter test` runs each `*_test.dart` in a separate isolate — buffer and flush are **per file**. Group-level `tearDownAll` flushes when a nested group (e.g. `tms test` / `tms testWidgets`) finishes; root `tearDownAll` from `tmsConfigureBatchImport()` flushes any remainder.
+
+**Bulk API:** autotests are created/updated in bulk; test run results are submitted **one API call per result** (not `setAutoTestResultsForTestRun` batch), so pairs like `tmsTest` + `tmsTestWidgets` with the same name/`externalId` still produce two test run results.
+
+See also: [doc/configuration.md](./doc/configuration.md), [doc/usage.md](./doc/usage.md#4-режим-batch-проливки-importrealtimefalse).
 
 ### Metadata of autotest
 

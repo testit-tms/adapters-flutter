@@ -9,6 +9,7 @@ final _attachment1 = join(_attachmentDir, 'file1.txt');
 final _attachment2 = join(_attachmentDir, 'file2.json');
 
 void main() {
+  tmsConfigureBatchImport();
   group('functions', () {
     group('tms test', () {
       tmsTest('add attachment - success', () async {

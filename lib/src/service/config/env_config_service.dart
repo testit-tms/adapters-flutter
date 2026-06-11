@@ -29,6 +29,10 @@ ConfigModel applyEnvParameters(
   config.isDebug =
       bool.tryParse(environment['TMS_IS_DEBUG'] ?? '', caseSensitive: false);
 
+  config.importRealtime = bool.tryParse(
+      environment['TMS_IMPORT_REALTIME'] ?? '',
+      caseSensitive: false);
+
   config.privateToken = environment['TMS_PRIVATE_TOKEN'];
 
   config.projectId = environment['TMS_PROJECT_ID'];

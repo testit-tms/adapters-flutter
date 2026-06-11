@@ -3,12 +3,16 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:testit_adapter_flutter/src/manager/api_manager_.dart';
 import 'package:testit_adapter_flutter/src/model/config_model.dart';
+import 'package:testit_adapter_flutter/src/model/test_result_model.dart';
+import 'package:testit_adapter_flutter/src/service/api/api_client_factory.dart';
+import 'package:testit_api_client_dart/api.dart' as api;
 
 void main() {
   group('ApiManager Tests -', () {
     late ApiManager apiManager;
 
     setUp(() {
+      clearApiCache();
       apiManager = ApiManager();
     });
 
@@ -55,8 +59,8 @@ void main() {
         // Act & Assert
         // We expect an ApiException because a real network call is made.
         // This confirms the method attempts to contact the server.
-        expect(
-            () async => await apiManager.getFirstNotFoundWorkItemIdAsync(
+        await expectLater(
+            apiManager.getFirstNotFoundWorkItemIdAsync(
                 config, workItemsIds),
             throwsA(isA<Exception>()),
             reason:
@@ -71,8 +75,8 @@ void main() {
         final workItemsIds = ['item-1', 'item-2', 'item-3'];
 
         // Act & Assert
-        expect(
-            () async => await apiManager.getFirstNotFoundWorkItemIdAsync(
+        await expectLater(
+            apiManager.getFirstNotFoundWorkItemIdAsync(
                 config, workItemsIds),
             throwsA(isA<Exception>()),
             reason:
@@ -87,8 +91,8 @@ void main() {
         final workItemsIds = ['', 'valid-id', ''];
 
         // Act & Assert
-        expect(
-            () async => await apiManager.getFirstNotFoundWorkItemIdAsync(
+        await expectLater(
+            apiManager.getFirstNotFoundWorkItemIdAsync(
                 config, workItemsIds),
             throwsA(isA<Exception>()),
             reason:
@@ -103,8 +107,8 @@ void main() {
         final workItemsIds = ['工作项-1', 'элемент_работы_🚀', 'عنصر_العمل'];
 
         // Act & Assert
-        expect(
-            () async => await apiManager.getFirstNotFoundWorkItemIdAsync(
+        await expectLater(
+            apiManager.getFirstNotFoundWorkItemIdAsync(
                 config, workItemsIds),
             throwsA(isA<Exception>()),
             reason:
@@ -251,52 +255,49 @@ void main() {
 
         // Act & Assert
         // The method will try a network call which will fail, throwing an exception.
-        expect(() async => await apiManager.isTestNeedsToBeRunAsync(config, externalId),
+        await expectLater(
+            apiManager.isTestNeedsToBeRunAsync(config, externalId),
             throwsA(isA<Exception>()));
       });
     });
 
     group('tryCreateTestRunOnceAsync Tests -', () {
       test('should_complete_without_error_when_adapter_mode_is_0', () async {
-        // Arrange
-        final config = ConfigModel();
-        config.adapterMode = 0;
+        final config = ConfigModel()..adapterMode = 0;
 
-        // Act & Assert
-        expect(() async => await apiManager.tryCreateTestRunOnceAsync(config),
-            returnsNormally,
-            reason: 'Should complete without error when adapter mode is 0');
+        await expectLater(
+          apiManager.tryCreateTestRunOnceAsync(config),
+          completes,
+          reason: 'Should complete without error when adapter mode is 0',
+        );
       });
 
       test('should_complete_without_error_when_adapter_mode_is_1', () async {
-        // Arrange
-        final config = ConfigModel();
-        config.adapterMode = 1;
+        final config = ConfigModel()..adapterMode = 1;
 
-        // Act & Assert
-        expect(() async => await apiManager.tryCreateTestRunOnceAsync(config),
-            returnsNormally,
-            reason: 'Should complete without error when adapter mode is 1');
+        await expectLater(
+          apiManager.tryCreateTestRunOnceAsync(config),
+          completes,
+          reason: 'Should complete without error when adapter mode is 1',
+        );
       });
 
       test('should_handle_adapter_mode_2_configuration', () async {
-        // Arrange
         final config = ConfigModel()
           ..adapterMode = 2
           ..url = 'https://test-api.com'
           ..privateToken = 'test-token'
           ..projectId = 'project-id';
 
-        // Act & Assert
-        expect(
-            () async => await apiManager.tryCreateTestRunOnceAsync(config),
-            throwsA(isA<Exception>()),
-            reason:
-                'Should attempt a network call and throw for adapter mode 2');
+        await expectLater(
+          apiManager.tryCreateTestRunOnceAsync(config),
+          throwsA(isA<Exception>()),
+          reason:
+              'Should attempt a network call and throw for adapter mode 2',
+        );
       });
 
       test('should_handle_null_test_run_name_gracefully', () async {
-        // Arrange
         final config = ConfigModel()
           ..adapterMode = 2
           ..url = 'https://test-api.com'
@@ -304,48 +305,48 @@ void main() {
           ..projectId = 'project-id'
           ..testRunName = null;
 
-        // Act & Assert
-        expect(
-            () async => await apiManager.tryCreateTestRunOnceAsync(config),
-            throwsA(isA<Exception>()),
-            reason:
-                'Should handle null test run name and still attempt network call');
+        await expectLater(
+          apiManager.tryCreateTestRunOnceAsync(config),
+          throwsA(isA<Exception>()),
+          reason:
+              'Should handle null test run name and still attempt network call',
+        );
       });
 
       test('should_handle_empty_project_id_when_adapter_mode_is_2', () async {
-        // Arrange
-        final config = ConfigModel();
-        config.adapterMode = 2;
-        config.url = 'https://test-api.com';
-        config.privateToken = 'test-token';
-        config.projectId = '';
-        config.testRunName = 'Test Run';
+        final config = ConfigModel()
+          ..adapterMode = 2
+          ..url = 'https://test-api.com'
+          ..privateToken = 'test-token'
+          ..projectId = ''
+          ..testRunName = 'Test Run';
 
-        // Act & Assert
-        expect(() async => await apiManager.tryCreateTestRunOnceAsync(config),
-            returnsNormally,
-            reason: 'Should handle empty project ID gracefully');
+        await expectLater(
+          apiManager.tryCreateTestRunOnceAsync(config),
+          completes,
+          reason: 'Should skip test run creation when project ID is empty',
+        );
       });
 
       test('should_handle_concurrent_calls_with_adapter_mode_2', () async {
-        // Arrange
         final configs = List.generate(3, (index) {
-          final config = ConfigModel();
-          config.adapterMode = 2;
-          config.url = 'https://test-api.com';
-          config.privateToken = 'test-token';
-          config.projectId = 'concurrent-project-$index';
-          config.testRunName = 'Concurrent Test $index';
-          return config;
+          return ConfigModel()
+            ..adapterMode = 2
+            ..url = 'https://test-api.com'
+            ..privateToken = 'test-token'
+            ..projectId = 'concurrent-project-$index'
+            ..testRunName = 'Concurrent Test $index';
         });
 
-        // Act
         final futures =
-            configs.map((config) => apiManager.tryCreateTestRunOnceAsync(config));
+            configs.map(apiManager.tryCreateTestRunOnceAsync).toList();
 
-        // Assert - All calls should complete (may fail due to network, but should not throw null reference errors)
-        expect(() async => await Future.wait(futures), returnsNormally,
-            reason: 'Should handle concurrent calls safely');
+        await expectLater(
+          Future.wait(futures),
+          throwsA(isA<Exception>()),
+          reason:
+              'Should serialize concurrent calls without null reference errors',
+        );
       });
     });
 
@@ -359,10 +360,9 @@ void main() {
         config.adapterMode = 1;
 
         // Act & Assert
-        expect(
-            () async =>
-                await apiManager.isTestNeedsToBeRunAsync(config, 'тест_ID_🚀'),
-            returnsNormally,
+        final result = await apiManager.isTestNeedsToBeRunAsync(
+            config, 'тест_ID_🚀');
+        expect(result, isTrue,
             reason: 'Should handle config with special characters');
       });
 
@@ -374,11 +374,12 @@ void main() {
         config.projectId = 'project_${'y' * 500}';
         config.adapterMode = 1;
 
-        // Act & Assert
-        expect(
-            () async =>
-                await apiManager.isTestNeedsToBeRunAsync(config, 'external-id'),
-            returnsNormally,
+        // Act
+        final result = await apiManager.isTestNeedsToBeRunAsync(
+            config, 'external-id');
+
+        // Assert
+        expect(result, isTrue,
             reason: 'Should handle config with very long values');
       });
 
@@ -411,10 +412,10 @@ void main() {
         ];
 
         // Act & Assert
-        expect(
-            () async => await apiManager.getFirstNotFoundWorkItemIdAsync(
+        await expectLater(
+            apiManager.getFirstNotFoundWorkItemIdAsync(
                 config, workItemsIds),
-            returnsNormally,
+            throwsA(isA<Exception>()),
             reason: 'Should handle work item IDs with special formats');
       });
 
@@ -427,10 +428,10 @@ void main() {
             List.generate(100, (index) => 'work-item-\$index');
 
         // Act & Assert
-        expect(
-            () async => await apiManager.getFirstNotFoundWorkItemIdAsync(
+        await expectLater(
+            apiManager.getFirstNotFoundWorkItemIdAsync(
                 config, workItemsIds),
-            returnsNormally,
+            throwsA(isA<Exception>()),
             reason: 'Should handle large collections efficiently');
       });
     });
@@ -445,11 +446,10 @@ void main() {
         config.testRunId = 'test-run-id';
 
         // Act & Assert - May fail due to network, but should not fail due to logic errors
-        expect(
-            () async =>
-                await apiManager.isTestNeedsToBeRunAsync(config, 'external-id'),
-            returnsNormally,
-            reason: 'Should handle zero adapter mode');
+        await expectLater(
+            apiManager.isTestNeedsToBeRunAsync(config, 'external-id'),
+            throwsA(isA<Exception>()),
+            reason: 'Should handle zero adapter mode network call');
       });
 
       test('should_handle_minimum_valid_config', () async {
@@ -513,34 +513,35 @@ void main() {
       });
 
       test('should_handle_mixed_adapter_mode_operations', () async {
-        // Arrange
-        final configs = [
-          ConfigModel()
-            ..adapterMode = 0
-            ..url = 'https://test.com'
-            ..privateToken = 'token'
-            ..testRunId = 'id',
-          ConfigModel()..adapterMode = 1,
-          ConfigModel()
-            ..adapterMode = 2
-            ..url = 'https://test.com'
-            ..privateToken = 'token'
-            ..projectId = 'proj',
-        ];
+        final configMode1 = ConfigModel()..adapterMode = 1;
+        expect(
+          await apiManager.isTestNeedsToBeRunAsync(configMode1, 'test-1'),
+          isTrue,
+          reason: 'Adapter mode 1 should complete without network',
+        );
 
-        // Act & Assert
-        final futures = configs.asMap().entries.map((entry) {
-          if (entry.value.adapterMode == 2) {
-            return apiManager.tryCreateTestRunOnceAsync(entry.value);
-          } else {
-            return apiManager
-                .isTestNeedsToBeRunAsync(entry.value, 'test-\${entry.key}')
-                .then((_) {});
-          }
-        });
+        final configMode0 = ConfigModel()
+          ..adapterMode = 0
+          ..url = 'https://test.com'
+          ..privateToken = 'token'
+          ..testRunId = 'id';
+        await expectLater(
+          apiManager.isTestNeedsToBeRunAsync(configMode0, 'test-0'),
+          throwsA(isA<Exception>()),
+          reason: 'Adapter mode 0 should attempt test run lookup',
+        );
 
-        expect(() async => await Future.wait(futures), returnsNormally,
-            reason: 'Should handle mixed adapter mode operations');
+        final configMode2 = ConfigModel()
+          ..adapterMode = 2
+          ..url = 'https://test.com'
+          ..privateToken = 'token'
+          ..projectId = 'proj'
+          ..testRunName = 'Mixed Test';
+        await expectLater(
+          apiManager.tryCreateTestRunOnceAsync(configMode2),
+          throwsA(isA<Exception>()),
+          reason: 'Adapter mode 2 should attempt test run creation',
+        );
       });
 
       test('should_maintain_independent_operation_results', () async {
@@ -557,6 +558,84 @@ void main() {
         expect(result2, isTrue, reason: 'Second operation should return true');
         expect(result1, equals(result2),
             reason: 'Results should be independent but consistent');
+      });
+    });
+
+    group('importRealtime Tests -', () {
+      late ApiManager batchManager;
+
+      setUp(() => batchManager = ApiManager());
+
+      TestResultModel sampleResult() => TestResultModel()
+        ..externalId = 'ext-buffer-1'
+        ..outcome = api.AvailableTestResultOutcome.passed
+        ..name = 'Test'
+        ..startedOn = DateTime(2024)
+        ..completedOn = DateTime(2024, 1, 1, 0, 1);
+
+      test('should_buffer_result_when_importRealtime_is_false', () async {
+        final config = ConfigModel()..importRealtime = false;
+
+        await batchManager.processTestResultAsync(config, sampleResult());
+
+        expect(batchManager.pendingResultsCount, 1);
+      });
+
+      test('should_not_fail_when_buffer_is_empty', () async {
+        final config = ConfigModel()..importRealtime = false;
+
+        await batchManager.flushPendingResultsAsync(config);
+
+        expect(batchManager.pendingResultsCount, 0);
+      });
+
+      test('should_clear_buffer_after_flush', () async {
+        final config = ConfigModel()
+          ..importRealtime = false
+          ..url = 'https://test-api.com'
+          ..privateToken = 'token'
+          ..projectId = 'project-id'
+          ..configurationId = 'config-id'
+          ..testRunId = 'run-id';
+
+        await batchManager.processTestResultAsync(config, sampleResult());
+
+        try {
+          await batchManager.flushPendingResultsAsync(config);
+        } on Exception {
+          // Bulk write may fail without a real TMS instance.
+        }
+
+        expect(batchManager.pendingResultsCount, 0);
+      });
+
+      test('should_allow_second_flush_after_first_group_flush', () async {
+        final config = ConfigModel()
+          ..importRealtime = false
+          ..url = 'https://test-api.com'
+          ..privateToken = 'token'
+          ..projectId = 'project-id'
+          ..configurationId = 'config-id'
+          ..testRunId = 'run-id';
+
+        await batchManager.processTestResultAsync(config, sampleResult());
+        try {
+          await batchManager.flushPendingResultsAsync(config,
+              notifySyncStorage: false);
+        } on Exception {
+          // Bulk write may fail without a real TMS instance.
+        }
+
+        await batchManager.processTestResultAsync(config, sampleResult()
+          ..externalId = 'ext-buffer-2');
+        try {
+          await batchManager.flushPendingResultsAsync(config,
+              notifySyncStorage: false);
+        } on Exception {
+          // Bulk write may fail without a real TMS instance.
+        }
+
+        expect(batchManager.pendingResultsCount, 0);
       });
     });
   });

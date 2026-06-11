@@ -5,6 +5,7 @@ import 'package:testit_adapter_flutter/src/manager/api_manager_.dart';
 import 'package:testit_adapter_flutter/src/manager/config_manager.dart';
 import 'package:testit_adapter_flutter/src/manager/log_manager.dart';
 import 'package:testit_adapter_flutter/src/model/api/link_api_model.dart';
+import 'package:testit_adapter_flutter/src/model/config_model.dart';
 import 'package:testit_adapter_flutter/src/model/test_result_model.dart';
 import 'package:testit_adapter_flutter/src/service/config/file_config_service.dart';
 import 'package:testit_adapter_flutter/src/service/validation_service.dart';
@@ -23,6 +24,43 @@ final Logger _logger = getLogger();
 final ApiManager _apiManager = ApiManager();
 
 bool _isWarningsLogged = false;
+bool _batchImportConfigured = false;
+
+/// Call at the start of [main] when using importRealtime=false.
+/// Registers a root tearDownAll that flushes remaining results and notifies Sync Storage.
+void tmsConfigureBatchImport() {
+  if (_batchImportConfigured) return;
+  _batchImportConfigured = true;
+
+  tearDownAll(() async {
+    final config = await createConfigOnceAsync();
+    if ((config.testIt ?? true) && !(config.importRealtime ?? true)) {
+      await _apiManager.flushPendingResultsAsync(config);
+    }
+  });
+}
+
+/// Flushes buffered test results when [importRealtime] is false.
+/// May be invoked explicitly in CI after all test files complete.
+Future<void> tmsFlushPendingResultsAsync() async {
+  final config = await createConfigOnceAsync();
+  if (config.testIt ?? true) {
+    await _apiManager.flushPendingResultsAsync(config);
+  }
+}
+
+/// Registers a group-level flush hook at test declaration time (not during test run).
+void _registerBatchFlushHookAtDeclaration() {
+  if (!_batchImportConfigured) return;
+
+  tearDownAll(() async {
+    final config = await createConfigOnceAsync();
+    if ((config.testIt ?? true) && !(config.importRealtime ?? true)) {
+      await _apiManager.flushPendingResultsAsync(config,
+          notifySyncStorage: false);
+    }
+  });
+}
 
 /// Run flutter test [body] with [description] and, optional, [externalId], [links], [onPlatform], [retry], [skip], [tags], [testOn], [timeout], [title] or [workItemsIds], then upload result to Test IT.
 void tmsTest(final String description, final dynamic Function() body,
@@ -36,8 +74,9 @@ void tmsTest(final String description, final dynamic Function() body,
         final String? testOn,
         final Timeout? timeout,
         final String? title,
-        final Set<String>? workItemsIds}) =>
-    test(
+        final Set<String>? workItemsIds}) {
+  _registerBatchFlushHookAtDeclaration();
+  test(
         description,
         onPlatform: onPlatform,
         retry: retry,
@@ -52,9 +91,10 @@ void tmsTest(final String description, final dynamic Function() body,
             tags: tags,
             title: title,
             workItemsIds: workItemsIds));
+}
 
 /// Run flutter testWidgets [callback] with [description] and, optional, [externalId], [links], [semanticsEnabled], [skip], [tags], [timeout], [title], [variant] or [workItemsIds], then upload result to Test IT.
-Future<void> tmsTestWidgets(
+void tmsTestWidgets(
         final String description, final WidgetTesterCallback callback,
         {final String? externalId,
         final Set<Link>? links,
@@ -65,8 +105,9 @@ Future<void> tmsTestWidgets(
         final Timeout? timeout,
         final String? title,
         final TestVariant<Object?> variant = const DefaultTestVariant(),
-        final Set<String>? workItemsIds}) async =>
-    testWidgets(
+        final Set<String>? workItemsIds}) {
+  _registerBatchFlushHookAtDeclaration();
+  testWidgets(
         description,
         semanticsEnabled: semanticsEnabled,
         skip: skip?.isNotEmpty,
@@ -82,6 +123,7 @@ Future<void> tmsTestWidgets(
             tags: tags,
             title: title,
             workItemsIds: workItemsIds)));
+}
 
 @internal
 String? getSafeExternalId(final String? externalId, final String? testName) {
@@ -226,8 +268,9 @@ Future<void> testAsync(
           }
         }
       } finally {
-        // Notify Sync Storage that this worker has finished processing the test.
-        await _apiManager.onBlockCompletedAsync(config);
+        if (config.importRealtime ?? true) {
+          await _apiManager.onBlockCompletedAsync(config);
+        }
       }
     }
 
