@@ -16,7 +16,7 @@ import 'package:testit_adapter_flutter/src/service/sync_storage/sync_storage_cli
 ///
 /// Only the master worker sends in-progress test results to Sync Storage.
 class SyncStorageRunner {
-  static const _version = 'v0.3.2';
+  static const _version = 'v0.3.6-tms-5.7';
   static const _repoUrl =
       'https://github.com/testit-tms/sync-storage-public/releases/download/';
   static const _defaultPort = '49152';
