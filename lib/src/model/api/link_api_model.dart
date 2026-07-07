@@ -4,7 +4,6 @@ import 'package:testit_adapter_flutter/src/enum/link_type_enum.dart';
 import 'package:testit_adapter_flutter/src/util/html_escape_utils.dart';
 
 /// Link, attached to autotest.
-@htmlEscapeReflector // Annotation for reflectable support
 final class Link implements HtmlEscapable {
   /// Optional, link description.
   String? description;

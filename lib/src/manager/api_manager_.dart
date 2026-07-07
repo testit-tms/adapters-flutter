@@ -1,6 +1,7 @@
 #!/usr/bin/env dart
 
 import 'package:testit_adapter_flutter/src/converter/test_result_converter.dart';
+import 'package:testit_adapter_flutter/src/util/html_escape_utils.dart';
 import 'package:testit_adapter_flutter/src/converter/test_run_converter.dart';
 import 'package:testit_adapter_flutter/src/manager/i_api_manager.dart';
 import 'package:testit_adapter_flutter/src/manager/log_manager.dart';
@@ -283,6 +284,8 @@ class ApiManager implements IApiManager {
   /// Internal helper that does the actual autotest create/update + result submit.
   Future<void> _processTestResultInternalAsync(
       final ConfigModel config, final TestResultModel testResult) async {
+    HtmlEscapeUtils.escapeHtmlInObject(testResult);
+
     var autoTest = (await autotest_api.getAutoTestByExternalId(
             config, testResult.externalId))
         ?.firstOrNull;

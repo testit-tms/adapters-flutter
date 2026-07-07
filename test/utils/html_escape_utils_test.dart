@@ -1,8 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:testit_adapter_flutter/src/util/html_escape_utils.dart';
 
-// Test classes implementing HtmlEscapable and annotated with @htmlEscapeReflector
-@htmlEscapeReflector
 class TestModel implements HtmlEscapable {
   String? title;
   String? description;
@@ -28,16 +26,12 @@ class TestModel implements HtmlEscapable {
     title = HtmlEscapeUtils.escapeHtmlTags(title);
     description = HtmlEscapeUtils.escapeHtmlTags(description);
     normalText = HtmlEscapeUtils.escapeHtmlTags(normalText);
-    
-    // Escape HTML in string lists
+
     HtmlEscapeUtils.escapeHtmlInStringList(tags);
-    
-    // Escape HTML in nested objects
     HtmlEscapeUtils.escapeHtmlInObjectList(nestedModels);
   }
 }
 
-@htmlEscapeReflector
 class TestNestedModel implements HtmlEscapable {
   String? name;
   String? value;
@@ -49,24 +43,6 @@ class TestNestedModel implements HtmlEscapable {
     name = HtmlEscapeUtils.escapeHtmlTags(name);
     value = HtmlEscapeUtils.escapeHtmlTags(value);
   }
-}
-
-// Test model for reflection without HtmlEscapable interface
-@htmlEscapeReflector
-class TestReflectionModel {
-  String? title;
-  String? description;
-  String? normalText;
-  int? number;
-  DateTime? createdAt;
-
-  TestReflectionModel({
-    this.title,
-    this.description,
-    this.normalText,
-    this.number,
-    this.createdAt,
-  });
 }
 
 void main() {
@@ -112,7 +88,7 @@ void main() {
     test('should escape HTML in string list', () {
       final list = ['<script>test</script>', 'normal text', '<div>content</div>'];
       HtmlEscapeUtils.escapeHtmlInStringList(list);
-      
+
       expect(list[0], equals(r'&lt;script&gt;test&lt;/script&gt;'));
       expect(list[1], equals('normal text'));
       expect(list[2], equals(r'&lt;div&gt;content&lt;/div&gt;'));
@@ -138,23 +114,12 @@ void main() {
       expect(model.number, equals(42));
     });
 
-    test('should escape HTML in object properties using reflection', () {
-      final model = TestReflectionModel(
-        title: '<h1>Reflection Title</h1>',
-        description: '<p>Reflection Description</p>',
-        normalText: 'Just normal text',
-        number: 42,
-        createdAt: DateTime.now(),
-      );
+    test('should ignore objects without HtmlEscapable', () {
+      final model = _NonEscapableModel(title: '<h1>Title</h1>');
 
-      // Note: This test will use reflection if reflectable is properly set up
-      // Otherwise it will silently ignore reflection errors
       HtmlEscapeUtils.escapeHtmlInObject(model);
 
-      // These assertions might need to be adjusted based on reflection setup
-      // For now, we test that the method doesn't throw errors
-      expect(model.number, equals(42));
-      expect(model.createdAt, isNotNull);
+      expect(model.title, equals('<h1>Title</h1>'));
     });
 
     test('should handle null object', () {
@@ -209,21 +174,11 @@ void main() {
       expect(model.tags[1], equals('normal-tag'));
       expect(model.tags[2], equals(r'&lt;script&gt;evil&lt;/script&gt;'));
     });
-
-    group('Reflection vs HtmlEscapable fallback', () {
-      test('should use reflection when available and fall back to HtmlEscapable', () {
-        // Test model with HtmlEscapable as fallback
-        final model = TestModel(
-          title: '<h1>Test</h1>',
-          description: '<p>Test description</p>',
-        );
-
-        HtmlEscapeUtils.escapeHtmlInObject(model);
-
-        // Should work regardless of reflection setup due to HtmlEscapable fallback
-        expect(model.title, equals(r'&lt;h1&gt;Test&lt;/h1&gt;'));
-        expect(model.description, equals(r'&lt;p&gt;Test description&lt;/p&gt;'));
-      });
-    });
   });
-} 
+}
+
+class _NonEscapableModel {
+  String? title;
+
+  _NonEscapableModel({this.title});
+}

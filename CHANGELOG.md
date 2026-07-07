@@ -18,6 +18,14 @@ The format is based on Keep a Changelog and this project adheres to Semantic Ver
 * `ApiManager.processTestResultAsync`: Sync Storage in-progress path runs before realtime/batch branch in both modes.
 * `onBlockCompletedAsync`: per-test when `importRealtime=true`; once per flush when `importRealtime=false`.
 
+### Removed
+
+* `reflectable` dependency and `build.yaml` (fixes `build_runner` compatibility for consumers).
+
+### Fixed
+
+* HTML escaping is now applied before test result submission.
+
 ## [4.0.3] - 2026-06-11
 
 * update sync-storage, add import realtime false

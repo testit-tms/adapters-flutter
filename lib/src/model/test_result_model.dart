@@ -6,7 +6,6 @@ import 'package:meta/meta.dart';
 import 'package:testit_api_client_dart/api.dart' as api;
 
 @internal
-@htmlEscapeReflector // Annotation for reflectable support
 class TestResultModel implements HtmlEscapable {
   List<api.AttachmentPutModel> attachments = [];
   String? classname;
