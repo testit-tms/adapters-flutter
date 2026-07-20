@@ -8,7 +8,7 @@ import 'package:testit_adapter_flutter/src/service/api/autotest_api_service.dart
     as autotest_api;
 import 'package:testit_adapter_flutter/src/service/api/test_run_api_service.dart'
     as testrun_api;
-import 'package:testit_api_client_dart/api.dart' as api;
+import 'package:testit_adapter_flutter/src/adaptersapi/api.dart' as api;
 
 const _batchSize = 100;
 

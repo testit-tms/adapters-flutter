@@ -6,7 +6,7 @@ import 'package:testit_adapter_flutter/src/manager/i_api_manager.dart';
 import 'package:testit_adapter_flutter/src/model/config_model.dart';
 import 'package:testit_adapter_flutter/src/model/exception_model.dart';
 import 'package:testit_adapter_flutter/src/service/validation_service.dart';
-import 'package:testit_api_client_dart/api.dart' as api;
+import 'package:testit_adapter_flutter/src/adaptersapi/api.dart' as api;
 import 'package:uuid/uuid.dart';
 
 import 'validation_service_test.mocks.dart';
@@ -59,18 +59,14 @@ void main() {
         when(mockApiManager.getProjectConfigurationsAsync(config))
             .thenAnswer((_) async => [validConfigId]);
         when(mockApiManager.getTestRunOrNullByIdAsync(config))
-            .thenAnswer((_) async => api.TestRunV2ApiResult(
+            .thenAnswer((_) async => api.TestRunApiResult(
                 id: '',
                 name: '',
                 stateName: api.TestRunState.notStarted,
-                
-                status: api.TestStatusApiResult(id: "1", name: "pending", 
-                type: api.TestStatusApiType.pending, isSystem: true, code: "1"),
-
-                projectId: '',
-                createdDate: DateTime.now(),
-                createdById: '',
-                runCount: 0));
+                status: api.TestStatusApiResult(
+                    id: "1",
+                    type: api.TestStatusApiType.pending,
+                    code: "1")));
 
         // Act & Assert
         await expectLater(

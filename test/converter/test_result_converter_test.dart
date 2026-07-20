@@ -3,7 +3,7 @@ import 'package:testit_adapter_flutter/src/converter/test_result_converter.dart'
 import 'package:testit_adapter_flutter/src/enum/link_type_enum.dart' as local;
 import 'package:testit_adapter_flutter/src/model/api/link_api_model.dart';
 import 'package:testit_adapter_flutter/src/model/test_result_model.dart';
-import 'package:testit_api_client_dart/api.dart' as api;
+import 'package:testit_adapter_flutter/src/adaptersapi/api.dart' as api;
 
 void main() {
   group('TestResultConverter', () {

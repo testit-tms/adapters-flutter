@@ -1,5 +1,5 @@
 import 'package:http/http.dart';
-import 'package:testit_api_client_dart/api.dart' as api;
+import 'package:testit_adapter_flutter/src/adaptersapi/api.dart' as api;
 import 'package:testit_adapter_flutter/src/model/config_model.dart';
 import 'package:testit_adapter_flutter/src/model/test_result_model.dart';
 
@@ -9,7 +9,7 @@ abstract class IApiManager {
 
   Future<Iterable<String>> getProjectConfigurationsAsync(ConfigModel config);
 
-  Future<api.TestRunV2ApiResult?> getTestRunOrNullByIdAsync(
+  Future<api.TestRunApiResult?> getTestRunOrNullByIdAsync(
       ConfigModel config);
 
   Future<bool> isTestNeedsToBeRunAsync(ConfigModel config, String? externalId);

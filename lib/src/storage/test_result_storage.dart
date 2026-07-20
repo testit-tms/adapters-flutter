@@ -9,7 +9,7 @@ import 'package:meta/meta.dart';
 import 'package:path/path.dart';
 import 'package:synchronized/synchronized.dart';
 import 'package:test_api/src/backend/invoker.dart'; // ignore: depend_on_referenced_packages, implementation_imports
-import 'package:testit_api_client_dart/api.dart' as api;
+import 'package:testit_adapter_flutter/src/adaptersapi/api.dart' as api;
 import 'package:universal_io/io.dart';
 
 const String _setupAllKey = '(setupall)';

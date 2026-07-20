@@ -13,7 +13,7 @@ import 'package:test_api/src/backend/invoker.dart'; // ignore: depend_on_referen
 import 'package:universal_io/io.dart';
 import 'package:path/path.dart' as path;
 import 'package:flutter_test/flutter_test.dart';
-import 'package:testit_api_client_dart/api.dart' as api;
+import 'package:testit_adapter_flutter/src/adaptersapi/api.dart' as api;
 import 'package:logger/logger.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';

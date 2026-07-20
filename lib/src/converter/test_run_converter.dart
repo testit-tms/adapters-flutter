@@ -1,11 +1,9 @@
-import 'package:testit_api_client_dart/api.dart' as api;
+import 'package:testit_adapter_flutter/src/adaptersapi/api.dart' as api;
 
-api.UpdateEmptyTestRunApiModel toUpdateEmptyTestRunApiModel(final api.TestRunV2ApiResult testRun) {
+api.UpdateEmptyTestRunApiModel toUpdateEmptyTestRunApiModel(final api.TestRunApiResult testRun) {
   var updateEmptyTestRunApiModel = api.UpdateEmptyTestRunApiModel(
     id: testRun.id,
     name: testRun.name,
-    description: testRun.description,
-    launchSource: testRun.launchSource,
     attachments: testRun.attachments.map((attachment) => api.AssignAttachmentApiModel(id: attachment.id)).toList(),
     links: testRun.links.map((link) => api.UpdateLinkApiModel(
       id: link.id,
@@ -13,8 +11,8 @@ api.UpdateEmptyTestRunApiModel toUpdateEmptyTestRunApiModel(final api.TestRunV2A
       title: link.title,
       description: link.description,
       type: link.type,
-      hasInfo: link.hasInfo,
       )).toList(),
+    tags: testRun.tags,
   );
 
   return updateEmptyTestRunApiModel;

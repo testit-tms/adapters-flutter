@@ -2,7 +2,7 @@
 
 import 'package:testit_adapter_flutter/src/model/config_model.dart';
 import 'package:meta/meta.dart';
-import 'package:testit_api_client_dart/api.dart';
+import 'package:testit_adapter_flutter/src/adaptersapi/api.dart';
 
 final Map<Type, dynamic> _apiCache = {};
 
@@ -38,6 +38,9 @@ T createApiClient<T>(final ConfigModel config) {
       break;
     case const (AttachmentsApi):
       apiClient = AttachmentsApi(defaultApiClient);
+      break;
+    case const (TestResultsApi):
+      apiClient = TestResultsApi(defaultApiClient);
       break;
     default:
       throw ArgumentError('Unsupported API client type: $T');

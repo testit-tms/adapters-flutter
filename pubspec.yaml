@@ -22,7 +22,6 @@ dependencies:
   properties: ^2.1.1
   synchronized: ^3.1.0+1
   test_api: '>=0.5.1 <2.0.0'
-  testit_api_client_dart: '>=1.5.3 < 1.5.4'
   universal_io: ^2.2.2
   uuid: ^4.2.2
 

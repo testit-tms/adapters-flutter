@@ -1,0 +1,349 @@
+//
+// AUTO-GENERATED FILE, DO NOT MODIFY!
+//
+// @dart=2.18
+
+// ignore_for_file: unused_element, unused_import
+// ignore_for_file: always_put_required_named_parameters_first
+// ignore_for_file: constant_identifier_names
+// ignore_for_file: lines_longer_than_80_chars
+
+part of adapters_api;
+
+class WorkItemFilterApiModel {
+  /// Returns a new [WorkItemFilterApiModel] instance.
+  WorkItemFilterApiModel({
+    this.nameOrId,
+    this.includeIds = const {},
+    this.excludeIds = const {},
+    this.projectIds = const {},
+    this.name,
+    this.ids = const {},
+    this.globalIds = const {},
+    this.attributes = const {},
+    this.isDeleted,
+    this.sectionIds = const {},
+    this.states = const {},
+    this.priorities = const {},
+    this.sourceTypes = const {},
+    this.types = const {},
+    this.duration,
+    this.isAutomated,
+    this.tags = const {},
+    this.excludeTags = const {},
+    this.autoTestIds = const {},
+  });
+
+  /// Name or identifier (UUID) of work item
+  String? nameOrId;
+
+  /// Collection of identifiers of work items which need to be included in result regardless of filtering
+  Set<String>? includeIds;
+
+  /// Collection of identifiers of work items which need to be excluded from result regardless of filtering
+  Set<String>? excludeIds;
+
+  /// Collection of project identifiers
+  Set<String>? projectIds;
+
+  /// Name of work item
+  String? name;
+
+  /// Specifies a work item unique IDs to search for
+  Set<String>? ids;
+
+  /// Collection of global (integer) identifiers
+  Set<int>? globalIds;
+
+  /// Custom attributes of work item
+  Map<String, Set<String>>? attributes;
+
+  /// Is result must consist of only actual/deleted work items
+  bool? isDeleted;
+
+  /// Collection of section identifiers
+  Set<String>? sectionIds;
+
+  /// Collection of states of work item
+  Set<WorkItemStates>? states;
+
+  /// Collection of priorities of work item
+  Set<WorkItemPriorityModel>? priorities;
+
+  /// Source type of work item (manual creation or AI generated)
+  Set<WorkItemSourceTypeModel>? sourceTypes;
+
+  /// Collection of types of work item
+  Set<WorkItemTypeModel>? types;
+
+  /// Specifies a work item duration range to search for
+  Int32RangeSelectorModel? duration;
+
+  /// Is result must consist of only manual/automated work items
+  bool? isAutomated;
+
+  /// Collection of tags
+  Set<String>? tags;
+
+  /// Collection of tags to exclude
+  Set<String>? excludeTags;
+
+  /// Collection of identifiers of linked autotests
+  Set<String>? autoTestIds;
+
+  @override
+  bool operator ==(Object other) => identical(this, other) || other is WorkItemFilterApiModel &&
+    other.nameOrId == nameOrId &&
+    _deepEquality.equals(other.includeIds, includeIds) &&
+    _deepEquality.equals(other.excludeIds, excludeIds) &&
+    _deepEquality.equals(other.projectIds, projectIds) &&
+    other.name == name &&
+    _deepEquality.equals(other.ids, ids) &&
+    _deepEquality.equals(other.globalIds, globalIds) &&
+    _deepEquality.equals(other.attributes, attributes) &&
+    other.isDeleted == isDeleted &&
+    _deepEquality.equals(other.sectionIds, sectionIds) &&
+    _deepEquality.equals(other.states, states) &&
+    _deepEquality.equals(other.priorities, priorities) &&
+    _deepEquality.equals(other.sourceTypes, sourceTypes) &&
+    _deepEquality.equals(other.types, types) &&
+    other.duration == duration &&
+    other.isAutomated == isAutomated &&
+    _deepEquality.equals(other.tags, tags) &&
+    _deepEquality.equals(other.excludeTags, excludeTags) &&
+    _deepEquality.equals(other.autoTestIds, autoTestIds);
+
+  @override
+  int get hashCode =>
+    // ignore: unnecessary_parenthesis
+    (nameOrId == null ? 0 : nameOrId!.hashCode) +
+    (includeIds == null ? 0 : includeIds!.hashCode) +
+    (excludeIds == null ? 0 : excludeIds!.hashCode) +
+    (projectIds == null ? 0 : projectIds!.hashCode) +
+    (name == null ? 0 : name!.hashCode) +
+    (ids == null ? 0 : ids!.hashCode) +
+    (globalIds == null ? 0 : globalIds!.hashCode) +
+    (attributes == null ? 0 : attributes!.hashCode) +
+    (isDeleted == null ? 0 : isDeleted!.hashCode) +
+    (sectionIds == null ? 0 : sectionIds!.hashCode) +
+    (states == null ? 0 : states!.hashCode) +
+    (priorities == null ? 0 : priorities!.hashCode) +
+    (sourceTypes == null ? 0 : sourceTypes!.hashCode) +
+    (types == null ? 0 : types!.hashCode) +
+    (duration == null ? 0 : duration!.hashCode) +
+    (isAutomated == null ? 0 : isAutomated!.hashCode) +
+    (tags == null ? 0 : tags!.hashCode) +
+    (excludeTags == null ? 0 : excludeTags!.hashCode) +
+    (autoTestIds == null ? 0 : autoTestIds!.hashCode);
+
+  @override
+  String toString() => 'WorkItemFilterApiModel[nameOrId=$nameOrId, includeIds=$includeIds, excludeIds=$excludeIds, projectIds=$projectIds, name=$name, ids=$ids, globalIds=$globalIds, attributes=$attributes, isDeleted=$isDeleted, sectionIds=$sectionIds, states=$states, priorities=$priorities, sourceTypes=$sourceTypes, types=$types, duration=$duration, isAutomated=$isAutomated, tags=$tags, excludeTags=$excludeTags, autoTestIds=$autoTestIds]';
+
+  Map<String, dynamic> toJson() {
+    final json = <String, dynamic>{};
+    if (this.nameOrId != null) {
+      json[r'nameOrId'] = this.nameOrId;
+    } else {
+      json[r'nameOrId'] = null;
+    }
+    if (this.includeIds != null) {
+      json[r'includeIds'] = this.includeIds!.toList(growable: false);
+    } else {
+      json[r'includeIds'] = null;
+    }
+    if (this.excludeIds != null) {
+      json[r'excludeIds'] = this.excludeIds!.toList(growable: false);
+    } else {
+      json[r'excludeIds'] = null;
+    }
+    if (this.projectIds != null) {
+      json[r'projectIds'] = this.projectIds!.toList(growable: false);
+    } else {
+      json[r'projectIds'] = null;
+    }
+    if (this.name != null) {
+      json[r'name'] = this.name;
+    } else {
+      json[r'name'] = null;
+    }
+    if (this.ids != null) {
+      json[r'ids'] = this.ids!.toList(growable: false);
+    } else {
+      json[r'ids'] = null;
+    }
+    if (this.globalIds != null) {
+      json[r'globalIds'] = this.globalIds!.toList(growable: false);
+    } else {
+      json[r'globalIds'] = null;
+    }
+    if (this.attributes != null) {
+      json[r'attributes'] = this.attributes;
+    } else {
+      json[r'attributes'] = null;
+    }
+    if (this.isDeleted != null) {
+      json[r'isDeleted'] = this.isDeleted;
+    } else {
+      json[r'isDeleted'] = null;
+    }
+    if (this.sectionIds != null) {
+      json[r'sectionIds'] = this.sectionIds!.toList(growable: false);
+    } else {
+      json[r'sectionIds'] = null;
+    }
+    if (this.states != null) {
+      json[r'states'] = this.states!.toList(growable: false);
+    } else {
+      json[r'states'] = null;
+    }
+    if (this.priorities != null) {
+      json[r'priorities'] = this.priorities!.toList(growable: false);
+    } else {
+      json[r'priorities'] = null;
+    }
+    if (this.sourceTypes != null) {
+      json[r'sourceTypes'] = this.sourceTypes!.toList(growable: false);
+    } else {
+      json[r'sourceTypes'] = null;
+    }
+    if (this.types != null) {
+      json[r'types'] = this.types!.toList(growable: false);
+    } else {
+      json[r'types'] = null;
+    }
+    if (this.duration != null) {
+      json[r'duration'] = this.duration;
+    } else {
+      json[r'duration'] = null;
+    }
+    if (this.isAutomated != null) {
+      json[r'isAutomated'] = this.isAutomated;
+    } else {
+      json[r'isAutomated'] = null;
+    }
+    if (this.tags != null) {
+      json[r'tags'] = this.tags!.toList(growable: false);
+    } else {
+      json[r'tags'] = null;
+    }
+    if (this.excludeTags != null) {
+      json[r'excludeTags'] = this.excludeTags!.toList(growable: false);
+    } else {
+      json[r'excludeTags'] = null;
+    }
+    if (this.autoTestIds != null) {
+      json[r'autoTestIds'] = this.autoTestIds!.toList(growable: false);
+    } else {
+      json[r'autoTestIds'] = null;
+    }
+    return json;
+  }
+
+  /// Returns a new [WorkItemFilterApiModel] instance and imports its values from
+  /// [value] if it's a [Map], null otherwise.
+  // ignore: prefer_constructors_over_static_methods
+  static WorkItemFilterApiModel? fromJson(dynamic value) {
+    if (value is Map) {
+      final json = value.cast<String, dynamic>();
+
+      // Ensure that the map contains the required keys.
+      // Note 1: the values aren't checked for validity beyond being non-null.
+      // Note 2: this code is stripped in release mode!
+      assert(() {
+        requiredKeys.forEach((key) {
+          assert(json.containsKey(key), 'Required key "WorkItemFilterApiModel[$key]" is missing from JSON.');
+          assert(json[key] != null, 'Required key "WorkItemFilterApiModel[$key]" has a null value in JSON.');
+        });
+        return true;
+      }());
+
+      return WorkItemFilterApiModel(
+        nameOrId: mapValueOfType<String>(json, r'nameOrId'),
+        includeIds: json[r'includeIds'] is Iterable
+            ? (json[r'includeIds'] as Iterable).cast<String>().toSet()
+            : const {},
+        excludeIds: json[r'excludeIds'] is Iterable
+            ? (json[r'excludeIds'] as Iterable).cast<String>().toSet()
+            : const {},
+        projectIds: json[r'projectIds'] is Iterable
+            ? (json[r'projectIds'] as Iterable).cast<String>().toSet()
+            : const {},
+        name: mapValueOfType<String>(json, r'name'),
+        ids: json[r'ids'] is Iterable
+            ? (json[r'ids'] as Iterable).cast<String>().toSet()
+            : const {},
+        globalIds: json[r'globalIds'] is Iterable
+            ? (json[r'globalIds'] as Iterable).cast<int>().toSet()
+            : const {},
+        attributes: json[r'attributes'] == null
+          ? const {}
+            : mapCastOfType<String, List>(json, r'attributes'),
+        isDeleted: mapValueOfType<bool>(json, r'isDeleted'),
+        sectionIds: json[r'sectionIds'] is Iterable
+            ? (json[r'sectionIds'] as Iterable).cast<String>().toSet()
+            : const {},
+        states: WorkItemStates.listFromJson(json[r'states']).toSet(),
+        priorities: WorkItemPriorityModel.listFromJson(json[r'priorities']).toSet(),
+        sourceTypes: WorkItemSourceTypeModel.listFromJson(json[r'sourceTypes']).toSet(),
+        types: WorkItemTypeModel.listFromJson(json[r'types']).toSet(),
+        duration: Int32RangeSelectorModel.fromJson(json[r'duration']),
+        isAutomated: mapValueOfType<bool>(json, r'isAutomated'),
+        tags: json[r'tags'] is Iterable
+            ? (json[r'tags'] as Iterable).cast<String>().toSet()
+            : const {},
+        excludeTags: json[r'excludeTags'] is Iterable
+            ? (json[r'excludeTags'] as Iterable).cast<String>().toSet()
+            : const {},
+        autoTestIds: json[r'autoTestIds'] is Iterable
+            ? (json[r'autoTestIds'] as Iterable).cast<String>().toSet()
+            : const {},
+      );
+    }
+    return null;
+  }
+
+  static List<WorkItemFilterApiModel> listFromJson(dynamic json, {bool growable = false,}) {
+    final result = <WorkItemFilterApiModel>[];
+    if (json is List && json.isNotEmpty) {
+      for (final row in json) {
+        final value = WorkItemFilterApiModel.fromJson(row);
+        if (value != null) {
+          result.add(value);
+        }
+      }
+    }
+    return result.toList(growable: growable);
+  }
+
+  static Map<String, WorkItemFilterApiModel> mapFromJson(dynamic json) {
+    final map = <String, WorkItemFilterApiModel>{};
+    if (json is Map && json.isNotEmpty) {
+      json = json.cast<String, dynamic>(); // ignore: parameter_assignments
+      for (final entry in json.entries) {
+        final value = WorkItemFilterApiModel.fromJson(entry.value);
+        if (value != null) {
+          map[entry.key] = value;
+        }
+      }
+    }
+    return map;
+  }
+
+  // maps a json object with a list of WorkItemFilterApiModel-objects as value to a dart map
+  static Map<String, List<WorkItemFilterApiModel>> mapListFromJson(dynamic json, {bool growable = false,}) {
+    final map = <String, List<WorkItemFilterApiModel>>{};
+    if (json is Map && json.isNotEmpty) {
+      // ignore: parameter_assignments
+      json = json.cast<String, dynamic>();
+      for (final entry in json.entries) {
+        map[entry.key] = WorkItemFilterApiModel.listFromJson(entry.value, growable: growable,);
+      }
+    }
+    return map;
+  }
+
+  /// The list of required keys that must be present in a JSON.
+  static const requiredKeys = <String>{
+  };
+}
+

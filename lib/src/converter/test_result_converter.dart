@@ -2,7 +2,7 @@
 
 import 'package:testit_adapter_flutter/src/model/test_result_model.dart';
 import 'package:testit_adapter_flutter/src/enum/link_type_enum.dart' as local;
-import 'package:testit_api_client_dart/api.dart' as api;
+import 'package:testit_adapter_flutter/src/adaptersapi/api.dart' as api;
 
 /// Converts local LinkType enum to API LinkType enum.
 /// Defaults to [local.LinkType.related] when type is not provided.
@@ -76,7 +76,7 @@ api.AutoTestCreateApiModel toAutoTestCreateApiModel(
       externalKey: null,
       isFlaky: null,
       labels: testResult.labels
-          .map((final name) => api.LabelApiModel(name: name))
+          .map((final name) => api.LabelApiModel(name: name, globalId: 0))
           .toList(),
       tags: testResult.tags.toList(),
       links: testResult.links
@@ -84,8 +84,7 @@ api.AutoTestCreateApiModel toAutoTestCreateApiModel(
               description: link.description,
               title: link.title,
               type: _convertLinkType(link.type),
-              url: link.url!,
-              hasInfo: link.hasInfo ?? false))
+              url: link.url!))
           .toList(),
       name: testResult.name!,
       namespace: testResult.namespace,
@@ -100,8 +99,7 @@ api.AutoTestCreateApiModel toAutoTestCreateApiModel(
       teardown: testResult.teardown
           .map((final teardown) => toAutoTestStepApiModel(teardown))
           .toList(),
-      title: testResult.title,
-      workItemIdsForLinkWithAutoTest: null);
+      title: testResult.title);
 
   return model;
 }
@@ -127,7 +125,7 @@ api.AutoTestUpdateApiModel toAutoTestUpdateApiModel(
       externalKey: null,
       isFlaky: null,
       labels: testResult.labels
-          .map((final name) => api.LabelApiModel(name: name))
+          .map((final name) => api.LabelApiModel(name: name, globalId: 0))
           .toList(),
       tags: testResult.tags.toList(),
       links: testResult.links
@@ -135,8 +133,7 @@ api.AutoTestUpdateApiModel toAutoTestUpdateApiModel(
               description: link.description,
               title: link.title,
               type: _convertLinkType(link.type),
-              url: link.url!,
-              hasInfo: link.hasInfo ?? false))
+              url: link.url!))
           .toList(),
       name: testResult.name!,
       namespace: testResult.namespace,
@@ -150,8 +147,7 @@ api.AutoTestUpdateApiModel toAutoTestUpdateApiModel(
       teardown: testResult.teardown
           .map((final teardown) => toAutoTestStepApiModel(teardown))
           .toList(),
-      title: testResult.title,
-      workItemIdsForLinkWithAutoTest: null);
+      title: testResult.title);
 
   return model;
 }

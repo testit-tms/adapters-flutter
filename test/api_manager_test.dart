@@ -5,7 +5,7 @@ import 'package:testit_adapter_flutter/src/manager/api_manager_.dart';
 import 'package:testit_adapter_flutter/src/model/config_model.dart';
 import 'package:testit_adapter_flutter/src/model/test_result_model.dart';
 import 'package:testit_adapter_flutter/src/service/api/api_client_factory.dart';
-import 'package:testit_api_client_dart/api.dart' as api;
+import 'package:testit_adapter_flutter/src/adaptersapi/api.dart' as api;
 
 void main() {
   group('ApiManager Tests -', () {
