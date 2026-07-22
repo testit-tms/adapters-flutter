@@ -26,6 +26,10 @@ The format is based on Keep a Changelog and this project adheres to Semantic Ver
 
 * HTML escaping is now applied before test result submission.
 
+## [5.0.0-TMS-5.8] - 2026-07-22
+
+* support the Adapters API.
+
 ## [5.0.0] - 2026-07-22
 
 * support the Adapters API.
