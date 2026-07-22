@@ -22,7 +22,7 @@ import 'package:http/http.dart';
 import 'package:logger/logger.dart';
 import 'package:meta/meta.dart';
 import 'package:synchronized/synchronized.dart';
-import 'package:testit_api_client_dart/api.dart' as api;
+import 'package:testit_adapter_flutter/src/adaptersapi/api.dart' as api;
 
 const _inProgressOutcome = 'InProgress';
 
@@ -86,7 +86,7 @@ class ApiManager implements IApiManager {
   // ---------------------------------------------------------------------------
 
   @override
-  Future<api.TestRunV2ApiResult?> getTestRunOrNullByIdAsync(
+  Future<api.TestRunApiResult?> getTestRunOrNullByIdAsync(
           final ConfigModel config) async =>
       await testrun_api.getTestRunById(config);
 
@@ -98,19 +98,9 @@ class ApiManager implements IApiManager {
     if (config.adapterMode == 0) {
       await _lock.synchronized(() async {
         if (!_isTestRunExternalIdsGot) {
-          final testRun = await testrun_api.getTestRunById(config);
-
-          if (testRun != null) {
-            var mappings = (testRun.testResults ?? [])
-                .where((testResult) => !(testResult.autoTest?.isDeleted ?? true))
-                .map((testResult) => testResult.autoTest?.externalId.toString())
-                .where((mapping) => mapping != null)
-                .map((mapping) => mapping!)
-                .toList();
-
-            _testRunExternalIds.addAll(mappings);
-          }
-
+          final mappings =
+              await testrun_api.getTestRunAutotestExternalIds(config);
+          _testRunExternalIds.addAll(mappings);
           _isTestRunExternalIdsGot = true;
         }
       });

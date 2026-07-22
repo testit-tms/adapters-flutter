@@ -3,7 +3,7 @@
 import 'package:testit_adapter_flutter/src/model/api/link_api_model.dart';
 import 'package:testit_adapter_flutter/src/util/html_escape_utils.dart';
 import 'package:meta/meta.dart';
-import 'package:testit_api_client_dart/api.dart' as api;
+import 'package:testit_adapter_flutter/src/adaptersapi/api.dart' as api;
 
 @internal
 class TestResultModel implements HtmlEscapable {

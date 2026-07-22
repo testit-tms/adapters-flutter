@@ -10,7 +10,7 @@ import 'package:mockito/mockito.dart' as _i1;
 import 'package:testit_adapter_flutter/src/manager/i_api_manager.dart' as _i2;
 import 'package:testit_adapter_flutter/src/model/config_model.dart' as _i4;
 import 'package:testit_adapter_flutter/src/model/test_result_model.dart' as _i6;
-import 'package:testit_api_client_dart/api.dart' as _i5;
+import 'package:testit_adapter_flutter/src/adaptersapi/api.dart' as _i5;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -59,14 +59,14 @@ class MockIApiManager extends _i1.Mock implements _i2.IApiManager {
           as _i3.Future<Iterable<String>>);
 
   @override
-  _i3.Future<_i5.TestRunV2ApiResult?> getTestRunOrNullByIdAsync(
+  _i3.Future<_i5.TestRunApiResult?> getTestRunOrNullByIdAsync(
     _i4.ConfigModel? config,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#getTestRunOrNullByIdAsync, [config]),
-            returnValue: _i3.Future<_i5.TestRunV2ApiResult?>.value(),
+            returnValue: _i3.Future<_i5.TestRunApiResult?>.value(),
           )
-          as _i3.Future<_i5.TestRunV2ApiResult?>);
+          as _i3.Future<_i5.TestRunApiResult?>);
 
   @override
   _i3.Future<bool> isTestNeedsToBeRunAsync(

@@ -1,7 +1,7 @@
 #!/usr/bin/env dart
 
 import 'package:meta/meta.dart';
-import 'package:testit_api_client_dart/api.dart' as api;
+import 'package:testit_adapter_flutter/src/adaptersapi/api.dart' as api;
 
 @internal
 api.AttachmentPutModel toAttachmentPutModel(

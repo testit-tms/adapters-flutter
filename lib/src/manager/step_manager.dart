@@ -4,7 +4,7 @@ import 'dart:async';
 
 import 'package:testit_adapter_flutter/src/manager/config_manager.dart';
 import 'package:testit_adapter_flutter/src/storage/test_result_storage.dart';
-import 'package:testit_api_client_dart/api.dart';
+import 'package:testit_adapter_flutter/src/adaptersapi/api.dart';
 
 /// Run step [body], then add this step with [title] and, optional, [description] to test.
 FutureOr<T?> step<T>(final String title, final FutureOr<T?> Function() body,

@@ -1,0 +1,140 @@
+//
+// AUTO-GENERATED FILE, DO NOT MODIFY!
+//
+// @dart=2.18
+
+// ignore_for_file: unused_element, unused_import
+// ignore_for_file: always_put_required_named_parameters_first
+// ignore_for_file: constant_identifier_names
+// ignore_for_file: lines_longer_than_80_chars
+
+part of adapters_api;
+
+class CustomAttributeOptionApiResult {
+  /// Returns a new [CustomAttributeOptionApiResult] instance.
+  CustomAttributeOptionApiResult({
+    required this.id,
+    required this.isDeleted,
+    required this.isDefault,
+    this.value,
+  });
+
+  /// Unique ID of the attribute option
+  String id;
+
+  /// Indicates if the attributes option is deleted
+  bool isDeleted;
+
+  /// Indicates if the attribute option is used by default
+  bool isDefault;
+
+  /// Value of the attribute option
+  String? value;
+
+  @override
+  bool operator ==(Object other) => identical(this, other) || other is CustomAttributeOptionApiResult &&
+    other.id == id &&
+    other.isDeleted == isDeleted &&
+    other.isDefault == isDefault &&
+    other.value == value;
+
+  @override
+  int get hashCode =>
+    // ignore: unnecessary_parenthesis
+    (id.hashCode) +
+    (isDeleted.hashCode) +
+    (isDefault.hashCode) +
+    (value == null ? 0 : value!.hashCode);
+
+  @override
+  String toString() => 'CustomAttributeOptionApiResult[id=$id, isDeleted=$isDeleted, isDefault=$isDefault, value=$value]';
+
+  Map<String, dynamic> toJson() {
+    final json = <String, dynamic>{};
+      json[r'id'] = this.id;
+      json[r'isDeleted'] = this.isDeleted;
+      json[r'isDefault'] = this.isDefault;
+    if (this.value != null) {
+      json[r'value'] = this.value;
+    } else {
+      json[r'value'] = null;
+    }
+    return json;
+  }
+
+  /// Returns a new [CustomAttributeOptionApiResult] instance and imports its values from
+  /// [value] if it's a [Map], null otherwise.
+  // ignore: prefer_constructors_over_static_methods
+  static CustomAttributeOptionApiResult? fromJson(dynamic value) {
+    if (value is Map) {
+      final json = value.cast<String, dynamic>();
+
+      // Ensure that the map contains the required keys.
+      // Note 1: the values aren't checked for validity beyond being non-null.
+      // Note 2: this code is stripped in release mode!
+      assert(() {
+        requiredKeys.forEach((key) {
+          assert(json.containsKey(key), 'Required key "CustomAttributeOptionApiResult[$key]" is missing from JSON.');
+          assert(json[key] != null, 'Required key "CustomAttributeOptionApiResult[$key]" has a null value in JSON.');
+        });
+        return true;
+      }());
+
+      return CustomAttributeOptionApiResult(
+        id: mapValueOfType<String>(json, r'id')!,
+        isDeleted: mapValueOfType<bool>(json, r'isDeleted')!,
+        isDefault: mapValueOfType<bool>(json, r'isDefault')!,
+        value: mapValueOfType<String>(json, r'value'),
+      );
+    }
+    return null;
+  }
+
+  static List<CustomAttributeOptionApiResult> listFromJson(dynamic json, {bool growable = false,}) {
+    final result = <CustomAttributeOptionApiResult>[];
+    if (json is List && json.isNotEmpty) {
+      for (final row in json) {
+        final value = CustomAttributeOptionApiResult.fromJson(row);
+        if (value != null) {
+          result.add(value);
+        }
+      }
+    }
+    return result.toList(growable: growable);
+  }
+
+  static Map<String, CustomAttributeOptionApiResult> mapFromJson(dynamic json) {
+    final map = <String, CustomAttributeOptionApiResult>{};
+    if (json is Map && json.isNotEmpty) {
+      json = json.cast<String, dynamic>(); // ignore: parameter_assignments
+      for (final entry in json.entries) {
+        final value = CustomAttributeOptionApiResult.fromJson(entry.value);
+        if (value != null) {
+          map[entry.key] = value;
+        }
+      }
+    }
+    return map;
+  }
+
+  // maps a json object with a list of CustomAttributeOptionApiResult-objects as value to a dart map
+  static Map<String, List<CustomAttributeOptionApiResult>> mapListFromJson(dynamic json, {bool growable = false,}) {
+    final map = <String, List<CustomAttributeOptionApiResult>>{};
+    if (json is Map && json.isNotEmpty) {
+      // ignore: parameter_assignments
+      json = json.cast<String, dynamic>();
+      for (final entry in json.entries) {
+        map[entry.key] = CustomAttributeOptionApiResult.listFromJson(entry.value, growable: growable,);
+      }
+    }
+    return map;
+  }
+
+  /// The list of required keys that must be present in a JSON.
+  static const requiredKeys = <String>{
+    'id',
+    'isDeleted',
+    'isDefault',
+  };
+}
+
