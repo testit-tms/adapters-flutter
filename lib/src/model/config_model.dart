@@ -1,6 +1,7 @@
 #!/usr/bin/env dart
 
 import 'package:meta/meta.dart';
+import 'package:testit_adapter_flutter/src/model/api/link_api_model.dart';
 
 @internal
 class ConfigModel {
@@ -20,5 +21,9 @@ class ConfigModel {
   bool? testIt;
   String? testRunId;
   String? testRunName;
+  /// Tags applied to the test run (not per-autotest tags).
+  List<String>? testRunTags;
+  /// Links applied to the test run (e.g. CI job URL), not per-autotest links.
+  List<Link>? testRunLinks;
   String? url;
 }
