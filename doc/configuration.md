@@ -65,12 +65,44 @@ dart test --dart-define=tmsUrl=https://your.testit.domain \\
 | ID Конфигурации | `configurationId` / `TMS_CONFIGURATION_ID` / `tmsConfigurationId` | **(Обязательный)** UUID конфигурации тестов. |
 | ID Тест-рана | `testRunId` / `TMS_TEST_RUN_ID` / `tmsTestRunId` | ID существующего тест-рана. Обязателен для `adapterMode` 0 и 1. |
 | Имя Тест-рана | `testRunName` / `TMS_TEST_RUN_NAME` / `tmsTestRunName` | Имя для автоматически создаваемого тест-рана. Используется в `adapterMode` 2. |
+| Теги прогона | `testRunTags` / `TMS_TEST_RUN_TAGS` / `tmsTestRunTags` | Теги **тест-рана** (не автотеста). CSV или JSON-массив. См. раздел ниже. |
+| Ссылки прогона | `testRunLinks` / `TMS_TEST_RUN_LINKS` / `tmsTestRunLinks` | Ссылки **тест-рана** (например URL CI job). JSON-массив объектов с `url`. См. раздел ниже. |
 | Режим адаптера | `adapterMode` / `TMS_ADAPTER_MODE` / `tmsAdapterMode` | Режим работы: `0` - результаты отправляются в существующий тест-ран по `testRunId`, `1` - то же, что и 0, но создает новые тест-кейсы (не рекомендуется), `2` - создает новый тест-ран и отправляет в него результаты. |
 | Авто-создание | `automaticCreationTestCases` / `TMS_AUTOMATIC_CREATION_TEST_CASES` / `tmsAutomaticCreationTestCases` | Если `true`, адаптер будет автоматически создавать в Test IT тест-кейсы, которых еще нет. |
 | Валидация сертификата | `certValidation` / `TMS_CERT_VALIDATION` / `tmsCertValidation` | Включает или отключает валидацию SSL-сертификата. По умолчанию `true`. |
 | Режим отладки | `isDebug` / `TMS_IS_DEBUG` / `tmsIsDebug` | Включает расширенное логирование. |
 | Режим проливки | `importRealtime` / `TMS_IMPORT_REALTIME` / `tmsImportRealtime` | См. раздел ниже. По умолчанию `true`. |
 | Включить адаптер | `testIt` / `TMS_TEST_IT` / `tmsTestIt` | Глобальный переключатель для включения/отключения адаптера. По умолчанию `true`. |
+
+## Теги и ссылки тест-рана
+
+Независимы от тегов/ссылок автотеста (`tags` / `addLink` на тесте).
+
+| Режим | Когда применяются |
+| --- | --- |
+| `adapterMode=2` | В запросе создания прогона |
+| `adapterMode=0` / `1` | Early merge при старте (существующие теги/ссылки сохраняются; дубликаты по имени тега / URL ссылки пропускаются) |
+
+**Теги:** `smoke,nightly` или `["smoke","nightly"]`.
+
+**Ссылки** (JSON):
+
+```json
+[
+  {
+    "url": "https://gitlab.example.com/group/project/-/jobs/12345",
+    "title": "CI Job",
+    "type": "Related"
+  }
+]
+```
+
+Типы ссылок: `Related`, `BlockedBy`, `Defect`, `Issue`, `Requirement`, `Repository` (по умолчанию `Related`).
+
+```bash
+export TMS_TEST_RUN_TAGS=smoke,ci
+export TMS_TEST_RUN_LINKS="[{\"url\":\"$CI_JOB_URL\",\"title\":\"CI Job\",\"type\":\"Related\"}]"
+```
 
 ## Режим проливки (`importRealtime`)
 

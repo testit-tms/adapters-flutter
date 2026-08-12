@@ -31,6 +31,9 @@ void main() {
         'tmsTestIt': 'true',
         'tmsTestRunId': 'run-id',
         'tmsTestRunName': 'run-name',
+        'tmsTestRunTags': '["smoke","nightly"]',
+        'tmsTestRunLinks':
+            '[{"url":"https://ci.example/job/1","type":"Related"}]',
         'tmsUrl': 'http://localhost:8080',
       };
 
@@ -50,6 +53,8 @@ void main() {
       expect(result.testIt, isTrue);
       expect(result.testRunId, 'run-id');
       expect(result.testRunName, 'run-name');
+      expect(result.testRunTags, ['smoke', 'nightly']);
+      expect(result.testRunLinks!.single.url, 'https://ci.example/job/1');
       expect(result.url, 'http://localhost:8080');
     });
 

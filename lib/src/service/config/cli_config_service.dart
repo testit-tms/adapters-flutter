@@ -2,6 +2,7 @@
 
 import 'package:testit_adapter_flutter/src/model/config_model.dart';
 import 'package:testit_adapter_flutter/src/service/config/file_config_service.dart';
+import 'package:testit_adapter_flutter/src/util/test_run_metadata_parser.dart';
 import 'package:meta/meta.dart';
 
 extension on String {
@@ -48,6 +49,11 @@ ConfigModel applyCliParameters(
   config.testRunId = getEnv('tmsTestRunId').nullIfEmpty();
 
   config.testRunName = getEnv('tmsTestRunName').nullIfEmpty();
+
+  config.testRunTags = parseTestRunTags(getEnv('tmsTestRunTags').nullIfEmpty());
+
+  config.testRunLinks =
+      parseTestRunLinks(getEnv('tmsTestRunLinks').nullIfEmpty());
 
   config.url = getEnv('tmsUrl').nullIfEmpty();
 

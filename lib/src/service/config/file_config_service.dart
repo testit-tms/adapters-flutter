@@ -1,6 +1,7 @@
 #!/usr/bin/env dart
 
 import 'package:testit_adapter_flutter/src/model/config_model.dart';
+import 'package:testit_adapter_flutter/src/util/test_run_metadata_parser.dart';
 import 'package:meta/meta.dart';
 import 'package:properties/properties.dart';
 import 'package:universal_io/io.dart';
@@ -56,6 +57,11 @@ Future<ConfigModel> getConfigFromFileAsync(final String? filePath) async {
   fileConfig.testRunId = props.get('testRunId', defval: null);
 
   fileConfig.testRunName = props.get('testRunName', defval: null);
+
+  fileConfig.testRunTags = parseTestRunTags(props.get('testRunTags', defval: null));
+
+  fileConfig.testRunLinks =
+      parseTestRunLinks(props.get('testRunLinks', defval: null));
 
   fileConfig.url = props.get('url', defval: null);
 

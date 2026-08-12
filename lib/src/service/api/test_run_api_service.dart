@@ -1,6 +1,7 @@
 #!/usr/bin/env dart
 
 import 'package:meta/meta.dart';
+import 'package:testit_adapter_flutter/src/converter/test_run_converter.dart';
 import 'package:testit_adapter_flutter/src/manager/config_manager.dart' as config_manager;
 import 'package:testit_adapter_flutter/src/model/config_model.dart';
 import 'package:testit_adapter_flutter/src/service/api/api_client_factory.dart';
@@ -13,10 +14,18 @@ Future<void> completeTestRun(final ConfigModel config) async {
 
 Future<void> createEmptyTestRun(final ConfigModel config) async {
   final testRunsApi = createApiClient<TestRunsApi>(config);
+  final links = config.testRunLinks
+          ?.where((final link) => link.url != null && link.url!.isNotEmpty)
+          .map(toCreateLinkApiModel)
+          .toList() ??
+      const [];
+
   var testRun = await testRunsApi.adaptersTestRunsPost(
       createEmptyTestRunApiModel: CreateEmptyTestRunApiModel(
     projectId: config.projectId!,
     name: config.testRunName ?? 'TestRun',
+    tags: config.testRunTags ?? const [],
+    links: links,
   ));
   await config_manager.updateTestRunIdAsync(testRun!.id);
 }
