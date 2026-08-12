@@ -2,6 +2,7 @@
 
 import 'package:testit_adapter_flutter/src/model/config_model.dart';
 import 'package:testit_adapter_flutter/src/service/config/file_config_service.dart';
+import 'package:testit_adapter_flutter/src/util/test_run_metadata_parser.dart';
 import 'package:meta/meta.dart';
 import 'package:universal_io/io.dart';
 
@@ -45,6 +46,10 @@ ConfigModel applyEnvParameters(
   config.testRunId = environment['TMS_TEST_RUN_ID'];
 
   config.testRunName = environment['TMS_TEST_RUN_NAME'];
+
+  config.testRunTags = parseTestRunTags(environment['TMS_TEST_RUN_TAGS']);
+
+  config.testRunLinks = parseTestRunLinks(environment['TMS_TEST_RUN_LINKS']);
 
   config.url = environment['TMS_URL'];
 

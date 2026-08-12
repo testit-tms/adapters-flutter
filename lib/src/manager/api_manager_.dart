@@ -34,6 +34,7 @@ class ApiManager implements IApiManager {
 
   bool _isTestRunCreated = false;
   bool _isTestRunExternalIdsGot = false;
+  bool _isTestRunMetadataApplied = false;
 
   // Sync Storage state
   SyncStorageRunner? _syncStorageRunner;
@@ -125,27 +126,58 @@ class ApiManager implements IApiManager {
       if (!_isTestRunCreated) {
         await testrun_api.createEmptyTestRun(config);
         _isTestRunCreated = true;
+        _isTestRunMetadataApplied = true;
+        _logger.i(
+            'Created test run ${config.testRunId} with tags=${config.testRunTags} links=${config.testRunLinks?.map((l) => l.url)}');
       }
     });
   }
 
   Future<void> tryUpdateTestRunAsync(final ConfigModel config) async {
-    if (config.adapterMode == 2 || config.testRunName == null) {
+    final hasNameUpdate =
+        config.adapterMode != 2 && config.testRunName != null;
+    final hasMetadata = (config.testRunTags?.isNotEmpty ?? false) ||
+        (config.testRunLinks?.isNotEmpty ?? false);
+
+    if (!hasNameUpdate && !hasMetadata) {
       return;
     }
 
     await _lock.synchronized(() async {
-      var testRun = await testrun_api.getTestRunById(config);
-
-      if (testRun == null || testRun.name == config.testRunName) {
+      if (_isTestRunMetadataApplied && !hasNameUpdate) {
         return;
       }
 
-      testRun.name = config.testRunName!;
+      final testRun = await testrun_api.getTestRunById(config);
+      if (testRun == null) {
+        return;
+      }
 
-      await testrun_api.updateTestRun(
-          config, toUpdateEmptyTestRunApiModel(testRun));
-      _isTestRunCreated = true;
+      final nameChanged =
+          hasNameUpdate && testRun.name != config.testRunName;
+      final needsMetadata =
+          hasMetadata && !_isTestRunMetadataApplied;
+
+      if (!nameChanged && !needsMetadata) {
+        _isTestRunMetadataApplied = true;
+        return;
+      }
+
+      try {
+        await testrun_api.updateTestRun(
+            config, toUpdateEmptyTestRunApiModel(testRun, config: config));
+        _isTestRunCreated = true;
+        _isTestRunMetadataApplied = true;
+        _logger.i(
+            'Updated test run ${config.testRunId} (nameChanged=$nameChanged metadata=$needsMetadata)');
+      } catch (e, st) {
+        if (nameChanged) rethrow;
+        _logger.w(
+            'Failed to apply test run tags/links (best effort): $e',
+            error: e,
+            stackTrace: st);
+        _isTestRunMetadataApplied = true;
+      }
     });
   }
 

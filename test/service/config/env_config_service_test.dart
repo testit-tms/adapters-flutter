@@ -27,6 +27,9 @@ void main() {
         'TMS_TEST_IT': 'true',
         'TMS_TEST_RUN_ID': 'run-id',
         'TMS_TEST_RUN_NAME': 'run-name',
+        'TMS_TEST_RUN_TAGS': 'smoke,nightly',
+        'TMS_TEST_RUN_LINKS':
+            '[{"url":"https://ci.example/job/1","title":"CI Job","type":"Related"}]',
         'TMS_URL': 'http://localhost:8080',
       };
 
@@ -46,6 +49,8 @@ void main() {
       expect(result.testIt, isTrue);
       expect(result.testRunId, 'run-id');
       expect(result.testRunName, 'run-name');
+      expect(result.testRunTags, ['smoke', 'nightly']);
+      expect(result.testRunLinks!.single.url, 'https://ci.example/job/1');
       expect(result.url, 'http://localhost:8080');
     });
 

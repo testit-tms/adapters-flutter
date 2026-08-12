@@ -145,6 +145,8 @@ curl -v http://127.0.0.1:49152/wait-completion?testRunId=${{ env.TMS_TEST_RUN_ID
 | It enables/disables TMS integration (**It's optional**). Default value - true                                                                                                                                                                                                                                                       | testIt                            | TMS_TEST_IT                                | tmsTestIt                            |
 | ID of the created test run in TMS instance.<br/>It's necessary for **adapterMode** 0 or 1                                                                                                                                                                                                                                           | testRunId                         | TMS_TEST_RUN_ID                            | tmsTestRunId                         |
 | Parameter for specifying the name of test run in TMS instance (**It's optional**). If it is not provided, it is created automatically                                                                                                                                                                                               | testRunName                       | TMS_TEST_RUN_NAME                          | tmsTestRunName                       |
+| Test run tags (**It's optional**). Comma-separated list or JSON array. Applied to the **test run** (not per-autotest). See [Test run tags and links](#test-run-tags-and-links)                                                                                                                                                       | testRunTags                       | TMS_TEST_RUN_TAGS                          | tmsTestRunTags                       |
+| Test run links (**It's optional**). JSON array of objects with required `url`. Applied early (on create or at startup). See [Test run tags and links](#test-run-tags-and-links)                                                                                                                                                      | testRunLinks                      | TMS_TEST_RUN_LINKS                         | tmsTestRunLinks                      |
 | Url of the TMS instance                                                                                                                                                                                                                                                                                                             | url                               | TMS_URL                                    | tmsUrl                               |
 
 #### File
@@ -164,13 +166,56 @@ projectId={%PROJECT_ID%}
 testIt={%TEST_IT%}
 testRunId={%TEST_RUN_ID%}
 testRunName={%TEST_RUN_NAME%}
+testRunTags={%TEST_RUN_TAGS%}
+testRunLinks={%TEST_RUN_LINKS%}
 url={%URL%}
 ```
 
 #### Command-line
 
 ```bash
-flutter test --dart-define=tmsAdapterMode={%ADAPTER_MODE%} --dart-define=tmsAutomaticCreationTestCases={%AUTOMATIC_CREATION_TESTCASES%} --dart-define=tmsAutomaticUpdationLinksToTestCases={%AUTOMATIC_UPDATION_LINKS_TO_TESTCASES%} --dart-define=tmsCertValidation={%CERTIFICATE_VALIDATION%} --dart-define=tmsConfigFile={%CONFIG_FILE%}  --dart-define=tmsConfigurationId={%CONFIGURATION_ID%} --dart-define=tmsIsDebug={%IS_DEBUG%} --dart-define=tmsImportRealtime={%IMPORT_REALTIME%} --dart-define=tmsPrivateToken={%USER_PRIVATE_TOKEN%} --dart-define=tmsProjectId={%PROJECT_ID%} --dart-define=tmsTestIt={%TEST_IT%} --dart-define=tmsTestRunId={%TEST_RUN_ID%} --dart-define=tmsTestRunName={%TEST_RUN_NAME%} --dart-define=tmsUrl={%URL%}
+flutter test --dart-define=tmsAdapterMode={%ADAPTER_MODE%} --dart-define=tmsAutomaticCreationTestCases={%AUTOMATIC_CREATION_TESTCASES%} --dart-define=tmsAutomaticUpdationLinksToTestCases={%AUTOMATIC_UPDATION_LINKS_TO_TESTCASES%} --dart-define=tmsCertValidation={%CERTIFICATE_VALIDATION%} --dart-define=tmsConfigFile={%CONFIG_FILE%}  --dart-define=tmsConfigurationId={%CONFIGURATION_ID%} --dart-define=tmsIsDebug={%IS_DEBUG%} --dart-define=tmsImportRealtime={%IMPORT_REALTIME%} --dart-define=tmsPrivateToken={%USER_PRIVATE_TOKEN%} --dart-define=tmsProjectId={%PROJECT_ID%} --dart-define=tmsTestIt={%TEST_IT%} --dart-define=tmsTestRunId={%TEST_RUN_ID%} --dart-define=tmsTestRunName={%TEST_RUN_NAME%} --dart-define=tmsTestRunTags={%TEST_RUN_TAGS%} --dart-define=tmsTestRunLinks={%TEST_RUN_LINKS%} --dart-define=tmsUrl={%URL%}
+```
+
+### Test run tags and links
+
+Tags and links on the **test run** are independent from per-autotest `tags` / `addLink`.
+
+| When | Behaviour |
+| --- | --- |
+| `adapterMode=2` (create run) | `tags` / `links` are sent in the create request |
+| `adapterMode=0` or `1` (existing run) | Merged into the run at startup (existing items kept; duplicates by tag name / link URL skipped) |
+
+**Tags** — comma-separated or JSON array:
+
+```text
+smoke,nightly
+```
+
+```json
+["smoke", "nightly"]
+```
+
+**Links** — JSON array (`url` required; `title`, `description`, `type` optional):
+
+```json
+[
+  {
+    "url": "https://gitlab.example.com/group/project/-/jobs/12345",
+    "title": "CI Job",
+    "type": "Related"
+  }
+]
+```
+
+**Link types** (same as TMS API): `Related`, `BlockedBy`, `Defect`, `Issue`, `Requirement`, `Repository`. Default: `Related`.
+
+Typical CI pattern:
+
+```bash
+export TMS_TEST_RUN_TAGS=smoke,ci
+export TMS_TEST_RUN_LINKS="[{\"url\":\"$CI_JOB_URL\",\"title\":\"CI Job\",\"type\":\"Related\"}]"
+flutter test
 ```
 
 ### Import modes (`importRealtime`)

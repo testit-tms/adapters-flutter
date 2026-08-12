@@ -110,6 +110,14 @@ ConfigModel _mergeConfigs(final ConfigModel cliConfig,
   config.testRunName =
       cliConfig.testRunName ?? envConfig.testRunName ?? fileConfig.testRunName;
 
+  config.testRunTags = cliConfig.testRunTags ??
+      envConfig.testRunTags ??
+      fileConfig.testRunTags;
+
+  config.testRunLinks = cliConfig.testRunLinks ??
+      envConfig.testRunLinks ??
+      fileConfig.testRunLinks;
+
   config.url = cliConfig.url ?? envConfig.url ?? fileConfig.url;
 
   config = _updateUrl(config);

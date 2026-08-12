@@ -5,18 +5,26 @@ The format is based on Keep a Changelog and this project adheres to Semantic Ver
 
 ## [Unreleased]
 
+## [5.1.0] - 2026-08-12
+
 ### Added
 
-* `importRealtime` configuration (`importRealtime` / `TMS_IMPORT_REALTIME` / `tmsImportRealtime`). Default `true` — preserves previous behaviour (send each result immediately after a test).
-* Batch import mode (`importRealtime=false`): buffer results and flush via `flushPendingResultsAsync` on group/file `tearDownAll`.
-* `tmsConfigureBatchImport()` — register root `tearDownAll` for batch mode; call at the start of `main()`.
-* `tmsFlushPendingResultsAsync()` — explicit flush for CI or multi-file suites.
-* `BulkAutotestHelper` (`writeTestResultsBulkAsync`): bulk autotest create/update; test run results submitted individually to support duplicate `externalId` pairs (`tmsTest` / `tmsTestWidgets`).
+* **`importRealtime`** (`importRealtime` / `TMS_IMPORT_REALTIME` / `tmsImportRealtime`). Default `true` — same behaviour as before (send each result right after the test).
+  * `false` — buffer results and flush on group/file `tearDownAll`.
+  * `tmsConfigureBatchImport()` — call at the start of `main()` in batch mode.
+  * `tmsFlushPendingResultsAsync()` — optional explicit flush for CI / multi-file runs.
+* **Test run tags and links** (run-level, not per-autotest):
+  * `testRunTags` / `TMS_TEST_RUN_TAGS` / `tmsTestRunTags` — comma-separated or JSON array.
+  * `testRunLinks` / `TMS_TEST_RUN_LINKS` / `tmsTestRunLinks` — JSON array (`url` required; `title` / `description` / `type` optional).
+  * Link types: `Related`, `BlockedBy`, `Defect`, `Issue`, `Requirement`, `Repository`.
+  * `adapterMode=2`: sent on test run **create**.
+  * `adapterMode=0|1`: **merged early** at startup (existing tags/links kept; duplicates by tag name / link URL skipped).
 
 ### Changed
 
-* `ApiManager.processTestResultAsync`: Sync Storage in-progress path runs before realtime/batch branch in both modes.
-* `onBlockCompletedAsync`: per-test when `importRealtime=true`; once per flush when `importRealtime=false`.
+* Sync Storage in-progress path still runs before realtime/batch result handling.
+* `onBlockCompletedAsync`: after each test when `importRealtime=true`; once per flush when `false`.
+* Batch flush submits test-run results one-by-one (same as realtime) so `tmsTest` / `tmsTestWidgets` pairs with the same `externalId` still produce two results.
 
 ### Removed
 
@@ -24,7 +32,9 @@ The format is based on Keep a Changelog and this project adheres to Semantic Ver
 
 ### Fixed
 
-* HTML escaping is now applied before test result submission.
+* HTML escaping is applied before test result submission.
+* Async unit tests that hit the network now use `await expectLater` (no more “failed after test completion”).
+* Batch mode: register `tearDownAll` at test declaration time so all groups flush correctly.
 
 ## [5.0.0] - 2026-07-22
 
