@@ -80,7 +80,7 @@ part 'model/create_project_api_model.dart';
 part 'model/create_step_api_model.dart';
 part 'model/create_work_item_api_model.dart';
 part 'model/custom_attribute_api_result.dart';
-part 'model/custom_attribute_get_model.dart';
+part 'model/custom_attribute_model.dart';
 part 'model/custom_attribute_option_api_result.dart';
 part 'model/custom_attribute_option_model.dart';
 part 'model/custom_attribute_put_model.dart';

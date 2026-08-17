@@ -1,5 +1,7 @@
 //
 // AUTO-GENERATED FILE, DO NOT MODIFY!
+// MANUAL PATCH: adaptersAttachmentsBulkPostWithHttpInfo — for-loop for List<MultipartFile>
+// (OpenAPI Generator bug, TMS-40968). Restore after regen; do not use single-file template.
 //
 // @dart=2.18
 
@@ -37,6 +39,8 @@ class AttachmentsApi {
     final mp = MultipartRequest('POST', Uri.parse(path));
     if (files != null) {
       hasFields = true;
+      // MANUAL PATCH (TMS-40968): OpenAPI Generator applies single-file template
+      // to List<MultipartFile>; restore for-loop after regen. Do not remove.
       for (final file in files) {
         mp.files.add(file);
       }
@@ -170,7 +174,7 @@ class AttachmentsApi {
 
   /// Upload new attachment file
   ///
-  /// File size is restricted to 1 GB (1 073 741 824 bytes)
+  /// File size is restricted to 50 MB (52 428 800 bytes)
   ///
   /// Note: This method returns the HTTP [Response].
   ///
@@ -214,7 +218,7 @@ class AttachmentsApi {
 
   /// Upload new attachment file
   ///
-  /// File size is restricted to 1 GB (1 073 741 824 bytes)
+  /// File size is restricted to 50 MB (52 428 800 bytes)
   ///
   /// Parameters:
   ///

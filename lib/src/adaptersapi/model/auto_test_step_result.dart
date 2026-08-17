@@ -52,7 +52,7 @@ class AutoTestStepResult {
   /// Nested step results. The maximum nesting level is 15.
   List<AutoTestStepResult>? stepResults;
 
-  /// /// <summary>  Specifies an attachment GUID. Multiple values can be sent.  </summary>
+  /// /// <summary> Specifies an attachment GUID. Multiple values can be sent. </summary>
   List<AttachmentApiResult>? attachments;
 
   /// \"<b>parameter</b>\": \"<b>value</b>\" pair with arbitrary custom parameters. Multiple parameters can be sent.
