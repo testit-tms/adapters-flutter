@@ -26,7 +26,7 @@ class CustomAttributeApiResult {
   /// Unique ID of the attribute
   String id;
 
-  /// Collection of the attribute options      Available for attributes of type `options` and `multiple options` only
+  /// Collection of the attribute options   Available for attributes of type `options` and `multiple options` only
   List<CustomAttributeOptionApiResult> options;
 
   /// Type of the attribute

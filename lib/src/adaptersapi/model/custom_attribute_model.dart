@@ -10,27 +10,43 @@
 
 part of adapters_api;
 
-class CustomAttributePutModel {
-  /// Returns a new [CustomAttributePutModel] instance.
-  CustomAttributePutModel({
+class CustomAttributeModel {
+  /// Returns a new [CustomAttributeModel] instance.
+  CustomAttributeModel({
     required this.id,
     required this.type,
+    this.options = const [],
+    this.targets = const [],
+    required this.isReadOnly,
     required this.isDeleted,
+    required this.isSystem,
     required this.name,
     required this.isEnabled,
     required this.isRequired,
     required this.isGlobal,
-    this.options = const [],
+    this.code,
   });
 
-  /// Unique ID of the attribute
+  /// Unique ID of the attribute.
   String id;
 
-  /// Type of the attribute
+  /// Type of the attribute.
   CustomAttributeTypesEnum type;
 
-  /// Indicates if the entity is deleted
+  /// Collection of the attribute options.
+  List<CustomAttributeOptionModel> options;
+
+  /// Collection of the attribute targets.   Defines where the attribute can be used (e.g., TestCases, AutoTestCases, TestPlans).
+  List<String> targets;
+
+  /// Indicates if the attribute is read-only.
+  bool isReadOnly;
+
+  /// Indicates if the attribute is deleted.
   bool isDeleted;
+
+  /// Indicates if the attribute is system.
+  bool isSystem;
 
   /// Name of the attribute
   String name;
@@ -44,56 +60,68 @@ class CustomAttributePutModel {
   /// Indicates if the attribute is available across all projects
   bool isGlobal;
 
-  /// Collection of the attribute options   Available for attributes of type `options` and `multiple options` only
-  List<CustomAttributeOptionModel>? options;
+  /// Optional code identifier for the attribute.
+  String? code;
 
   @override
-  bool operator ==(Object other) => identical(this, other) || other is CustomAttributePutModel &&
+  bool operator ==(Object other) => identical(this, other) || other is CustomAttributeModel &&
     other.id == id &&
     other.type == type &&
+    _deepEquality.equals(other.options, options) &&
+    _deepEquality.equals(other.targets, targets) &&
+    other.isReadOnly == isReadOnly &&
     other.isDeleted == isDeleted &&
+    other.isSystem == isSystem &&
     other.name == name &&
     other.isEnabled == isEnabled &&
     other.isRequired == isRequired &&
     other.isGlobal == isGlobal &&
-    _deepEquality.equals(other.options, options);
+    other.code == code;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
     (id.hashCode) +
     (type.hashCode) +
+    (options.hashCode) +
+    (targets.hashCode) +
+    (isReadOnly.hashCode) +
     (isDeleted.hashCode) +
+    (isSystem.hashCode) +
     (name.hashCode) +
     (isEnabled.hashCode) +
     (isRequired.hashCode) +
     (isGlobal.hashCode) +
-    (options == null ? 0 : options!.hashCode);
+    (code == null ? 0 : code!.hashCode);
 
   @override
-  String toString() => 'CustomAttributePutModel[id=$id, type=$type, isDeleted=$isDeleted, name=$name, isEnabled=$isEnabled, isRequired=$isRequired, isGlobal=$isGlobal, options=$options]';
+  String toString() => 'CustomAttributeModel[id=$id, type=$type, options=$options, targets=$targets, isReadOnly=$isReadOnly, isDeleted=$isDeleted, isSystem=$isSystem, name=$name, isEnabled=$isEnabled, isRequired=$isRequired, isGlobal=$isGlobal, code=$code]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
       json[r'id'] = this.id;
       json[r'type'] = this.type;
+      json[r'options'] = this.options;
+      json[r'targets'] = this.targets;
+      json[r'isReadOnly'] = this.isReadOnly;
       json[r'isDeleted'] = this.isDeleted;
+      json[r'isSystem'] = this.isSystem;
       json[r'name'] = this.name;
       json[r'isEnabled'] = this.isEnabled;
       json[r'isRequired'] = this.isRequired;
       json[r'isGlobal'] = this.isGlobal;
-    if (this.options != null) {
-      json[r'options'] = this.options;
+    if (this.code != null) {
+      json[r'code'] = this.code;
     } else {
-      json[r'options'] = null;
+      json[r'code'] = null;
     }
     return json;
   }
 
-  /// Returns a new [CustomAttributePutModel] instance and imports its values from
+  /// Returns a new [CustomAttributeModel] instance and imports its values from
   /// [value] if it's a [Map], null otherwise.
   // ignore: prefer_constructors_over_static_methods
-  static CustomAttributePutModel? fromJson(dynamic value) {
+  static CustomAttributeModel? fromJson(dynamic value) {
     if (value is Map) {
       final json = value.cast<String, dynamic>();
 
@@ -102,31 +130,37 @@ class CustomAttributePutModel {
       // Note 2: this code is stripped in release mode!
       assert(() {
         requiredKeys.forEach((key) {
-          assert(json.containsKey(key), 'Required key "CustomAttributePutModel[$key]" is missing from JSON.');
-          assert(json[key] != null, 'Required key "CustomAttributePutModel[$key]" has a null value in JSON.');
+          assert(json.containsKey(key), 'Required key "CustomAttributeModel[$key]" is missing from JSON.');
+          assert(json[key] != null, 'Required key "CustomAttributeModel[$key]" has a null value in JSON.');
         });
         return true;
       }());
 
-      return CustomAttributePutModel(
+      return CustomAttributeModel(
         id: mapValueOfType<String>(json, r'id')!,
         type: CustomAttributeTypesEnum.fromJson(json[r'type'])!,
+        options: CustomAttributeOptionModel.listFromJson(json[r'options']),
+        targets: json[r'targets'] is Iterable
+            ? (json[r'targets'] as Iterable).cast<String>().toList(growable: false)
+            : const [],
+        isReadOnly: mapValueOfType<bool>(json, r'isReadOnly')!,
         isDeleted: mapValueOfType<bool>(json, r'isDeleted')!,
+        isSystem: mapValueOfType<bool>(json, r'isSystem')!,
         name: mapValueOfType<String>(json, r'name')!,
         isEnabled: mapValueOfType<bool>(json, r'isEnabled')!,
         isRequired: mapValueOfType<bool>(json, r'isRequired')!,
         isGlobal: mapValueOfType<bool>(json, r'isGlobal')!,
-        options: CustomAttributeOptionModel.listFromJson(json[r'options']),
+        code: mapValueOfType<String>(json, r'code'),
       );
     }
     return null;
   }
 
-  static List<CustomAttributePutModel> listFromJson(dynamic json, {bool growable = false,}) {
-    final result = <CustomAttributePutModel>[];
+  static List<CustomAttributeModel> listFromJson(dynamic json, {bool growable = false,}) {
+    final result = <CustomAttributeModel>[];
     if (json is List && json.isNotEmpty) {
       for (final row in json) {
-        final value = CustomAttributePutModel.fromJson(row);
+        final value = CustomAttributeModel.fromJson(row);
         if (value != null) {
           result.add(value);
         }
@@ -135,12 +169,12 @@ class CustomAttributePutModel {
     return result.toList(growable: growable);
   }
 
-  static Map<String, CustomAttributePutModel> mapFromJson(dynamic json) {
-    final map = <String, CustomAttributePutModel>{};
+  static Map<String, CustomAttributeModel> mapFromJson(dynamic json) {
+    final map = <String, CustomAttributeModel>{};
     if (json is Map && json.isNotEmpty) {
       json = json.cast<String, dynamic>(); // ignore: parameter_assignments
       for (final entry in json.entries) {
-        final value = CustomAttributePutModel.fromJson(entry.value);
+        final value = CustomAttributeModel.fromJson(entry.value);
         if (value != null) {
           map[entry.key] = value;
         }
@@ -149,14 +183,14 @@ class CustomAttributePutModel {
     return map;
   }
 
-  // maps a json object with a list of CustomAttributePutModel-objects as value to a dart map
-  static Map<String, List<CustomAttributePutModel>> mapListFromJson(dynamic json, {bool growable = false,}) {
-    final map = <String, List<CustomAttributePutModel>>{};
+  // maps a json object with a list of CustomAttributeModel-objects as value to a dart map
+  static Map<String, List<CustomAttributeModel>> mapListFromJson(dynamic json, {bool growable = false,}) {
+    final map = <String, List<CustomAttributeModel>>{};
     if (json is Map && json.isNotEmpty) {
       // ignore: parameter_assignments
       json = json.cast<String, dynamic>();
       for (final entry in json.entries) {
-        map[entry.key] = CustomAttributePutModel.listFromJson(entry.value, growable: growable,);
+        map[entry.key] = CustomAttributeModel.listFromJson(entry.value, growable: growable,);
       }
     }
     return map;
@@ -166,7 +200,11 @@ class CustomAttributePutModel {
   static const requiredKeys = <String>{
     'id',
     'type',
+    'options',
+    'targets',
+    'isReadOnly',
     'isDeleted',
+    'isSystem',
     'name',
     'isEnabled',
     'isRequired',

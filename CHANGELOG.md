@@ -5,6 +5,10 @@ The format is based on Keep a Changelog and this project adheres to Semantic Ver
 
 ## [Unreleased]
 
+## [5.1.1] - 2026-08-17
+
+* cloud support
+
 ## [5.1.0] - 2026-08-12
 
 ### Added

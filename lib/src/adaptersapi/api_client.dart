@@ -258,8 +258,8 @@ class ApiClient {
           return CreateWorkItemApiModel.fromJson(value);
         case 'CustomAttributeApiResult':
           return CustomAttributeApiResult.fromJson(value);
-        case 'CustomAttributeGetModel':
-          return CustomAttributeGetModel.fromJson(value);
+        case 'CustomAttributeModel':
+          return CustomAttributeModel.fromJson(value);
         case 'CustomAttributeOptionApiResult':
           return CustomAttributeOptionApiResult.fromJson(value);
         case 'CustomAttributeOptionModel':
