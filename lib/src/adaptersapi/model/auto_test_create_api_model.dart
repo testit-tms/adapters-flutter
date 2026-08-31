@@ -22,6 +22,7 @@ class AutoTestCreateApiModel {
     this.title,
     this.description,
     this.isFlaky,
+    this.layer,
     this.steps = const [],
     this.setup = const [],
     this.teardown = const [],
@@ -58,6 +59,9 @@ class AutoTestCreateApiModel {
   /// Indicates if the autotest is marked as flaky
   bool? isFlaky;
 
+  /// Layer of the autotest. Assigns layer by rules if omitted.
+  LayerApiModel? layer;
+
   /// Collection of the autotest steps
   List<AutoTestStepApiModel>? steps;
 
@@ -90,6 +94,7 @@ class AutoTestCreateApiModel {
     other.title == title &&
     other.description == description &&
     other.isFlaky == isFlaky &&
+    other.layer == layer &&
     _deepEquality.equals(other.steps, steps) &&
     _deepEquality.equals(other.setup, setup) &&
     _deepEquality.equals(other.teardown, teardown) &&
@@ -110,6 +115,7 @@ class AutoTestCreateApiModel {
     (title == null ? 0 : title!.hashCode) +
     (description == null ? 0 : description!.hashCode) +
     (isFlaky == null ? 0 : isFlaky!.hashCode) +
+    (layer == null ? 0 : layer!.hashCode) +
     (steps == null ? 0 : steps!.hashCode) +
     (setup == null ? 0 : setup!.hashCode) +
     (teardown == null ? 0 : teardown!.hashCode) +
@@ -119,7 +125,7 @@ class AutoTestCreateApiModel {
     (tags == null ? 0 : tags!.hashCode);
 
   @override
-  String toString() => 'AutoTestCreateApiModel[projectId=$projectId, externalId=$externalId, name=$name, externalKey=$externalKey, namespace=$namespace, classname=$classname, title=$title, description=$description, isFlaky=$isFlaky, steps=$steps, setup=$setup, teardown=$teardown, shouldCreateWorkItem=$shouldCreateWorkItem, labels=$labels, links=$links, tags=$tags]';
+  String toString() => 'AutoTestCreateApiModel[projectId=$projectId, externalId=$externalId, name=$name, externalKey=$externalKey, namespace=$namespace, classname=$classname, title=$title, description=$description, isFlaky=$isFlaky, layer=$layer, steps=$steps, setup=$setup, teardown=$teardown, shouldCreateWorkItem=$shouldCreateWorkItem, labels=$labels, links=$links, tags=$tags]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -155,6 +161,11 @@ class AutoTestCreateApiModel {
       json[r'isFlaky'] = this.isFlaky;
     } else {
       json[r'isFlaky'] = null;
+    }
+    if (this.layer != null) {
+      json[r'layer'] = this.layer;
+    } else {
+      json[r'layer'] = null;
     }
     if (this.steps != null) {
       json[r'steps'] = this.steps;
@@ -222,6 +233,7 @@ class AutoTestCreateApiModel {
         title: mapValueOfType<String>(json, r'title'),
         description: mapValueOfType<String>(json, r'description'),
         isFlaky: mapValueOfType<bool>(json, r'isFlaky'),
+        layer: LayerApiModel.fromJson(json[r'layer']),
         steps: AutoTestStepApiModel.listFromJson(json[r'steps']),
         setup: AutoTestStepApiModel.listFromJson(json[r'setup']),
         teardown: AutoTestStepApiModel.listFromJson(json[r'teardown']),

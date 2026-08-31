@@ -16,6 +16,7 @@ class AutoTestUpdateApiModel {
     required this.projectId,
     required this.externalId,
     required this.name,
+    required this.resetLayer,
     this.id,
     this.externalKey,
     this.namespace,
@@ -23,6 +24,7 @@ class AutoTestUpdateApiModel {
     this.title,
     this.description,
     this.isFlaky,
+    this.layer,
     this.steps = const [],
     this.setup = const [],
     this.teardown = const [],
@@ -39,6 +41,9 @@ class AutoTestUpdateApiModel {
 
   /// Name of the autotest
   String name;
+
+  /// Indicates if the autotest layer should be reset.
+  bool resetLayer;
 
   /// Autotest unique internal identifier
   String? id;
@@ -60,6 +65,9 @@ class AutoTestUpdateApiModel {
 
   /// Indicates if the autotest is marked as flaky
   bool? isFlaky;
+
+  /// Layer of the autotest. Assigns layer by rules if omitted.
+  LayerApiModel? layer;
 
   /// Collection of the autotest steps
   List<AutoTestStepApiModel>? steps;
@@ -84,6 +92,7 @@ class AutoTestUpdateApiModel {
     other.projectId == projectId &&
     other.externalId == externalId &&
     other.name == name &&
+    other.resetLayer == resetLayer &&
     other.id == id &&
     other.externalKey == externalKey &&
     other.namespace == namespace &&
@@ -91,6 +100,7 @@ class AutoTestUpdateApiModel {
     other.title == title &&
     other.description == description &&
     other.isFlaky == isFlaky &&
+    other.layer == layer &&
     _deepEquality.equals(other.steps, steps) &&
     _deepEquality.equals(other.setup, setup) &&
     _deepEquality.equals(other.teardown, teardown) &&
@@ -104,6 +114,7 @@ class AutoTestUpdateApiModel {
     (projectId.hashCode) +
     (externalId.hashCode) +
     (name.hashCode) +
+    (resetLayer.hashCode) +
     (id == null ? 0 : id!.hashCode) +
     (externalKey == null ? 0 : externalKey!.hashCode) +
     (namespace == null ? 0 : namespace!.hashCode) +
@@ -111,6 +122,7 @@ class AutoTestUpdateApiModel {
     (title == null ? 0 : title!.hashCode) +
     (description == null ? 0 : description!.hashCode) +
     (isFlaky == null ? 0 : isFlaky!.hashCode) +
+    (layer == null ? 0 : layer!.hashCode) +
     (steps == null ? 0 : steps!.hashCode) +
     (setup == null ? 0 : setup!.hashCode) +
     (teardown == null ? 0 : teardown!.hashCode) +
@@ -119,13 +131,14 @@ class AutoTestUpdateApiModel {
     (tags == null ? 0 : tags!.hashCode);
 
   @override
-  String toString() => 'AutoTestUpdateApiModel[projectId=$projectId, externalId=$externalId, name=$name, id=$id, externalKey=$externalKey, namespace=$namespace, classname=$classname, title=$title, description=$description, isFlaky=$isFlaky, steps=$steps, setup=$setup, teardown=$teardown, labels=$labels, links=$links, tags=$tags]';
+  String toString() => 'AutoTestUpdateApiModel[projectId=$projectId, externalId=$externalId, name=$name, resetLayer=$resetLayer, id=$id, externalKey=$externalKey, namespace=$namespace, classname=$classname, title=$title, description=$description, isFlaky=$isFlaky, layer=$layer, steps=$steps, setup=$setup, teardown=$teardown, labels=$labels, links=$links, tags=$tags]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
       json[r'projectId'] = this.projectId;
       json[r'externalId'] = this.externalId;
       json[r'name'] = this.name;
+      json[r'resetLayer'] = this.resetLayer;
     if (this.id != null) {
       json[r'id'] = this.id;
     } else {
@@ -160,6 +173,11 @@ class AutoTestUpdateApiModel {
       json[r'isFlaky'] = this.isFlaky;
     } else {
       json[r'isFlaky'] = null;
+    }
+    if (this.layer != null) {
+      json[r'layer'] = this.layer;
+    } else {
+      json[r'layer'] = null;
     }
     if (this.steps != null) {
       json[r'steps'] = this.steps;
@@ -216,6 +234,7 @@ class AutoTestUpdateApiModel {
         projectId: mapValueOfType<String>(json, r'projectId')!,
         externalId: mapValueOfType<String>(json, r'externalId')!,
         name: mapValueOfType<String>(json, r'name')!,
+        resetLayer: mapValueOfType<bool>(json, r'resetLayer')!,
         id: mapValueOfType<String>(json, r'id'),
         externalKey: mapValueOfType<String>(json, r'externalKey'),
         namespace: mapValueOfType<String>(json, r'namespace'),
@@ -223,6 +242,7 @@ class AutoTestUpdateApiModel {
         title: mapValueOfType<String>(json, r'title'),
         description: mapValueOfType<String>(json, r'description'),
         isFlaky: mapValueOfType<bool>(json, r'isFlaky'),
+        layer: LayerApiModel.fromJson(json[r'layer']),
         steps: AutoTestStepApiModel.listFromJson(json[r'steps']),
         setup: AutoTestStepApiModel.listFromJson(json[r'setup']),
         teardown: AutoTestStepApiModel.listFromJson(json[r'teardown']),
@@ -281,6 +301,7 @@ class AutoTestUpdateApiModel {
     'projectId',
     'externalId',
     'name',
+    'resetLayer',
   };
 }
 

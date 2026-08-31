@@ -27,6 +27,7 @@ class AutoTestApiResult {
     this.title,
     this.description,
     this.externalKey,
+    this.layer,
     this.links = const [],
     this.labels = const [],
     this.tags = const [],
@@ -60,6 +61,9 @@ class AutoTestApiResult {
 
   String? externalKey;
 
+  /// Model of auto test layer for use in responses.
+  LayerApiResult? layer;
+
   List<LinkApiResult>? links;
 
   List<LabelApiResult>? labels;
@@ -82,6 +86,7 @@ class AutoTestApiResult {
     other.title == title &&
     other.description == description &&
     other.externalKey == externalKey &&
+    other.layer == layer &&
     _deepEquality.equals(other.links, links) &&
     _deepEquality.equals(other.labels, labels) &&
     _deepEquality.equals(other.tags, tags);
@@ -103,12 +108,13 @@ class AutoTestApiResult {
     (title == null ? 0 : title!.hashCode) +
     (description == null ? 0 : description!.hashCode) +
     (externalKey == null ? 0 : externalKey!.hashCode) +
+    (layer == null ? 0 : layer!.hashCode) +
     (links == null ? 0 : links!.hashCode) +
     (labels == null ? 0 : labels!.hashCode) +
     (tags == null ? 0 : tags!.hashCode);
 
   @override
-  String toString() => 'AutoTestApiResult[id=$id, projectId=$projectId, name=$name, isFlaky=$isFlaky, globalId=$globalId, externalId=$externalId, namespace=$namespace, classname=$classname, steps=$steps, setup=$setup, teardown=$teardown, title=$title, description=$description, externalKey=$externalKey, links=$links, labels=$labels, tags=$tags]';
+  String toString() => 'AutoTestApiResult[id=$id, projectId=$projectId, name=$name, isFlaky=$isFlaky, globalId=$globalId, externalId=$externalId, namespace=$namespace, classname=$classname, steps=$steps, setup=$setup, teardown=$teardown, title=$title, description=$description, externalKey=$externalKey, layer=$layer, links=$links, labels=$labels, tags=$tags]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -162,6 +168,11 @@ class AutoTestApiResult {
     } else {
       json[r'externalKey'] = null;
     }
+    if (this.layer != null) {
+      json[r'layer'] = this.layer;
+    } else {
+      json[r'layer'] = null;
+    }
     if (this.links != null) {
       json[r'links'] = this.links;
     } else {
@@ -213,6 +224,7 @@ class AutoTestApiResult {
         title: mapValueOfType<String>(json, r'title'),
         description: mapValueOfType<String>(json, r'description'),
         externalKey: mapValueOfType<String>(json, r'externalKey'),
+        layer: LayerApiResult.fromJson(json[r'layer']),
         links: LinkApiResult.listFromJson(json[r'links']),
         labels: LabelApiResult.listFromJson(json[r'labels']),
         tags: json[r'tags'] is Iterable

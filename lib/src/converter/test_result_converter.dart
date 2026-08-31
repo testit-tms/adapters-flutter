@@ -35,6 +35,15 @@ api.TestStatusType mapToStatusType(String status) {
   return api.TestStatusType.incomplete;
 }
 
+api.LayerApiModel? _toLayerApiModel(final String? layer) {
+  final name = layer?.trim();
+  if (name == null || name.isEmpty) {
+    return null;
+  }
+
+  return api.LayerApiModel(name: name, source_: api.LayerSource.run);
+}
+
 api.AutoTestResultsForTestRunModel toAutoTestResultsForTestRunModel(
     final String? configurationId, final TestResultModel testResult) {
   var autoTestResultForTestRunModel = api.AutoTestResultsForTestRunModel(
@@ -75,6 +84,7 @@ api.AutoTestCreateApiModel toAutoTestCreateApiModel(
       externalId: testResult.externalId!,
       externalKey: null,
       isFlaky: null,
+      layer: _toLayerApiModel(testResult.layer),
       labels: testResult.labels
           .map((final name) => api.LabelApiModel(name: name))
           .toList(),
@@ -124,6 +134,8 @@ api.AutoTestUpdateApiModel toAutoTestUpdateApiModel(
       externalId: testResult.externalId!,
       externalKey: null,
       isFlaky: null,
+      resetLayer: false,
+      layer: _toLayerApiModel(testResult.layer),
       labels: testResult.labels
           .map((final name) => api.LabelApiModel(name: name))
           .toList(),

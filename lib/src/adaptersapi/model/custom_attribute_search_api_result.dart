@@ -10,9 +10,11 @@
 
 part of adapters_api;
 
-class CustomAttributeApiResult {
-  /// Returns a new [CustomAttributeApiResult] instance.
-  CustomAttributeApiResult({
+class CustomAttributeSearchApiResult {
+  /// Returns a new [CustomAttributeSearchApiResult] instance.
+  CustomAttributeSearchApiResult({
+    this.workItemUsage = const [],
+    this.testPlanUsage = const [],
     required this.id,
     this.options = const [],
     required this.type,
@@ -26,6 +28,12 @@ class CustomAttributeApiResult {
     this.targets = const [],
     this.code,
   });
+
+  /// Projects where attribute is used in work items
+  List<ProjectShortestApiResult> workItemUsage;
+
+  /// Projects where attribute is used in test plans
+  List<ProjectShortestApiResult> testPlanUsage;
 
   /// Unique ID of the attribute
   String id;
@@ -64,7 +72,9 @@ class CustomAttributeApiResult {
   String? code;
 
   @override
-  bool operator ==(Object other) => identical(this, other) || other is CustomAttributeApiResult &&
+  bool operator ==(Object other) => identical(this, other) || other is CustomAttributeSearchApiResult &&
+    _deepEquality.equals(other.workItemUsage, workItemUsage) &&
+    _deepEquality.equals(other.testPlanUsage, testPlanUsage) &&
     other.id == id &&
     _deepEquality.equals(other.options, options) &&
     other.type == type &&
@@ -81,6 +91,8 @@ class CustomAttributeApiResult {
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
+    (workItemUsage.hashCode) +
+    (testPlanUsage.hashCode) +
     (id.hashCode) +
     (options.hashCode) +
     (type.hashCode) +
@@ -95,10 +107,12 @@ class CustomAttributeApiResult {
     (code == null ? 0 : code!.hashCode);
 
   @override
-  String toString() => 'CustomAttributeApiResult[id=$id, options=$options, type=$type, isDeleted=$isDeleted, name=$name, isEnabled=$isEnabled, isRequired=$isRequired, isGlobal=$isGlobal, isReadOnly=$isReadOnly, isSystem=$isSystem, targets=$targets, code=$code]';
+  String toString() => 'CustomAttributeSearchApiResult[workItemUsage=$workItemUsage, testPlanUsage=$testPlanUsage, id=$id, options=$options, type=$type, isDeleted=$isDeleted, name=$name, isEnabled=$isEnabled, isRequired=$isRequired, isGlobal=$isGlobal, isReadOnly=$isReadOnly, isSystem=$isSystem, targets=$targets, code=$code]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
+      json[r'workItemUsage'] = this.workItemUsage;
+      json[r'testPlanUsage'] = this.testPlanUsage;
       json[r'id'] = this.id;
       json[r'options'] = this.options;
       json[r'type'] = this.type;
@@ -118,10 +132,10 @@ class CustomAttributeApiResult {
     return json;
   }
 
-  /// Returns a new [CustomAttributeApiResult] instance and imports its values from
+  /// Returns a new [CustomAttributeSearchApiResult] instance and imports its values from
   /// [value] if it's a [Map], null otherwise.
   // ignore: prefer_constructors_over_static_methods
-  static CustomAttributeApiResult? fromJson(dynamic value) {
+  static CustomAttributeSearchApiResult? fromJson(dynamic value) {
     if (value is Map) {
       final json = value.cast<String, dynamic>();
 
@@ -130,13 +144,15 @@ class CustomAttributeApiResult {
       // Note 2: this code is stripped in release mode!
       assert(() {
         requiredKeys.forEach((key) {
-          assert(json.containsKey(key), 'Required key "CustomAttributeApiResult[$key]" is missing from JSON.');
-          assert(json[key] != null, 'Required key "CustomAttributeApiResult[$key]" has a null value in JSON.');
+          assert(json.containsKey(key), 'Required key "CustomAttributeSearchApiResult[$key]" is missing from JSON.');
+          assert(json[key] != null, 'Required key "CustomAttributeSearchApiResult[$key]" has a null value in JSON.');
         });
         return true;
       }());
 
-      return CustomAttributeApiResult(
+      return CustomAttributeSearchApiResult(
+        workItemUsage: ProjectShortestApiResult.listFromJson(json[r'workItemUsage']),
+        testPlanUsage: ProjectShortestApiResult.listFromJson(json[r'testPlanUsage']),
         id: mapValueOfType<String>(json, r'id')!,
         options: CustomAttributeOptionApiResult.listFromJson(json[r'options']),
         type: CustomAttributeType.fromJson(json[r'type'])!,
@@ -156,11 +172,11 @@ class CustomAttributeApiResult {
     return null;
   }
 
-  static List<CustomAttributeApiResult> listFromJson(dynamic json, {bool growable = false,}) {
-    final result = <CustomAttributeApiResult>[];
+  static List<CustomAttributeSearchApiResult> listFromJson(dynamic json, {bool growable = false,}) {
+    final result = <CustomAttributeSearchApiResult>[];
     if (json is List && json.isNotEmpty) {
       for (final row in json) {
-        final value = CustomAttributeApiResult.fromJson(row);
+        final value = CustomAttributeSearchApiResult.fromJson(row);
         if (value != null) {
           result.add(value);
         }
@@ -169,12 +185,12 @@ class CustomAttributeApiResult {
     return result.toList(growable: growable);
   }
 
-  static Map<String, CustomAttributeApiResult> mapFromJson(dynamic json) {
-    final map = <String, CustomAttributeApiResult>{};
+  static Map<String, CustomAttributeSearchApiResult> mapFromJson(dynamic json) {
+    final map = <String, CustomAttributeSearchApiResult>{};
     if (json is Map && json.isNotEmpty) {
       json = json.cast<String, dynamic>(); // ignore: parameter_assignments
       for (final entry in json.entries) {
-        final value = CustomAttributeApiResult.fromJson(entry.value);
+        final value = CustomAttributeSearchApiResult.fromJson(entry.value);
         if (value != null) {
           map[entry.key] = value;
         }
@@ -183,14 +199,14 @@ class CustomAttributeApiResult {
     return map;
   }
 
-  // maps a json object with a list of CustomAttributeApiResult-objects as value to a dart map
-  static Map<String, List<CustomAttributeApiResult>> mapListFromJson(dynamic json, {bool growable = false,}) {
-    final map = <String, List<CustomAttributeApiResult>>{};
+  // maps a json object with a list of CustomAttributeSearchApiResult-objects as value to a dart map
+  static Map<String, List<CustomAttributeSearchApiResult>> mapListFromJson(dynamic json, {bool growable = false,}) {
+    final map = <String, List<CustomAttributeSearchApiResult>>{};
     if (json is Map && json.isNotEmpty) {
       // ignore: parameter_assignments
       json = json.cast<String, dynamic>();
       for (final entry in json.entries) {
-        map[entry.key] = CustomAttributeApiResult.listFromJson(entry.value, growable: growable,);
+        map[entry.key] = CustomAttributeSearchApiResult.listFromJson(entry.value, growable: growable,);
       }
     }
     return map;
@@ -198,6 +214,8 @@ class CustomAttributeApiResult {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
+    'workItemUsage',
+    'testPlanUsage',
     'id',
     'options',
     'type',

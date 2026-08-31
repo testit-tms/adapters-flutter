@@ -264,8 +264,16 @@ class ApiClient {
           return CustomAttributeOptionApiResult.fromJson(value);
         case 'CustomAttributeOptionModel':
           return CustomAttributeOptionModel.fromJson(value);
+        case 'CustomAttributeOptionPostApiModel':
+          return CustomAttributeOptionPostApiModel.fromJson(value);
+        case 'CustomAttributeOptionUpdateApiModel':
+          return CustomAttributeOptionUpdateApiModel.fromJson(value);
         case 'CustomAttributePutModel':
           return CustomAttributePutModel.fromJson(value);
+        case 'CustomAttributeSearchApiModel':
+          return CustomAttributeSearchApiModel.fromJson(value);
+        case 'CustomAttributeSearchApiResult':
+          return CustomAttributeSearchApiResult.fromJson(value);
         case 'CustomAttributeType':
           return CustomAttributeTypeTypeTransformer().decode(value);
         case 'CustomAttributeTypesEnum':
@@ -278,6 +286,10 @@ class ApiClient {
           return DetailedProjectApiResult.fromJson(value);
         case 'FailureCategoryModel':
           return FailureCategoryModelTypeTransformer().decode(value);
+        case 'GlobalCustomAttributePostApiModel':
+          return GlobalCustomAttributePostApiModel.fromJson(value);
+        case 'GlobalCustomAttributeUpdateApiModel':
+          return GlobalCustomAttributeUpdateApiModel.fromJson(value);
         case 'GuidExtractionModel':
           return GuidExtractionModel.fromJson(value);
         case 'ImageResizeType':
@@ -296,6 +308,12 @@ class ApiClient {
           return LabelApiResult.fromJson(value);
         case 'LabelShortModel':
           return LabelShortModel.fromJson(value);
+        case 'LayerApiModel':
+          return LayerApiModel.fromJson(value);
+        case 'LayerApiResult':
+          return LayerApiResult.fromJson(value);
+        case 'LayerSource':
+          return LayerSourceTypeTransformer().decode(value);
         case 'LinkApiResult':
           return LinkApiResult.fromJson(value);
         case 'LinkCreateApiModel':
@@ -336,6 +354,8 @@ class ApiClient {
           return ProjectApiResult.fromJson(value);
         case 'ProjectAttributesFilterModel':
           return ProjectAttributesFilterModel.fromJson(value);
+        case 'ProjectShortestApiResult':
+          return ProjectShortestApiResult.fromJson(value);
         case 'ProjectTypeModel':
           return ProjectTypeModelTypeTransformer().decode(value);
         case 'ProjectsFilterModel':

@@ -151,6 +151,7 @@ Future<void> updateTestResultAsync(final TestResultModel testResult) async =>
           value.description = testResult.description;
           value.duration = testResult.duration;
           value.externalId = testResult.externalId;
+          value.layer = testResult.layer;
           value.labels.addAll(testResult.labels);
           value.links.addAll(testResult.links);
 
