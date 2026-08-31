@@ -65,6 +65,7 @@ void _registerBatchFlushHookAtDeclaration() {
 void tmsTest(final String description, final dynamic Function() body,
         {final String? externalId,
         final Set<Link>? links,
+        final String? layer,
         final Map<String, dynamic>? onPlatform,
         final int? retry,
         final String? skip,
@@ -85,6 +86,7 @@ void tmsTest(final String description, final dynamic Function() body,
         () async => await testAsync(description, () async => await body.call(),
             externalId: externalId,
             links: links,
+            layer: layer,
             skip: skip,
             labels: labels,
             tags: tags,
@@ -97,6 +99,7 @@ void tmsTestWidgets(
         final String description, final WidgetTesterCallback callback,
         {final String? externalId,
         final Set<Link>? links,
+        final String? layer,
         final bool semanticsEnabled = true,
         final String? skip,
         final Set<String>? labels,
@@ -117,6 +120,7 @@ void tmsTestWidgets(
             description, () async => await callback(tester),
             externalId: externalId,
             links: links,
+            layer: layer,
             skip: skip,
             labels: labels,
             tags: tags,
@@ -176,6 +180,7 @@ Future<void> testAsync(
     final String description, final Future<void> Function() body,
     {final String? externalId,
     final Set<Link>? links,
+    final String? layer,
     final String? skip,
     final Set<String>? labels,
     final Set<String>? tags,
@@ -199,6 +204,9 @@ Future<void> testAsync(
     validateStringArgument('Description', description);
     links?.forEach((final link) => validateUriArgument('Link url', link.url));
     labels?.forEach((final label) => validateStringArgument('Label', label));
+    if (layer != null && layer.isNotEmpty) {
+      validateStringArgument('Layer', layer);
+    }
     tags?.forEach((final tag) => validateStringArgument('Tag', tag));
     await validateWorkItemsIdsAsync(config, workItemsIds);
 
@@ -214,6 +222,9 @@ Future<void> testAsync(
     localResult.classname = getGroupName();
     localResult.description = description;
     localResult.externalId = safeExternalId;
+    if (layer != null && layer.trim().isNotEmpty) {
+      localResult.layer = layer.trim();
+    }
     localResult.labels = liveTest?.test.metadata.tags ?? {};
     localResult.tags = tags ?? {};
     localResult.links = links ?? {};

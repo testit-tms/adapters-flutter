@@ -73,6 +73,9 @@ String parameterToString(dynamic value) {
   if (value is ImageResizeType) {
     return ImageResizeTypeTypeTransformer().encode(value).toString();
   }
+  if (value is LayerSource) {
+    return LayerSourceTypeTransformer().encode(value).toString();
+  }
   if (value is LinkType) {
     return LinkTypeTypeTransformer().encode(value).toString();
   }

@@ -15,6 +15,7 @@ class TestResultShortResponse {
   TestResultShortResponse({
     required this.id,
     required this.name,
+    required this.autotestGlobalId,
     this.autoTestTags = const [],
     required this.testRunId,
     required this.configurationId,
@@ -35,6 +36,9 @@ class TestResultShortResponse {
 
   /// Name of autotest represented by the test result
   String name;
+
+  /// Global ID of autotest represented by the test result
+  int autotestGlobalId;
 
   /// Tags of the autotest represented by the test result
   List<String> autoTestTags;
@@ -78,6 +82,7 @@ class TestResultShortResponse {
   bool operator ==(Object other) => identical(this, other) || other is TestResultShortResponse &&
     other.id == id &&
     other.name == name &&
+    other.autotestGlobalId == autotestGlobalId &&
     _deepEquality.equals(other.autoTestTags, autoTestTags) &&
     other.testRunId == testRunId &&
     other.configurationId == configurationId &&
@@ -97,6 +102,7 @@ class TestResultShortResponse {
     // ignore: unnecessary_parenthesis
     (id.hashCode) +
     (name.hashCode) +
+    (autotestGlobalId.hashCode) +
     (autoTestTags.hashCode) +
     (testRunId.hashCode) +
     (configurationId.hashCode) +
@@ -112,12 +118,13 @@ class TestResultShortResponse {
     (duration == null ? 0 : duration!.hashCode);
 
   @override
-  String toString() => 'TestResultShortResponse[id=$id, name=$name, autoTestTags=$autoTestTags, testRunId=$testRunId, configurationId=$configurationId, configurationName=$configurationName, status=$status, resultReasons=$resultReasons, links=$links, attachments=$attachments, rerunCompletedCount=$rerunCompletedCount, autotestExternalId=$autotestExternalId, outcome=$outcome, comment=$comment, duration=$duration]';
+  String toString() => 'TestResultShortResponse[id=$id, name=$name, autotestGlobalId=$autotestGlobalId, autoTestTags=$autoTestTags, testRunId=$testRunId, configurationId=$configurationId, configurationName=$configurationName, status=$status, resultReasons=$resultReasons, links=$links, attachments=$attachments, rerunCompletedCount=$rerunCompletedCount, autotestExternalId=$autotestExternalId, outcome=$outcome, comment=$comment, duration=$duration]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
       json[r'id'] = this.id;
       json[r'name'] = this.name;
+      json[r'autotestGlobalId'] = this.autotestGlobalId;
       json[r'autoTestTags'] = this.autoTestTags;
       json[r'testRunId'] = this.testRunId;
       json[r'configurationId'] = this.configurationId;
@@ -171,6 +178,7 @@ class TestResultShortResponse {
       return TestResultShortResponse(
         id: mapValueOfType<String>(json, r'id')!,
         name: mapValueOfType<String>(json, r'name')!,
+        autotestGlobalId: mapValueOfType<int>(json, r'autotestGlobalId')!,
         autoTestTags: json[r'autoTestTags'] is Iterable
             ? (json[r'autoTestTags'] as Iterable).cast<String>().toList(growable: false)
             : const [],
@@ -235,6 +243,7 @@ class TestResultShortResponse {
   static const requiredKeys = <String>{
     'id',
     'name',
+    'autotestGlobalId',
     'autoTestTags',
     'testRunId',
     'configurationId',
