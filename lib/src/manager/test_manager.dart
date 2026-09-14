@@ -61,7 +61,7 @@ void _registerBatchFlushHookAtDeclaration() {
   });
 }
 
-/// Run flutter test [body] with [description] and, optional, [externalId], [links], [onPlatform], [retry], [skip], [tags], [testOn], [timeout], [title] or [workItemsIds], then upload result to Test IT.
+/// Run flutter test [body] with [description] and, optional, [externalId], [links], [onPlatform], [retry], [skip], [tags], [testOn], [timeout], [title], [workItemId] or [workItemsIds], then upload result to Test IT.
 void tmsTest(final String description, final dynamic Function() body,
         {final String? externalId,
         final Set<Link>? links,
@@ -74,6 +74,8 @@ void tmsTest(final String description, final dynamic Function() body,
         final String? testOn,
         final Timeout? timeout,
         final String? title,
+        final String? workItemId,
+        @Deprecated('Use workItemId with a single globalId instead.')
         final Set<String>? workItemsIds}) {
   _registerBatchFlushHookAtDeclaration();
   test(
@@ -91,10 +93,11 @@ void tmsTest(final String description, final dynamic Function() body,
             labels: labels,
             tags: tags,
             title: title,
+            workItemId: workItemId,
             workItemsIds: workItemsIds));
 }
 
-/// Run flutter testWidgets [callback] with [description] and, optional, [externalId], [links], [semanticsEnabled], [skip], [tags], [timeout], [title], [variant] or [workItemsIds], then upload result to Test IT.
+/// Run flutter testWidgets [callback] with [description] and, optional, [externalId], [links], [semanticsEnabled], [skip], [tags], [timeout], [title], [variant], [workItemId] or [workItemsIds], then upload result to Test IT.
 void tmsTestWidgets(
         final String description, final WidgetTesterCallback callback,
         {final String? externalId,
@@ -107,6 +110,8 @@ void tmsTestWidgets(
         final Timeout? timeout,
         final String? title,
         final TestVariant<Object?> variant = const DefaultTestVariant(),
+        final String? workItemId,
+        @Deprecated('Use workItemId with a single globalId instead.')
         final Set<String>? workItemsIds}) {
   _registerBatchFlushHookAtDeclaration();
   testWidgets(
@@ -125,6 +130,7 @@ void tmsTestWidgets(
             labels: labels,
             tags: tags,
             title: title,
+            workItemId: workItemId,
             workItemsIds: workItemsIds)));
 }
 
@@ -185,6 +191,7 @@ Future<void> testAsync(
     final Set<String>? labels,
     final Set<String>? tags,
     final String? title,
+    final String? workItemId,
     final Set<String>? workItemsIds}) async {
   HttpOverrides.global = null;
   final config = await createConfigOnceAsync();
@@ -208,7 +215,8 @@ Future<void> testAsync(
       validateStringArgument('Layer', layer);
     }
     tags?.forEach((final tag) => validateStringArgument('Tag', tag));
-    await validateWorkItemsIdsAsync(config, workItemsIds);
+    final resolvedWorkItemIds = resolveWorkItemIds(workItemId, workItemsIds);
+    await validateWorkItemsIdsAsync(config, resolvedWorkItemIds);
 
     await _apiManager.tryCreateTestRunOnceAsync(config);
     await _apiManager.tryUpdateTestRunAsync(config);
@@ -236,7 +244,7 @@ Future<void> testAsync(
         basenameWithoutExtension(liveTest?.suite.path ?? '');
     localResult.startedOn = startedOn;
     localResult.title = title ?? liveTest?.test.name ?? '';
-    localResult.workItemIds = workItemsIds ?? {};
+    localResult.workItemIds = resolvedWorkItemIds ?? {};
 
     Exception? exception;
     StackTrace? stacktrace;
@@ -304,4 +312,14 @@ Future<void> tryLogWarningsOnceAsync() async {
       _isWarningsLogged = true;
     }
   });
+}
+
+Set<String>? resolveWorkItemIds(final String? workItemId, final Set<String>? workItemsIds) {
+  if (workItemsIds != null && workItemsIds.isNotEmpty) {
+    _logger.w('workItemsIds is deprecated. Use workItemId with a single globalId instead.');
+  }
+  if (workItemId != null && workItemId.isNotEmpty) {
+    return {workItemId};
+  }
+  return workItemsIds;
 }
