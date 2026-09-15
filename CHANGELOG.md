@@ -5,6 +5,10 @@ The format is based on Keep a Changelog and this project adheres to Semantic Ver
 
 ## [Unreleased]
 
+## [5.1.3] - 2026-09-15
+
+* add the "workItemId" annotation.
+
 ## [5.1.2] - 2026-08-31
 
 ### Added
