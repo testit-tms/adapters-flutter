@@ -5,18 +5,10 @@ The format is based on Keep a Changelog and this project adheres to Semantic Ver
 
 ## [Unreleased]
 
-## [5.1.3] - 2026-09-15
+## [5.1.1] - 2026-09-16
 
 * add the "workItemId" annotation.
-
-## [5.1.2] - 2026-08-31
-
-### Added
-
 * **Autotest layer** (test pyramid): optional `layer` on `tmsTest` / `tmsTestWidgets`; `TestLayers` constants; sent on autotest create/update with `source: Run`; update always sends `resetLayer: false`. See [doc/autotest-layer.md](./doc/autotest-layer.md).
-
-## [5.1.1] - 2026-08-17
-
 * cloud support
 
 ## [5.1.0] - 2026-08-12
