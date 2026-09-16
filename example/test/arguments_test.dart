@@ -50,11 +50,11 @@ void main() {
         expect(0, 1);
       });
 
-      tmsTest('with workItemsIds - success', workItemsIds: {'3083'}, () {
+      tmsTest('with workItemId - success', workItemId: '3083', () {
         return {};
       });
 
-      tmsTest('with workItemsIds - failed', workItemsIds: {'3083'}, () {
+      tmsTest('with workItemId - failed', workItemId: '3083', () {
         expect(0, 1);
       });
 
@@ -73,7 +73,7 @@ void main() {
             labels: {'label1'},
             tags: {'tag1'},
             title: 'title',
-            workItemsIds: {'3083'}, () {
+            workItemId: '3083', () {
           return {};
         });
 
@@ -83,7 +83,7 @@ void main() {
             labels: {'label1'},
             tags: {'tag1'},
             title: 'title',
-            workItemsIds: {'3083'}, () {
+            workItemId: '3083', () {
           expect(0, 1);
         });
       }
@@ -134,12 +134,12 @@ void main() {
         expect(0, 1);
       });
 
-      tmsTestWidgets('with workItemsIds - success', workItemsIds: {'3083'},
+      tmsTestWidgets('with workItemId - success', workItemId: '3083',
           (tester) async {
         return;
       });
 
-      tmsTestWidgets('with workItemsIds - failed', workItemsIds: {'3083'},
+      tmsTestWidgets('with workItemId - failed', workItemId: '3083',
           (tester) async {
         expect(0, 1);
       });
@@ -161,7 +161,7 @@ void main() {
             labels: {'label1'},
             tags: {'tag1'},
             title: 'title',
-            workItemsIds: {'3083'}, (tester) async {
+            workItemId: '3083', (tester) async {
           return;
         });
 
@@ -171,7 +171,7 @@ void main() {
             labels: {'label1'},
             tags: {'tag1'},
             title: 'title',
-            workItemsIds: {'3083'}, (tester) async {
+            workItemId: '3083', (tester) async {
           expect(0, 1);
         });
       }

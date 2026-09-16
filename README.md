@@ -265,8 +265,8 @@ Use metadata to specify information about autotest.
 * `layer` - test pyramid layer on the autotest card (source **Run** in TMS). Declared in test code only; not configurable via env/CLI. See [Autotest layer](#autotest-layer) and [doc/autotest-layer.md](./doc/autotest-layer.md).
 * `tags` - tags listed in the autotest card.
 * `title` - autotest name specified in the autotest card. If not specified, the test name is used.
-* `workItemsIds` - a method that links autotests with manual tests. Receives the set of manual
-  tests' IDs.
+* `workItemId` - a method that links an autotest with a manual test. Receives a single globalId.
+* `workItemsIds` - deprecated, use `workItemId` instead.
 
 #### Autotest layer
 
