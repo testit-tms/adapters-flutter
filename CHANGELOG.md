@@ -7,9 +7,16 @@ The format is based on Keep a Changelog and this project adheres to Semantic Ver
 
 ## [5.1.1] - 2026-09-16
 
+### Added
+
 * add the "workItemId" annotation.
 * **Autotest layer** (test pyramid): optional `layer` on `tmsTest` / `tmsTestWidgets`; `TestLayers` constants; sent on autotest create/update with `source: Run`; update always sends `resetLayer: false`. See [doc/autotest-layer.md](./doc/autotest-layer.md).
 * cloud support
+
+### Fixed
+
+* pub.dev dry-run: exclude generated OpenAPI sources from `dart analyze`.
+* do not publish `*.backup` files.
 
 ## [5.1.0] - 2026-08-12
 

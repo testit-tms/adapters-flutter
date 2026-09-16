@@ -13,3 +13,6 @@ example/README.md
 # Tests
 **/dart_test.yaml
 test/**
+
+# Local editor leftovers
+**/*.backup
