@@ -3,7 +3,11 @@
 All notable changes to this project will be documented in this file.  
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
 
-## [Unreleased]
+## [5.1.2-TMS-5.8] - 2026-09-24
+
+### Fixed
+
+* Test run metadata merge (mode 0/1): read existing links/attachments/description/launchSource via `GET /api/v2/testRuns/{id}` — adapters GET on TMS 5.8 returns empty links/attachments and omits description/launchSource, which caused overwrite on update.
 
 ## [5.1.0-TMS-5.8] - 2026-08-12
 

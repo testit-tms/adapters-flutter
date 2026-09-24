@@ -18,7 +18,17 @@ void main() {
             type: api.TestStatusApiType.pending,
             code: 'NotStarted',
           ),
-          attachments: const [],
+          description: 'existing description',
+          launchSource: 'Test IT',
+          attachments: [
+            api.AttachmentApiResult(
+              id: 'att-1',
+              fileId: 'f1',
+              type: 'text/plain',
+              size: 1,
+              name: 'a.txt',
+            ),
+          ],
           links: [
             api.LinkApiResult(
               id: 'link-1',
@@ -63,6 +73,91 @@ void main() {
       expect(update.tags, ['ui']);
       expect(update.links!.length, 1);
       expect(update.name, 'Old name');
+      expect(update.description, 'existing description');
+      expect(update.launchSource, 'Test IT');
+      expect(update.attachments!.single.id, 'att-1');
+    });
+  });
+
+  group('testRunFromV2Payload', () {
+    test('maps merge fields and ignores testResults', () {
+      final run = testRunFromV2Payload({
+        'id': 'run-1',
+        'name': 'TestRun_1',
+        'description': '213123123',
+        'launchSource': 'Test IT',
+        'stateName': 'Completed',
+        'status': {
+          'id': 'status-1',
+          'name': 'Успешен',
+          'type': 'Succeeded',
+          'code': 'PASSED',
+        },
+        'tags': ['ui', {'name': 'smoke'}],
+        'links': [
+          {
+            'id': 'l1',
+            'url': 'https://existing',
+            'title': 'Existing',
+            'type': 'Related',
+          },
+          {'title': 'no-url'},
+        ],
+        'attachments': [
+          {'id': 'att-1', 'name': 'a.txt'},
+          {'name': 'no-id'},
+        ],
+        'testResults': [
+          {'id': 'ignore-me'},
+        ],
+      });
+
+      expect(run.id, 'run-1');
+      expect(run.name, 'TestRun_1');
+      expect(run.description, '213123123');
+      expect(run.launchSource, 'Test IT');
+      expect(run.tags, ['ui', 'smoke']);
+      expect(run.links, hasLength(1));
+      expect(run.links.single.url, 'https://existing');
+      expect(run.attachments, hasLength(1));
+      expect(run.attachments.single.id, 'att-1');
+    });
+
+    test('merged update keeps v2 description, launchSource, attachments', () {
+      final run = testRunFromV2Payload({
+        'id': 'run-id',
+        'name': 'name',
+        'description': 'desc',
+        'launchSource': 'Test IT',
+        'tags': ['ui'],
+        'links': [
+          {
+            'id': 'l1',
+            'url': 'https://existing',
+            'title': 'Existing',
+            'type': 'Related',
+          },
+        ],
+        'attachments': [
+          {'id': 'att-1'},
+        ],
+      });
+
+      final update = toUpdateEmptyTestRunApiModel(
+        run,
+        config: ConfigModel()
+          ..testRunTags = ['smoke']
+          ..testRunLinks = [
+            Link('https://ci.example/job/2', type: LinkType.related),
+          ],
+      );
+
+      expect(update.description, 'desc');
+      expect(update.launchSource, 'Test IT');
+      expect(update.attachments!.single.id, 'att-1');
+      expect(update.tags, ['ui', 'smoke']);
+      expect(update.links!.map((l) => l.url),
+          ['https://existing', 'https://ci.example/job/2']);
     });
   });
 }

@@ -20,6 +20,9 @@ class TestRunApiResult {
     this.attachments = const [],
     this.links = const [],
     this.tags = const [],
+    // Keep on OpenAPI regen: required so merge-on-update does not wipe these fields.
+    this.description,
+    this.launchSource,
   });
 
   /// Test run unique identifier
@@ -43,6 +46,12 @@ class TestRunApiResult {
   /// Collection of tags associated with the test run
   List<String> tags;
 
+  /// Test run description (present on v2 GET; omitted/empty on adapters GET in TMS 5.8)
+  String? description;
+
+  /// Test run launch source (present on v2 GET; omitted on adapters GET in TMS 5.8)
+  String? launchSource;
+
   @override
   bool operator ==(Object other) => identical(this, other) || other is TestRunApiResult &&
     other.id == id &&
@@ -51,7 +60,9 @@ class TestRunApiResult {
     other.status == status &&
     _deepEquality.equals(other.attachments, attachments) &&
     _deepEquality.equals(other.links, links) &&
-    _deepEquality.equals(other.tags, tags);
+    _deepEquality.equals(other.tags, tags) &&
+    other.description == description &&
+    other.launchSource == launchSource;
 
   @override
   int get hashCode =>
@@ -62,10 +73,12 @@ class TestRunApiResult {
     (status.hashCode) +
     (attachments.hashCode) +
     (links.hashCode) +
-    (tags.hashCode);
+    (tags.hashCode) +
+    (description == null ? 0 : description!.hashCode) +
+    (launchSource == null ? 0 : launchSource!.hashCode);
 
   @override
-  String toString() => 'TestRunApiResult[id=$id, name=$name, stateName=$stateName, status=$status, attachments=$attachments, links=$links, tags=$tags]';
+  String toString() => 'TestRunApiResult[id=$id, name=$name, stateName=$stateName, status=$status, attachments=$attachments, links=$links, tags=$tags, description=$description, launchSource=$launchSource]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -76,6 +89,16 @@ class TestRunApiResult {
       json[r'attachments'] = this.attachments;
       json[r'links'] = this.links;
       json[r'tags'] = this.tags;
+    if (this.description != null) {
+      json[r'description'] = this.description;
+    } else {
+      json[r'description'] = null;
+    }
+    if (this.launchSource != null) {
+      json[r'launchSource'] = this.launchSource;
+    } else {
+      json[r'launchSource'] = null;
+    }
     return json;
   }
 
@@ -107,6 +130,8 @@ class TestRunApiResult {
         tags: json[r'tags'] is Iterable
             ? (json[r'tags'] as Iterable).cast<String>().toList(growable: false)
             : const [],
+        description: mapValueOfType<String>(json, r'description'),
+        launchSource: mapValueOfType<String>(json, r'launchSource'),
       );
     }
     return null;
