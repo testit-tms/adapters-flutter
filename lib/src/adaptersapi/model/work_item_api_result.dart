@@ -32,6 +32,7 @@ class WorkItemApiResult {
     this.postconditionSteps = const [],
     this.iterations = const [],
     this.autoTests = const [],
+    this.autoTestCases = const [],
     this.attachments = const [],
     this.links = const [],
     this.parameters = const [],
@@ -95,6 +96,9 @@ class WorkItemApiResult {
   /// Automated tests associated with the work item
   List<AutoTestModel> autoTests;
 
+  /// Set of automated test cases linked to the work item
+  List<AutoTestCaseApiModel> autoTestCases;
+
   /// Files attached to the work item
   List<AttachmentModel> attachments;
 
@@ -131,6 +135,7 @@ class WorkItemApiResult {
     _deepEquality.equals(other.postconditionSteps, postconditionSteps) &&
     _deepEquality.equals(other.iterations, iterations) &&
     _deepEquality.equals(other.autoTests, autoTests) &&
+    _deepEquality.equals(other.autoTestCases, autoTestCases) &&
     _deepEquality.equals(other.attachments, attachments) &&
     _deepEquality.equals(other.links, links) &&
     _deepEquality.equals(other.parameters, parameters) &&
@@ -159,6 +164,7 @@ class WorkItemApiResult {
     (postconditionSteps.hashCode) +
     (iterations.hashCode) +
     (autoTests.hashCode) +
+    (autoTestCases.hashCode) +
     (attachments.hashCode) +
     (links.hashCode) +
     (parameters.hashCode) +
@@ -166,7 +172,7 @@ class WorkItemApiResult {
     (description == null ? 0 : description!.hashCode);
 
   @override
-  String toString() => 'WorkItemApiResult[id=$id, globalId=$globalId, projectId=$projectId, sectionId=$sectionId, name=$name, entityTypeName=$entityTypeName, duration=$duration, state=$state, priority=$priority, isAutomated=$isAutomated, attributes=$attributes, tags=$tags, sectionPreconditionSteps=$sectionPreconditionSteps, sectionPostconditionSteps=$sectionPostconditionSteps, preconditionSteps=$preconditionSteps, steps=$steps, postconditionSteps=$postconditionSteps, iterations=$iterations, autoTests=$autoTests, attachments=$attachments, links=$links, parameters=$parameters, isDeleted=$isDeleted, description=$description]';
+  String toString() => 'WorkItemApiResult[id=$id, globalId=$globalId, projectId=$projectId, sectionId=$sectionId, name=$name, entityTypeName=$entityTypeName, duration=$duration, state=$state, priority=$priority, isAutomated=$isAutomated, attributes=$attributes, tags=$tags, sectionPreconditionSteps=$sectionPreconditionSteps, sectionPostconditionSteps=$sectionPostconditionSteps, preconditionSteps=$preconditionSteps, steps=$steps, postconditionSteps=$postconditionSteps, iterations=$iterations, autoTests=$autoTests, autoTestCases=$autoTestCases, attachments=$attachments, links=$links, parameters=$parameters, isDeleted=$isDeleted, description=$description]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -189,6 +195,7 @@ class WorkItemApiResult {
       json[r'postconditionSteps'] = this.postconditionSteps;
       json[r'iterations'] = this.iterations;
       json[r'autoTests'] = this.autoTests;
+      json[r'autoTestCases'] = this.autoTestCases;
       json[r'attachments'] = this.attachments;
       json[r'links'] = this.links;
       json[r'parameters'] = this.parameters;
@@ -239,6 +246,7 @@ class WorkItemApiResult {
         postconditionSteps: StepModel.listFromJson(json[r'postconditionSteps']),
         iterations: IterationModel.listFromJson(json[r'iterations']),
         autoTests: AutoTestModel.listFromJson(json[r'autoTests']),
+        autoTestCases: AutoTestCaseApiModel.listFromJson(json[r'autoTestCases']),
         attachments: AttachmentModel.listFromJson(json[r'attachments']),
         links: LinkModel.listFromJson(json[r'links']),
         parameters: WorkItemParameterKeyApiResult.listFromJson(json[r'parameters']),
@@ -310,6 +318,7 @@ class WorkItemApiResult {
     'postconditionSteps',
     'iterations',
     'autoTests',
+    'autoTestCases',
     'attachments',
     'links',
     'parameters',

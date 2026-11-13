@@ -26,12 +26,14 @@ class WorkItemTypeModel {
   static const testCases = WorkItemTypeModel._(r'TestCases');
   static const checkLists = WorkItemTypeModel._(r'CheckLists');
   static const sharedSteps = WorkItemTypeModel._(r'SharedSteps');
+  static const autoTestCases = WorkItemTypeModel._(r'AutoTestCases');
 
   /// List of all possible values in this [enum][WorkItemTypeModel].
   static const values = <WorkItemTypeModel>[
     testCases,
     checkLists,
     sharedSteps,
+    autoTestCases,
   ];
 
   static WorkItemTypeModel? fromJson(dynamic value) => WorkItemTypeModelTypeTransformer().decode(value);
@@ -73,6 +75,7 @@ class WorkItemTypeModelTypeTransformer {
         case r'TestCases': return WorkItemTypeModel.testCases;
         case r'CheckLists': return WorkItemTypeModel.checkLists;
         case r'SharedSteps': return WorkItemTypeModel.sharedSteps;
+        case r'AutoTestCases': return WorkItemTypeModel.autoTestCases;
         default:
           if (!allowNull) {
             throw ArgumentError('Unknown enum value to decode: $data');

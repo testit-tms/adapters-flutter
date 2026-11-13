@@ -28,6 +28,7 @@ class CreateWorkItemApiModel {
     this.postconditionSteps = const [],
     this.iterations = const [],
     this.autoTests = const [],
+    this.autoTestCases = const [],
     this.attachments = const [],
     this.links = const [],
     this.parameters = const [],
@@ -81,6 +82,9 @@ class CreateWorkItemApiModel {
   /// Set of automated tests linked to the work item
   List<AutoTestIdModel>? autoTests;
 
+  /// Set of automated test cases linked to the work item
+  List<AssignAutoTestCaseIdApiModel>? autoTestCases;
+
   /// Set of files attached to the work item
   List<AssignAttachmentApiModel>? attachments;
 
@@ -107,6 +111,7 @@ class CreateWorkItemApiModel {
     _deepEquality.equals(other.postconditionSteps, postconditionSteps) &&
     _deepEquality.equals(other.iterations, iterations) &&
     _deepEquality.equals(other.autoTests, autoTests) &&
+    _deepEquality.equals(other.autoTestCases, autoTestCases) &&
     _deepEquality.equals(other.attachments, attachments) &&
     _deepEquality.equals(other.links, links) &&
     _deepEquality.equals(other.parameters, parameters);
@@ -129,12 +134,13 @@ class CreateWorkItemApiModel {
     (postconditionSteps == null ? 0 : postconditionSteps!.hashCode) +
     (iterations == null ? 0 : iterations!.hashCode) +
     (autoTests == null ? 0 : autoTests!.hashCode) +
+    (autoTestCases == null ? 0 : autoTestCases!.hashCode) +
     (attachments == null ? 0 : attachments!.hashCode) +
     (links == null ? 0 : links!.hashCode) +
     (parameters == null ? 0 : parameters!.hashCode);
 
   @override
-  String toString() => 'CreateWorkItemApiModel[projectId=$projectId, name=$name, entityTypeName=$entityTypeName, duration=$duration, state=$state, priority=$priority, sectionId=$sectionId, description=$description, attributes=$attributes, tags=$tags, preconditionSteps=$preconditionSteps, steps=$steps, postconditionSteps=$postconditionSteps, iterations=$iterations, autoTests=$autoTests, attachments=$attachments, links=$links, parameters=$parameters]';
+  String toString() => 'CreateWorkItemApiModel[projectId=$projectId, name=$name, entityTypeName=$entityTypeName, duration=$duration, state=$state, priority=$priority, sectionId=$sectionId, description=$description, attributes=$attributes, tags=$tags, preconditionSteps=$preconditionSteps, steps=$steps, postconditionSteps=$postconditionSteps, iterations=$iterations, autoTests=$autoTests, autoTestCases=$autoTestCases, attachments=$attachments, links=$links, parameters=$parameters]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -189,6 +195,11 @@ class CreateWorkItemApiModel {
     } else {
       json[r'autoTests'] = null;
     }
+    if (this.autoTestCases != null) {
+      json[r'autoTestCases'] = this.autoTestCases;
+    } else {
+      json[r'autoTestCases'] = null;
+    }
     if (this.attachments != null) {
       json[r'attachments'] = this.attachments;
     } else {
@@ -241,6 +252,7 @@ class CreateWorkItemApiModel {
         postconditionSteps: CreateStepApiModel.listFromJson(json[r'postconditionSteps']),
         iterations: AssignIterationApiModel.listFromJson(json[r'iterations']),
         autoTests: AutoTestIdModel.listFromJson(json[r'autoTests']),
+        autoTestCases: AssignAutoTestCaseIdApiModel.listFromJson(json[r'autoTestCases']),
         attachments: AssignAttachmentApiModel.listFromJson(json[r'attachments']),
         links: CreateLinkApiModel.listFromJson(json[r'links']),
         parameters: WorkItemParameterKeyApiModel.listFromJson(json[r'parameters']),

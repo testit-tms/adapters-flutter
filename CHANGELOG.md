@@ -3,7 +3,18 @@
 All notable changes to this project will be documented in this file.  
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
 
-## [Unreleased]
+## [5.1.3-TMS-6.0] - 2026-11-13
+
+### Changed
+
+* support TMS 6.0 (regenerated adapters API client).
+* bump sync-storage to `v0.3.12-tms-5.8`.
+
+## [5.1.2-TMS-5.8] - 2026-09-24
+
+### Fixed
+
+* Test run metadata merge (mode 0/1): read existing links/attachments/description/launchSource via `GET /api/v2/testRuns/{id}` — adapters GET on TMS 5.8 returns empty links/attachments and omits description/launchSource, which caused overwrite on update.
 
 ## [5.1.1] - 2026-09-16
 
@@ -18,7 +29,7 @@ The format is based on Keep a Changelog and this project adheres to Semantic Ver
 * pub.dev dry-run: exclude generated OpenAPI sources from `dart analyze`.
 * do not publish `*.backup` files.
 
-## [5.1.0] - 2026-08-12
+## [5.1.0-TMS-5.8] - 2026-08-12
 
 ### Added
 
@@ -48,6 +59,10 @@ The format is based on Keep a Changelog and this project adheres to Semantic Ver
 * HTML escaping is applied before test result submission.
 * Async unit tests that hit the network now use `await expectLater` (no more “failed after test completion”).
 * Batch mode: register `tearDownAll` at test declaration time so all groups flush correctly.
+
+## [5.0.0-TMS-5.8] - 2026-07-22
+
+* support the Adapters API.
 
 ## [5.0.0] - 2026-07-22
 

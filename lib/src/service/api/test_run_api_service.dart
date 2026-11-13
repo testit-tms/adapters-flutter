@@ -1,5 +1,8 @@
 #!/usr/bin/env dart
 
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:meta/meta.dart';
 import 'package:testit_adapter_flutter/src/converter/test_run_converter.dart';
 import 'package:testit_adapter_flutter/src/manager/config_manager.dart' as config_manager;
@@ -30,9 +33,31 @@ Future<void> createEmptyTestRun(final ConfigModel config) async {
   await config_manager.updateTestRunIdAsync(testRun!.id);
 }
 
+/// Temporary: GET /api/v2/testRuns/{id} — adapters omits/empties links,
+/// attachments, description, launchSource on TMS 5.8. PUT stays on adapters.
 Future<TestRunApiResult?> getTestRunById(final ConfigModel config) async {
   final testRunsApi = createApiClient<TestRunsApi>(config);
-  return testRunsApi.adaptersTestRunsIdGet(config.testRunId!);
+  final id = config.testRunId!;
+  final response = await testRunsApi.apiClient.invokeAPI(
+    '/api/v2/testRuns/$id',
+    'GET',
+    const <QueryParam>[],
+    null,
+    <String, String>{},
+    <String, String>{},
+    null,
+  );
+
+  if (response.statusCode >= HttpStatus.badRequest) {
+    throw ApiException(response.statusCode, response.body);
+  }
+  if (response.body.isEmpty || response.statusCode == HttpStatus.noContent) {
+    return null;
+  }
+
+  final decoded = jsonDecode(response.body);
+  if (decoded is! Map) return null;
+  return testRunFromV2Payload(decoded.cast<String, dynamic>());
 }
 
 Future<void> updateTestRun(final ConfigModel config, final UpdateEmptyTestRunApiModel testRun) async {

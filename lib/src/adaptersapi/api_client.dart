@@ -204,6 +204,8 @@ class ApiClient {
           return AutoTestApiResult.fromJson(value);
         case 'AutoTestCaseApiModel':
           return AutoTestCaseApiModel.fromJson(value);
+        case 'AutoTestCaseModel':
+          return AutoTestCaseModel.fromJson(value);
         case 'AutoTestCreateApiModel':
           return AutoTestCreateApiModel.fromJson(value);
         case 'AutoTestFilterApiModel':

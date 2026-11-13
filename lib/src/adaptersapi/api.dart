@@ -54,6 +54,7 @@ part 'model/attachment_update_request.dart';
 part 'model/auto_test.dart';
 part 'model/auto_test_api_result.dart';
 part 'model/auto_test_case_api_model.dart';
+part 'model/auto_test_case_model.dart';
 part 'model/auto_test_create_api_model.dart';
 part 'model/auto_test_filter_api_model.dart';
 part 'model/auto_test_id_model.dart';

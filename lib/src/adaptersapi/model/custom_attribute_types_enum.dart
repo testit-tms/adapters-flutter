@@ -29,6 +29,7 @@ class CustomAttributeTypesEnum {
   static const user = CustomAttributeTypesEnum._(r'user');
   static const multipleOptions = CustomAttributeTypesEnum._(r'multipleOptions');
   static const checkbox = CustomAttributeTypesEnum._(r'checkbox');
+  static const numeric = CustomAttributeTypesEnum._(r'numeric');
 
   /// List of all possible values in this [enum][CustomAttributeTypesEnum].
   static const values = <CustomAttributeTypesEnum>[
@@ -38,6 +39,7 @@ class CustomAttributeTypesEnum {
     user,
     multipleOptions,
     checkbox,
+    numeric,
   ];
 
   static CustomAttributeTypesEnum? fromJson(dynamic value) => CustomAttributeTypesEnumTypeTransformer().decode(value);
@@ -82,6 +84,7 @@ class CustomAttributeTypesEnumTypeTransformer {
         case r'user': return CustomAttributeTypesEnum.user;
         case r'multipleOptions': return CustomAttributeTypesEnum.multipleOptions;
         case r'checkbox': return CustomAttributeTypesEnum.checkbox;
+        case r'numeric': return CustomAttributeTypesEnum.numeric;
         default:
           if (!allowNull) {
             throw ArgumentError('Unknown enum value to decode: $data');
