@@ -75,7 +75,6 @@ void tmsTest(final String description, final dynamic Function() body,
         final Timeout? timeout,
         final String? title,
         final String? workItemId,
-        @Deprecated('Use workItemId with a single globalId instead.')
         final Set<String>? workItemsIds}) {
   _registerBatchFlushHookAtDeclaration();
   test(
@@ -111,7 +110,6 @@ void tmsTestWidgets(
         final String? title,
         final TestVariant<Object?> variant = const DefaultTestVariant(),
         final String? workItemId,
-        @Deprecated('Use workItemId with a single globalId instead.')
         final Set<String>? workItemsIds}) {
   _registerBatchFlushHookAtDeclaration();
   testWidgets(
@@ -315,9 +313,6 @@ Future<void> tryLogWarningsOnceAsync() async {
 }
 
 Set<String>? resolveWorkItemIds(final String? workItemId, final Set<String>? workItemsIds) {
-  if (workItemsIds != null && workItemsIds.isNotEmpty) {
-    _logger.w('workItemsIds is deprecated. Use workItemId with a single globalId instead.');
-  }
   if (workItemId != null && workItemId.isNotEmpty) {
     return {workItemId};
   }
