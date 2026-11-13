@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:testit_adapter_flutter/src/converter/test_result_converter.dart';
 import 'package:testit_adapter_flutter/src/enum/link_type_enum.dart' as local;
 import 'package:testit_adapter_flutter/src/model/api/link_api_model.dart';
+import 'package:testit_adapter_flutter/src/model/test_layers.dart';
 import 'package:testit_adapter_flutter/src/model/test_result_model.dart';
 import 'package:testit_adapter_flutter/src/adaptersapi/api.dart' as api;
 
@@ -80,6 +81,32 @@ void main() {
         expect(model.description, testResult.description);
         expect(model.labels!.first.name, testResult.labels.first);
         expect(model.links!.first.url, testResult.links.first.url);
+        expect(model.layer, isNull);
+      });
+
+      test('should include layer when set', () {
+        final testResult = TestResultModel()
+          ..externalId = 'ext-1'
+          ..name = 'Test Name'
+          ..layer = TestLayers.api;
+        const projectId = 'project-id';
+
+        final model = toAutoTestCreateApiModel(projectId, testResult);
+
+        expect(model.layer?.name, TestLayers.api);
+        expect(model.layer?.source_, api.LayerSource.run);
+      });
+
+      test('should accept custom layer string', () {
+        final testResult = TestResultModel()
+          ..externalId = 'ext-1'
+          ..name = 'Test Name'
+          ..layer = 'my-custom-layer';
+        const projectId = 'project-id';
+
+        final model = toAutoTestCreateApiModel(projectId, testResult);
+
+        expect(model.layer?.name, 'my-custom-layer');
       });
     });
 
@@ -112,6 +139,36 @@ void main() {
         expect(model.description, testResult.description);
         expect(model.labels!.first.name, testResult.labels.first);
         expect(model.links!.first.url, testResult.links.first.url);
+        expect(model.resetLayer, isFalse);
+        expect(model.layer, isNull);
+      });
+
+      test('should send resetLayer false and layer when set', () {
+        final testResult = TestResultModel()
+          ..externalId = 'ext-1'
+          ..name = 'Test Name'
+          ..layer = TestLayers.e2e
+          ..outcome = api.AvailableTestResultOutcome.failed;
+        const projectId = 'project-id';
+
+        final model = toAutoTestUpdateApiModel(projectId, testResult);
+
+        expect(model.resetLayer, isFalse);
+        expect(model.layer?.name, TestLayers.e2e);
+        expect(model.layer?.source_, api.LayerSource.run);
+      });
+
+      test('should send resetLayer false without layer when omitted', () {
+        final testResult = TestResultModel()
+          ..externalId = 'ext-1'
+          ..name = 'Test Name'
+          ..outcome = api.AvailableTestResultOutcome.failed;
+        const projectId = 'project-id';
+
+        final model = toAutoTestUpdateApiModel(projectId, testResult);
+
+        expect(model.resetLayer, isFalse);
+        expect(model.layer, isNull);
       });
     });
 

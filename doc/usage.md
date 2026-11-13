@@ -68,16 +68,34 @@ void main() {
 
 ### Связывание с тест-кейсами и рабочими элементами
 
-Используйте `externalId` для связи с существующим тест-кейсом в Test IT и `workItemIds` для связи с задачами (например, в Jira).
+Используйте `externalId` для связи с существующим тест-кейсом в Test IT и `workItemId` для связи с рабочим элементом (globalId).
 
 ```dart
 tmsTest(
   'Authentication test',
   () { /* ... */ },
   externalId: 'my_project_auth_test_1',
-  workItemIds: {'PROJ-123', 'PROJ-456'},
+  workItemId: 'PROJ-123',
 );
 ```
+
+### Слой автотеста (test pyramid layer)
+
+Укажите слой пирамиды тестирования на карточке **автотеста** через аргумент `layer` в `tmsTest` / `tmsTestWidgets`. Адаптер отправляет `source: Run`. Слой не задаётся через конфиг/env/CLI и не связан с `labels`, `tags` и тегами test run.
+
+```dart
+import 'package:testit_adapter_flutter/testit_adapter_flutter.dart';
+
+tmsTest('API test', () { /* ... */ }, layer: TestLayers.api);
+
+tmsTest('custom', () { /* ... */ }, layer: 'my-custom-layer');
+```
+
+Рекомендуемые константы: `TestLayers.e2e`, `ui`, `api`, `contract`, `integration`, `component`, `unit`. Любая непустая строка допустима.
+
+При **update** автотеста адаптер всегда отправляет `resetLayer: false`; поле `layer` — только если указано в тесте.
+
+Подробнее: [autotest-layer.md](./autotest-layer.md).
 
 ### Добавление ссылок
 

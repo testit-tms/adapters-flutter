@@ -62,7 +62,7 @@ void main() {
             .thenAnswer((_) async => api.TestRunApiResult(
                 id: '',
                 name: '',
-                projectId: '',
+                projectId: validProjectId,
                 stateName: api.TestRunState.notStarted,
                 status: api.TestStatusApiResult(
                     id: "1",

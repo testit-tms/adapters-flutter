@@ -45,7 +45,7 @@ flutter pub add testit_adapter_flutter
 
 1. For current versions, see the releases tab. 
 2. Starting with 5.2, we have added a TMS postscript, which means that the utility is compatible with a specific enterprise version. 
-3. If you are in doubt about which version to use, check with the support staff. support@yoonion.ru
+3. If you are in doubt about which version to use, check with the support staff: support@testit.software or https://help.testit.software/help
 
 Legacy versions published as adapters_flutter package
 
@@ -262,10 +262,30 @@ Use metadata to specify information about autotest.
 * `externalId` - unique internal autotest ID (used in Test IT).
 * `links` - links listed in the autotest card.
 * `labels` - labels listed in the autotest card.
+* `layer` - test pyramid layer on the autotest card (source **Run** in TMS). Declared in test code only; not configurable via env/CLI. See [Autotest layer](#autotest-layer) and [doc/autotest-layer.md](./doc/autotest-layer.md).
 * `tags` - tags listed in the autotest card.
 * `title` - autotest name specified in the autotest card. If not specified, the test name is used.
-* `workItemsIds` - a method that links autotests with manual tests. Receives the set of manual
-  tests' IDs.
+* `workItemId` - a method that links an autotest with a manual test. Receives a single globalId.
+* `workItemsIds` - deprecated, use `workItemId` instead.
+
+#### Autotest layer
+
+Set the test pyramid layer on the **autotest** card via the `layer` argument on `tmsTest` / `tmsTestWidgets`. The adapter sends `source: Run` to TMS. Layer is independent from `labels`, `tags`, and test run tags.
+
+```dart
+import 'package:testit_adapter_flutter/testit_adapter_flutter.dart';
+
+tmsTest('create user', () { /* ... */ }, layer: TestLayers.api);
+
+tmsTest('custom layer', () { /* ... */ }, layer: 'my-custom-layer');
+```
+
+Recommended constants (`TestLayers`): `E2E`, `UI`, `API`, `Contract`, `Integration`, `Component`, `Unit`. Any non-empty string is accepted.
+
+| Scenario | Adapter behaviour |
+|----------|-------------------|
+| Layer set | create/update: send `layer: { name, source: Run }` |
+| Layer omitted | update: send `resetLayer: false`; do not send `layer` |
 
 #### Description of functions:
 

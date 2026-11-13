@@ -3,11 +3,30 @@
 All notable changes to this project will be documented in this file.  
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
 
+## [5.1.3-TMS-6.0] - 2026-11-13
+
+### Changed
+
+* support TMS 6.0 (regenerated adapters API client).
+
 ## [5.1.2-TMS-5.8] - 2026-09-24
 
 ### Fixed
 
 * Test run metadata merge (mode 0/1): read existing links/attachments/description/launchSource via `GET /api/v2/testRuns/{id}` — adapters GET on TMS 5.8 returns empty links/attachments and omits description/launchSource, which caused overwrite on update.
+
+## [5.1.1] - 2026-09-16
+
+### Added
+
+* add the "workItemId" annotation.
+* **Autotest layer** (test pyramid): optional `layer` on `tmsTest` / `tmsTestWidgets`; `TestLayers` constants; sent on autotest create/update with `source: Run`; update always sends `resetLayer: false`. See [doc/autotest-layer.md](./doc/autotest-layer.md).
+* cloud support
+
+### Fixed
+
+* pub.dev dry-run: exclude generated OpenAPI sources from `dart analyze`.
+* do not publish `*.backup` files.
 
 ## [5.1.0-TMS-5.8] - 2026-08-12
 

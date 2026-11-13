@@ -7,6 +7,10 @@ import 'package:testit_adapter_flutter/src/model/test_result_model.dart';
 import 'package:testit_adapter_flutter/src/service/api/api_client_factory.dart';
 import 'package:testit_adapter_flutter/src/adaptersapi/api.dart' as api;
 
+/// Guaranteed to fail fast in CI (connection refused), unlike public domains
+/// that may return HTTP 200 and make "expect throw" tests flaky.
+const _unreachableApiUrl = 'http://127.0.0.1:1';
+
 void main() {
   group('ApiManager Tests -', () {
     late ApiManager apiManager;
@@ -20,7 +24,7 @@ void main() {
       test('should_return_null_when_workItemsIds_is_null', () async {
         // Arrange
         final config = ConfigModel();
-        config.url = 'https://test-api.com';
+        config.url = _unreachableApiUrl;
         config.privateToken = 'test-token';
         const Iterable<String>? workItemsIds = null;
 
@@ -36,7 +40,7 @@ void main() {
       test('should_return_null_when_workItemsIds_is_empty', () async {
         // Arrange
         final config = ConfigModel();
-        config.url = 'https://test-api.com';
+        config.url = _unreachableApiUrl;
         config.privateToken = 'test-token';
         const Iterable<String> workItemsIds = [];
 
@@ -52,7 +56,7 @@ void main() {
       test('should_handle_single_work_item_id_collection', () async {
         // Arrange
         final config = ConfigModel()
-          ..url = 'https://test-api.com'
+          ..url = _unreachableApiUrl
           ..privateToken = 'test-token';
         final workItemsIds = ['single-item'];
 
@@ -70,7 +74,7 @@ void main() {
       test('should_handle_multiple_work_item_ids_collection', () async {
         // Arrange
         final config = ConfigModel()
-          ..url = 'https://test-api.com'
+          ..url = _unreachableApiUrl
           ..privateToken = 'test-token';
         final workItemsIds = ['item-1', 'item-2', 'item-3'];
 
@@ -86,7 +90,7 @@ void main() {
       test('should_handle_empty_strings_in_collection', () async {
         // Arrange
         final config = ConfigModel()
-          ..url = 'https://test-api.com'
+          ..url = _unreachableApiUrl
           ..privateToken = 'test-token';
         final workItemsIds = ['', 'valid-id', ''];
 
@@ -102,7 +106,7 @@ void main() {
       test('should_handle_unicode_work_item_ids', () async {
         // Arrange
         final config = ConfigModel()
-          ..url = 'https://test-api.com'
+          ..url = _unreachableApiUrl
           ..privateToken = 'test-token';
         final workItemsIds = ['工作项-1', 'элемент_работы_🚀', 'عنصر_العمل'];
 
@@ -247,7 +251,7 @@ void main() {
         // Arrange
         final config = ConfigModel()
           ..adapterMode = 0
-          ..url = 'https://test-api.com'
+          ..url = _unreachableApiUrl
           ..privateToken = 'test-token'
           ..testRunId = 'test-run-id'
           ..configurationId = 'config-id';
@@ -285,7 +289,7 @@ void main() {
       test('should_handle_adapter_mode_2_configuration', () async {
         final config = ConfigModel()
           ..adapterMode = 2
-          ..url = 'https://test-api.com'
+          ..url = _unreachableApiUrl
           ..privateToken = 'test-token'
           ..projectId = 'project-id';
 
@@ -300,7 +304,7 @@ void main() {
       test('should_handle_null_test_run_name_gracefully', () async {
         final config = ConfigModel()
           ..adapterMode = 2
-          ..url = 'https://test-api.com'
+          ..url = _unreachableApiUrl
           ..privateToken = 'test-token'
           ..projectId = 'project-id'
           ..testRunName = null;
@@ -316,7 +320,7 @@ void main() {
       test('should_handle_empty_project_id_when_adapter_mode_is_2', () async {
         final config = ConfigModel()
           ..adapterMode = 2
-          ..url = 'https://test-api.com'
+          ..url = _unreachableApiUrl
           ..privateToken = 'test-token'
           ..projectId = ''
           ..testRunName = 'Test Run';
@@ -332,7 +336,7 @@ void main() {
         final configs = List.generate(3, (index) {
           return ConfigModel()
             ..adapterMode = 2
-            ..url = 'https://test-api.com'
+            ..url = _unreachableApiUrl
             ..privateToken = 'test-token'
             ..projectId = 'concurrent-project-$index'
             ..testRunName = 'Concurrent Test $index';
@@ -399,7 +403,7 @@ void main() {
       test('should_handle_work_item_ids_with_special_formats', () async {
         // Arrange
         final config = ConfigModel();
-        config.url = 'https://test-api.com';
+        config.url = _unreachableApiUrl;
         config.privateToken = 'test-token';
         final workItemsIds = [
           'WI-123',
@@ -422,7 +426,7 @@ void main() {
       test('should_handle_large_collections_efficiently', () async {
         // Arrange
         final config = ConfigModel();
-        config.url = 'https://test-api.com';
+        config.url = _unreachableApiUrl;
         config.privateToken = 'test-token';
         final workItemsIds =
             List.generate(100, (index) => 'work-item-\$index');
@@ -441,7 +445,7 @@ void main() {
         // Arrange
         final config = ConfigModel();
         config.adapterMode = 0;
-        config.url = 'https://test-api.com';
+        config.url = _unreachableApiUrl;
         config.privateToken = 'test-token';
         config.testRunId = 'test-run-id';
 
@@ -467,7 +471,7 @@ void main() {
       test('should_handle_empty_work_items_list_explicitly', () async {
         // Arrange
         final config = ConfigModel();
-        config.url = 'https://test-api.com';
+        config.url = _unreachableApiUrl;
         config.privateToken = 'test-token';
         final workItemsIds = <String>[];
 
@@ -522,7 +526,7 @@ void main() {
 
         final configMode0 = ConfigModel()
           ..adapterMode = 0
-          ..url = 'https://test.com'
+          ..url = _unreachableApiUrl
           ..privateToken = 'token'
           ..testRunId = 'id';
         await expectLater(
@@ -533,7 +537,7 @@ void main() {
 
         final configMode2 = ConfigModel()
           ..adapterMode = 2
-          ..url = 'https://test.com'
+          ..url = _unreachableApiUrl
           ..privateToken = 'token'
           ..projectId = 'proj'
           ..testRunName = 'Mixed Test';
@@ -592,7 +596,7 @@ void main() {
       test('should_clear_buffer_after_flush', () async {
         final config = ConfigModel()
           ..importRealtime = false
-          ..url = 'https://test-api.com'
+          ..url = _unreachableApiUrl
           ..privateToken = 'token'
           ..projectId = 'project-id'
           ..configurationId = 'config-id'
@@ -602,8 +606,8 @@ void main() {
 
         try {
           await batchManager.flushPendingResultsAsync(config);
-        } on Exception {
-          // Bulk write may fail without a real TMS instance.
+        } catch (_) {
+          // API/network may fail without a real TMS instance.
         }
 
         expect(batchManager.pendingResultsCount, 0);
@@ -612,7 +616,7 @@ void main() {
       test('should_allow_second_flush_after_first_group_flush', () async {
         final config = ConfigModel()
           ..importRealtime = false
-          ..url = 'https://test-api.com'
+          ..url = _unreachableApiUrl
           ..privateToken = 'token'
           ..projectId = 'project-id'
           ..configurationId = 'config-id'
@@ -622,8 +626,8 @@ void main() {
         try {
           await batchManager.flushPendingResultsAsync(config,
               notifySyncStorage: false);
-        } on Exception {
-          // Bulk write may fail without a real TMS instance.
+        } catch (_) {
+          // API/network may fail without a real TMS instance.
         }
 
         await batchManager.processTestResultAsync(config, sampleResult()
@@ -631,8 +635,8 @@ void main() {
         try {
           await batchManager.flushPendingResultsAsync(config,
               notifySyncStorage: false);
-        } on Exception {
-          // Bulk write may fail without a real TMS instance.
+        } catch (_) {
+          // API/network may fail without a real TMS instance.
         }
 
         expect(batchManager.pendingResultsCount, 0);
