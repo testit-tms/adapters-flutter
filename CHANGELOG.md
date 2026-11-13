@@ -8,6 +8,7 @@ The format is based on Keep a Changelog and this project adheres to Semantic Ver
 ### Changed
 
 * support TMS 6.0 (regenerated adapters API client).
+* bump sync-storage to `v0.3.12-tms-5.8`.
 
 ## [5.1.2-TMS-5.8] - 2026-09-24
 
