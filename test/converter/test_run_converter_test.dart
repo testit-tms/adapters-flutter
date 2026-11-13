@@ -12,6 +12,7 @@ void main() {
     api.TestRunApiResult baseRun() => api.TestRunApiResult(
           id: 'run-1',
           name: 'Old name',
+          projectId: 'project-1',
           stateName: api.TestRunState.notStarted,
           status: api.TestStatusApiResult(
             id: 'status-1',

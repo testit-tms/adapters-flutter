@@ -76,7 +76,7 @@ api.AutoTestCreateApiModel toAutoTestCreateApiModel(
       externalKey: null,
       isFlaky: null,
       labels: testResult.labels
-          .map((final name) => api.LabelApiModel(name: name, globalId: 0))
+          .map((final name) => api.LabelApiModel(name: name))
           .toList(),
       tags: testResult.tags.toList(),
       links: testResult.links
@@ -125,7 +125,7 @@ api.AutoTestUpdateApiModel toAutoTestUpdateApiModel(
       externalKey: null,
       isFlaky: null,
       labels: testResult.labels
-          .map((final name) => api.LabelApiModel(name: name, globalId: 0))
+          .map((final name) => api.LabelApiModel(name: name))
           .toList(),
       tags: testResult.tags.toList(),
       links: testResult.links

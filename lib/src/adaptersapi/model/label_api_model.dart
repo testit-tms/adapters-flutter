@@ -14,33 +14,26 @@ class LabelApiModel {
   /// Returns a new [LabelApiModel] instance.
   LabelApiModel({
     required this.name,
-    required this.globalId,
   });
 
   /// Name of the label
   String name;
 
-  /// Global ID of the label
-  int globalId;
-
   @override
   bool operator ==(Object other) => identical(this, other) || other is LabelApiModel &&
-    other.name == name &&
-    other.globalId == globalId;
+    other.name == name;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (name.hashCode) +
-    (globalId.hashCode);
+    (name.hashCode);
 
   @override
-  String toString() => 'LabelApiModel[name=$name, globalId=$globalId]';
+  String toString() => 'LabelApiModel[name=$name]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
       json[r'name'] = this.name;
-      json[r'globalId'] = this.globalId;
     return json;
   }
 
@@ -64,7 +57,6 @@ class LabelApiModel {
 
       return LabelApiModel(
         name: mapValueOfType<String>(json, r'name')!,
-        globalId: mapValueOfType<int>(json, r'globalId')!,
       );
     }
     return null;
@@ -113,7 +105,6 @@ class LabelApiModel {
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
     'name',
-    'globalId',
   };
 }
 

@@ -37,9 +37,7 @@ class AttachmentsApi {
     final mp = MultipartRequest('POST', Uri.parse(path));
     if (files != null) {
       hasFields = true;
-      for (final file in files) {
-        mp.files.add(file);
-      }
+      mp.files.addAll(files);
     }
     if (hasFields) {
       postBody = mp;

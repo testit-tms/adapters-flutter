@@ -74,7 +74,7 @@ class ApiClient {
           cancelOnError: true,
         );
         final response = await _client.send(request);
-        return await Response.fromStream(response);
+        return Response.fromStream(response);
       }
 
       if (body is MultipartRequest) {
@@ -84,7 +84,7 @@ class ApiClient {
         request.headers.addAll(body.headers);
         request.headers.addAll(headerParams);
         final response = await _client.send(request);
-        return await Response.fromStream(response);
+        return Response.fromStream(response);
       }
 
       final msgBody = contentType == 'application/x-www-form-urlencoded'
@@ -204,6 +204,8 @@ class ApiClient {
           return AutoTestApiResult.fromJson(value);
         case 'AutoTestCaseApiModel':
           return AutoTestCaseApiModel.fromJson(value);
+        case 'AutoTestCaseModel':
+          return AutoTestCaseModel.fromJson(value);
         case 'AutoTestCreateApiModel':
           return AutoTestCreateApiModel.fromJson(value);
         case 'AutoTestFilterApiModel':
@@ -258,14 +260,22 @@ class ApiClient {
           return CreateWorkItemApiModel.fromJson(value);
         case 'CustomAttributeApiResult':
           return CustomAttributeApiResult.fromJson(value);
-        case 'CustomAttributeGetModel':
-          return CustomAttributeGetModel.fromJson(value);
+        case 'CustomAttributeModel':
+          return CustomAttributeModel.fromJson(value);
         case 'CustomAttributeOptionApiResult':
           return CustomAttributeOptionApiResult.fromJson(value);
         case 'CustomAttributeOptionModel':
           return CustomAttributeOptionModel.fromJson(value);
+        case 'CustomAttributeOptionPostApiModel':
+          return CustomAttributeOptionPostApiModel.fromJson(value);
+        case 'CustomAttributeOptionUpdateApiModel':
+          return CustomAttributeOptionUpdateApiModel.fromJson(value);
         case 'CustomAttributePutModel':
           return CustomAttributePutModel.fromJson(value);
+        case 'CustomAttributeSearchApiModel':
+          return CustomAttributeSearchApiModel.fromJson(value);
+        case 'CustomAttributeSearchApiResult':
+          return CustomAttributeSearchApiResult.fromJson(value);
         case 'CustomAttributeType':
           return CustomAttributeTypeTypeTransformer().decode(value);
         case 'CustomAttributeTypesEnum':
@@ -278,6 +288,10 @@ class ApiClient {
           return DetailedProjectApiResult.fromJson(value);
         case 'FailureCategoryModel':
           return FailureCategoryModelTypeTransformer().decode(value);
+        case 'GlobalCustomAttributePostApiModel':
+          return GlobalCustomAttributePostApiModel.fromJson(value);
+        case 'GlobalCustomAttributeUpdateApiModel':
+          return GlobalCustomAttributeUpdateApiModel.fromJson(value);
         case 'GuidExtractionModel':
           return GuidExtractionModel.fromJson(value);
         case 'ImageResizeType':
@@ -296,6 +310,12 @@ class ApiClient {
           return LabelApiResult.fromJson(value);
         case 'LabelShortModel':
           return LabelShortModel.fromJson(value);
+        case 'LayerApiModel':
+          return LayerApiModel.fromJson(value);
+        case 'LayerApiResult':
+          return LayerApiResult.fromJson(value);
+        case 'LayerSource':
+          return LayerSourceTypeTransformer().decode(value);
         case 'LinkApiResult':
           return LinkApiResult.fromJson(value);
         case 'LinkCreateApiModel':
@@ -336,6 +356,8 @@ class ApiClient {
           return ProjectApiResult.fromJson(value);
         case 'ProjectAttributesFilterModel':
           return ProjectAttributesFilterModel.fromJson(value);
+        case 'ProjectShortestApiResult':
+          return ProjectShortestApiResult.fromJson(value);
         case 'ProjectTypeModel':
           return ProjectTypeModelTypeTransformer().decode(value);
         case 'ProjectsFilterModel':

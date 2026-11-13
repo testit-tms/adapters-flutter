@@ -31,6 +31,7 @@ class AutoTestModel {
     this.lastTestResultOutcome,
     this.lastTestResultStatus,
     this.stabilityPercentage,
+    this.autoTestCase,
     this.links = const [],
     this.namespace,
     this.classname,
@@ -98,6 +99,9 @@ class AutoTestModel {
   /// Stability percentage of the autotest
   int? stabilityPercentage;
 
+  /// Auto test case linked with the autotest
+  AutoTestCaseModel? autoTestCase;
+
   /// Collection of the autotest links
   List<LinkPutModel>? links;
 
@@ -151,6 +155,7 @@ class AutoTestModel {
     other.lastTestResultOutcome == lastTestResultOutcome &&
     other.lastTestResultStatus == lastTestResultStatus &&
     other.stabilityPercentage == stabilityPercentage &&
+    other.autoTestCase == autoTestCase &&
     _deepEquality.equals(other.links, links) &&
     other.namespace == namespace &&
     other.classname == classname &&
@@ -184,6 +189,7 @@ class AutoTestModel {
     (lastTestResultOutcome == null ? 0 : lastTestResultOutcome!.hashCode) +
     (lastTestResultStatus == null ? 0 : lastTestResultStatus!.hashCode) +
     (stabilityPercentage == null ? 0 : stabilityPercentage!.hashCode) +
+    (autoTestCase == null ? 0 : autoTestCase!.hashCode) +
     (links == null ? 0 : links!.hashCode) +
     (namespace == null ? 0 : namespace!.hashCode) +
     (classname == null ? 0 : classname!.hashCode) +
@@ -197,7 +203,7 @@ class AutoTestModel {
     (externalKey == null ? 0 : externalKey!.hashCode);
 
   @override
-  String toString() => 'AutoTestModel[globalId=$globalId, isDeleted=$isDeleted, mustBeApproved=$mustBeApproved, id=$id, createdDate=$createdDate, createdById=$createdById, externalId=$externalId, projectId=$projectId, name=$name, modifiedDate=$modifiedDate, modifiedById=$modifiedById, lastTestRunId=$lastTestRunId, lastTestRunName=$lastTestRunName, lastTestResultId=$lastTestResultId, lastTestResultConfiguration=$lastTestResultConfiguration, lastTestResultOutcome=$lastTestResultOutcome, lastTestResultStatus=$lastTestResultStatus, stabilityPercentage=$stabilityPercentage, links=$links, namespace=$namespace, classname=$classname, steps=$steps, setup=$setup, teardown=$teardown, title=$title, description=$description, labels=$labels, isFlaky=$isFlaky, externalKey=$externalKey]';
+  String toString() => 'AutoTestModel[globalId=$globalId, isDeleted=$isDeleted, mustBeApproved=$mustBeApproved, id=$id, createdDate=$createdDate, createdById=$createdById, externalId=$externalId, projectId=$projectId, name=$name, modifiedDate=$modifiedDate, modifiedById=$modifiedById, lastTestRunId=$lastTestRunId, lastTestRunName=$lastTestRunName, lastTestResultId=$lastTestResultId, lastTestResultConfiguration=$lastTestResultConfiguration, lastTestResultOutcome=$lastTestResultOutcome, lastTestResultStatus=$lastTestResultStatus, stabilityPercentage=$stabilityPercentage, autoTestCase=$autoTestCase, links=$links, namespace=$namespace, classname=$classname, steps=$steps, setup=$setup, teardown=$teardown, title=$title, description=$description, labels=$labels, isFlaky=$isFlaky, externalKey=$externalKey]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -254,6 +260,11 @@ class AutoTestModel {
       json[r'stabilityPercentage'] = this.stabilityPercentage;
     } else {
       json[r'stabilityPercentage'] = null;
+    }
+    if (this.autoTestCase != null) {
+      json[r'autoTestCase'] = this.autoTestCase;
+    } else {
+      json[r'autoTestCase'] = null;
     }
     if (this.links != null) {
       json[r'links'] = this.links;
@@ -350,6 +361,7 @@ class AutoTestModel {
         lastTestResultOutcome: mapValueOfType<String>(json, r'lastTestResultOutcome'),
         lastTestResultStatus: TestStatusModel.fromJson(json[r'lastTestResultStatus']),
         stabilityPercentage: mapValueOfType<int>(json, r'stabilityPercentage'),
+        autoTestCase: AutoTestCaseModel.fromJson(json[r'autoTestCase']),
         links: LinkPutModel.listFromJson(json[r'links']),
         namespace: mapValueOfType<String>(json, r'namespace'),
         classname: mapValueOfType<String>(json, r'classname'),

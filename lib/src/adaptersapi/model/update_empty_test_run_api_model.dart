@@ -31,7 +31,7 @@ class UpdateEmptyTestRunApiModel {
   /// Test run description
   String? description;
 
-  /// Test run launch source                Once launch source is specified it cannot be updated
+  /// Test run launch source              Once launch source is specified it cannot be updated
   String? launchSource;
 
   /// Collection of attachments related to the test run

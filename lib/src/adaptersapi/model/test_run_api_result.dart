@@ -15,12 +15,12 @@ class TestRunApiResult {
   TestRunApiResult({
     required this.id,
     required this.name,
+    required this.projectId,
     required this.stateName,
     required this.status,
     this.attachments = const [],
     this.links = const [],
     this.tags = const [],
-    // Keep on OpenAPI regen: required so merge-on-update does not wipe these fields.
     this.description,
     this.launchSource,
   });
@@ -30,6 +30,9 @@ class TestRunApiResult {
 
   /// Test run name
   String name;
+
+  /// Project unique identifier              This property is used to link test run with project.
+  String projectId;
 
   /// Test run state
   TestRunState stateName;
@@ -46,16 +49,17 @@ class TestRunApiResult {
   /// Collection of tags associated with the test run
   List<String> tags;
 
-  /// Test run description (present on v2 GET; omitted/empty on adapters GET in TMS 5.8)
+  /// Test run description
   String? description;
 
-  /// Test run launch source (present on v2 GET; omitted on adapters GET in TMS 5.8)
+  /// Test run launch source              Once launch source is specified it cannot be updated.
   String? launchSource;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is TestRunApiResult &&
     other.id == id &&
     other.name == name &&
+    other.projectId == projectId &&
     other.stateName == stateName &&
     other.status == status &&
     _deepEquality.equals(other.attachments, attachments) &&
@@ -69,6 +73,7 @@ class TestRunApiResult {
     // ignore: unnecessary_parenthesis
     (id.hashCode) +
     (name.hashCode) +
+    (projectId.hashCode) +
     (stateName.hashCode) +
     (status.hashCode) +
     (attachments.hashCode) +
@@ -78,12 +83,13 @@ class TestRunApiResult {
     (launchSource == null ? 0 : launchSource!.hashCode);
 
   @override
-  String toString() => 'TestRunApiResult[id=$id, name=$name, stateName=$stateName, status=$status, attachments=$attachments, links=$links, tags=$tags, description=$description, launchSource=$launchSource]';
+  String toString() => 'TestRunApiResult[id=$id, name=$name, projectId=$projectId, stateName=$stateName, status=$status, attachments=$attachments, links=$links, tags=$tags, description=$description, launchSource=$launchSource]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
       json[r'id'] = this.id;
       json[r'name'] = this.name;
+      json[r'projectId'] = this.projectId;
       json[r'stateName'] = this.stateName;
       json[r'status'] = this.status;
       json[r'attachments'] = this.attachments;
@@ -123,6 +129,7 @@ class TestRunApiResult {
       return TestRunApiResult(
         id: mapValueOfType<String>(json, r'id')!,
         name: mapValueOfType<String>(json, r'name')!,
+        projectId: mapValueOfType<String>(json, r'projectId')!,
         stateName: TestRunState.fromJson(json[r'stateName'])!,
         status: TestStatusApiResult.fromJson(json[r'status'])!,
         attachments: AttachmentApiResult.listFromJson(json[r'attachments']),
@@ -181,6 +188,7 @@ class TestRunApiResult {
   static const requiredKeys = <String>{
     'id',
     'name',
+    'projectId',
     'stateName',
     'status',
     'attachments',

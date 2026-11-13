@@ -32,6 +32,9 @@ class WorkItemFilterApiModel {
     this.tags = const {},
     this.excludeTags = const {},
     this.autoTestIds = const {},
+    this.layers = const {},
+    this.layerSources = const {},
+    this.externalId,
   });
 
   /// Name or identifier (UUID) of work item
@@ -91,6 +94,15 @@ class WorkItemFilterApiModel {
   /// Collection of identifiers of linked autotests
   Set<String>? autoTestIds;
 
+  /// Specifies auto test case layers to search for
+  Set<String>? layers;
+
+  /// Specifies list of auto test case layer sources to search for
+  Set<LayerSource>? layerSources;
+
+  /// External identifier of the work item
+  String? externalId;
+
   @override
   bool operator ==(Object other) => identical(this, other) || other is WorkItemFilterApiModel &&
     other.nameOrId == nameOrId &&
@@ -111,7 +123,10 @@ class WorkItemFilterApiModel {
     other.isAutomated == isAutomated &&
     _deepEquality.equals(other.tags, tags) &&
     _deepEquality.equals(other.excludeTags, excludeTags) &&
-    _deepEquality.equals(other.autoTestIds, autoTestIds);
+    _deepEquality.equals(other.autoTestIds, autoTestIds) &&
+    _deepEquality.equals(other.layers, layers) &&
+    _deepEquality.equals(other.layerSources, layerSources) &&
+    other.externalId == externalId;
 
   @override
   int get hashCode =>
@@ -134,10 +149,13 @@ class WorkItemFilterApiModel {
     (isAutomated == null ? 0 : isAutomated!.hashCode) +
     (tags == null ? 0 : tags!.hashCode) +
     (excludeTags == null ? 0 : excludeTags!.hashCode) +
-    (autoTestIds == null ? 0 : autoTestIds!.hashCode);
+    (autoTestIds == null ? 0 : autoTestIds!.hashCode) +
+    (layers == null ? 0 : layers!.hashCode) +
+    (layerSources == null ? 0 : layerSources!.hashCode) +
+    (externalId == null ? 0 : externalId!.hashCode);
 
   @override
-  String toString() => 'WorkItemFilterApiModel[nameOrId=$nameOrId, includeIds=$includeIds, excludeIds=$excludeIds, projectIds=$projectIds, name=$name, ids=$ids, globalIds=$globalIds, attributes=$attributes, isDeleted=$isDeleted, sectionIds=$sectionIds, states=$states, priorities=$priorities, sourceTypes=$sourceTypes, types=$types, duration=$duration, isAutomated=$isAutomated, tags=$tags, excludeTags=$excludeTags, autoTestIds=$autoTestIds]';
+  String toString() => 'WorkItemFilterApiModel[nameOrId=$nameOrId, includeIds=$includeIds, excludeIds=$excludeIds, projectIds=$projectIds, name=$name, ids=$ids, globalIds=$globalIds, attributes=$attributes, isDeleted=$isDeleted, sectionIds=$sectionIds, states=$states, priorities=$priorities, sourceTypes=$sourceTypes, types=$types, duration=$duration, isAutomated=$isAutomated, tags=$tags, excludeTags=$excludeTags, autoTestIds=$autoTestIds, layers=$layers, layerSources=$layerSources, externalId=$externalId]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -236,6 +254,21 @@ class WorkItemFilterApiModel {
     } else {
       json[r'autoTestIds'] = null;
     }
+    if (this.layers != null) {
+      json[r'layers'] = this.layers!.toList(growable: false);
+    } else {
+      json[r'layers'] = null;
+    }
+    if (this.layerSources != null) {
+      json[r'layerSources'] = this.layerSources!.toList(growable: false);
+    } else {
+      json[r'layerSources'] = null;
+    }
+    if (this.externalId != null) {
+      json[r'externalId'] = this.externalId;
+    } else {
+      json[r'externalId'] = null;
+    }
     return json;
   }
 
@@ -297,6 +330,11 @@ class WorkItemFilterApiModel {
         autoTestIds: json[r'autoTestIds'] is Iterable
             ? (json[r'autoTestIds'] as Iterable).cast<String>().toSet()
             : const {},
+        layers: json[r'layers'] is Iterable
+            ? (json[r'layers'] as Iterable).cast<String>().toSet()
+            : const {},
+        layerSources: LayerSource.listFromJson(json[r'layerSources']).toSet(),
+        externalId: mapValueOfType<String>(json, r'externalId'),
       );
     }
     return null;

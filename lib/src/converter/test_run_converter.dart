@@ -43,6 +43,7 @@ api.TestRunApiResult testRunFromV2Payload(final Map<String, dynamic> payload) {
   return api.TestRunApiResult(
     id: payload['id'] as String? ?? '',
     name: payload['name'] as String? ?? '',
+    projectId: payload['projectId'] as String? ?? '',
     stateName: api.TestRunState.fromJson(payload['stateName']) ??
         api.TestRunState.notStarted,
     status: api.TestStatusApiResult.fromJson(statusJson) ??

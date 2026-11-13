@@ -16,6 +16,7 @@ class TestResultResponse {
     required this.id,
     this.failureClassIds = const [],
     required this.configurationId,
+    required this.testPointId,
     required this.testRunId,
     this.stepComments = const [],
     this.outcome,
@@ -42,6 +43,8 @@ class TestResultResponse {
   List<String> failureClassIds;
 
   String configurationId;
+
+  String testPointId;
 
   String testRunId;
 
@@ -86,6 +89,7 @@ class TestResultResponse {
     other.id == id &&
     _deepEquality.equals(other.failureClassIds, failureClassIds) &&
     other.configurationId == configurationId &&
+    other.testPointId == testPointId &&
     other.testRunId == testRunId &&
     _deepEquality.equals(other.stepComments, stepComments) &&
     other.outcome == outcome &&
@@ -112,6 +116,7 @@ class TestResultResponse {
     (id.hashCode) +
     (failureClassIds.hashCode) +
     (configurationId.hashCode) +
+    (testPointId.hashCode) +
     (testRunId.hashCode) +
     (stepComments == null ? 0 : stepComments!.hashCode) +
     (outcome == null ? 0 : outcome!.hashCode) +
@@ -133,13 +138,14 @@ class TestResultResponse {
     (properties == null ? 0 : properties!.hashCode);
 
   @override
-  String toString() => 'TestResultResponse[id=$id, failureClassIds=$failureClassIds, configurationId=$configurationId, testRunId=$testRunId, stepComments=$stepComments, outcome=$outcome, status=$status, comment=$comment, links=$links, stepResults=$stepResults, attachments=$attachments, autoTestId=$autoTestId, durationInMs=$durationInMs, traces=$traces, failureType=$failureType, message=$message, autoTest=$autoTest, autoTestStepResults=$autoTestStepResults, setupResults=$setupResults, teardownResults=$teardownResults, parameters=$parameters, properties=$properties]';
+  String toString() => 'TestResultResponse[id=$id, failureClassIds=$failureClassIds, configurationId=$configurationId, testPointId=$testPointId, testRunId=$testRunId, stepComments=$stepComments, outcome=$outcome, status=$status, comment=$comment, links=$links, stepResults=$stepResults, attachments=$attachments, autoTestId=$autoTestId, durationInMs=$durationInMs, traces=$traces, failureType=$failureType, message=$message, autoTest=$autoTest, autoTestStepResults=$autoTestStepResults, setupResults=$setupResults, teardownResults=$teardownResults, parameters=$parameters, properties=$properties]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
       json[r'id'] = this.id;
       json[r'failureClassIds'] = this.failureClassIds;
       json[r'configurationId'] = this.configurationId;
+      json[r'testPointId'] = this.testPointId;
       json[r'testRunId'] = this.testRunId;
     if (this.stepComments != null) {
       json[r'stepComments'] = this.stepComments;
@@ -258,6 +264,7 @@ class TestResultResponse {
             ? (json[r'failureClassIds'] as Iterable).cast<String>().toList(growable: false)
             : const [],
         configurationId: mapValueOfType<String>(json, r'configurationId')!,
+        testPointId: mapValueOfType<String>(json, r'testPointId')!,
         testRunId: mapValueOfType<String>(json, r'testRunId')!,
         stepComments: StepCommentApiModel.listFromJson(json[r'stepComments']),
         outcome: TestResultOutcome.fromJson(json[r'outcome']),
@@ -327,6 +334,7 @@ class TestResultResponse {
     'id',
     'failureClassIds',
     'configurationId',
+    'testPointId',
     'testRunId',
   };
 }

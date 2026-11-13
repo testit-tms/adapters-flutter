@@ -36,16 +36,16 @@ class ProjectsFilterModel {
   bool? isDeleted;
 
   /// Specifies a project range of test cases count to search for
-  Int32RangeSelectorModel? testCasesCount;
+  Int64RangeSelectorModel? testCasesCount;
 
   /// Specifies a project range of checklists count to search for
-  Int32RangeSelectorModel? checklistsCount;
+  Int64RangeSelectorModel? checklistsCount;
 
   /// Specifies a project range of shared steps count to search for
-  Int32RangeSelectorModel? sharedStepsCount;
+  Int64RangeSelectorModel? sharedStepsCount;
 
   /// Specifies a project range of autotests count to search for
-  Int32RangeSelectorModel? autotestsCount;
+  Int64RangeSelectorModel? autotestsCount;
 
   /// Specifies a project global IDs to search for
   Set<int>? globalIds;
@@ -173,10 +173,10 @@ class ProjectsFilterModel {
         name: mapValueOfType<String>(json, r'name'),
         isFavorite: mapValueOfType<bool>(json, r'isFavorite'),
         isDeleted: mapValueOfType<bool>(json, r'isDeleted'),
-        testCasesCount: Int32RangeSelectorModel.fromJson(json[r'testCasesCount']),
-        checklistsCount: Int32RangeSelectorModel.fromJson(json[r'checklistsCount']),
-        sharedStepsCount: Int32RangeSelectorModel.fromJson(json[r'sharedStepsCount']),
-        autotestsCount: Int32RangeSelectorModel.fromJson(json[r'autotestsCount']),
+        testCasesCount: Int64RangeSelectorModel.fromJson(json[r'testCasesCount']),
+        checklistsCount: Int64RangeSelectorModel.fromJson(json[r'checklistsCount']),
+        sharedStepsCount: Int64RangeSelectorModel.fromJson(json[r'sharedStepsCount']),
+        autotestsCount: Int64RangeSelectorModel.fromJson(json[r'autotestsCount']),
         globalIds: json[r'globalIds'] is Iterable
             ? (json[r'globalIds'] as Iterable).cast<int>().toSet()
             : const {},

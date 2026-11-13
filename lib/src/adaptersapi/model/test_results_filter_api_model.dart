@@ -17,6 +17,7 @@ class TestResultsFilterApiModel {
     this.outcomes = const [],
     this.statusCodes = const [],
     this.statusTypes = const [],
+    this.failureCategories = const [],
     this.namespace,
     this.className,
     this.autoTestGlobalIds = const [],
@@ -38,6 +39,9 @@ class TestResultsFilterApiModel {
 
   /// Specifies a test result status types to search for
   List<TestStatusApiType>? statusTypes;
+
+  /// Specifies a test result failure categories to search for
+  List<FailureCategoryModel>? failureCategories;
 
   /// Specifies a test result namespace to search for
   String? namespace;
@@ -69,6 +73,7 @@ class TestResultsFilterApiModel {
     _deepEquality.equals(other.outcomes, outcomes) &&
     _deepEquality.equals(other.statusCodes, statusCodes) &&
     _deepEquality.equals(other.statusTypes, statusTypes) &&
+    _deepEquality.equals(other.failureCategories, failureCategories) &&
     other.namespace == namespace &&
     other.className == className &&
     _deepEquality.equals(other.autoTestGlobalIds, autoTestGlobalIds) &&
@@ -85,6 +90,7 @@ class TestResultsFilterApiModel {
     (outcomes == null ? 0 : outcomes!.hashCode) +
     (statusCodes == null ? 0 : statusCodes!.hashCode) +
     (statusTypes == null ? 0 : statusTypes!.hashCode) +
+    (failureCategories == null ? 0 : failureCategories!.hashCode) +
     (namespace == null ? 0 : namespace!.hashCode) +
     (className == null ? 0 : className!.hashCode) +
     (autoTestGlobalIds == null ? 0 : autoTestGlobalIds!.hashCode) +
@@ -95,7 +101,7 @@ class TestResultsFilterApiModel {
     (testRunIds == null ? 0 : testRunIds!.hashCode);
 
   @override
-  String toString() => 'TestResultsFilterApiModel[configurationIds=$configurationIds, outcomes=$outcomes, statusCodes=$statusCodes, statusTypes=$statusTypes, namespace=$namespace, className=$className, autoTestGlobalIds=$autoTestGlobalIds, autoTestTags=$autoTestTags, excludeAutoTestTags=$excludeAutoTestTags, name=$name, duration=$duration, testRunIds=$testRunIds]';
+  String toString() => 'TestResultsFilterApiModel[configurationIds=$configurationIds, outcomes=$outcomes, statusCodes=$statusCodes, statusTypes=$statusTypes, failureCategories=$failureCategories, namespace=$namespace, className=$className, autoTestGlobalIds=$autoTestGlobalIds, autoTestTags=$autoTestTags, excludeAutoTestTags=$excludeAutoTestTags, name=$name, duration=$duration, testRunIds=$testRunIds]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -118,6 +124,11 @@ class TestResultsFilterApiModel {
       json[r'statusTypes'] = this.statusTypes;
     } else {
       json[r'statusTypes'] = null;
+    }
+    if (this.failureCategories != null) {
+      json[r'failureCategories'] = this.failureCategories;
+    } else {
+      json[r'failureCategories'] = null;
     }
     if (this.namespace != null) {
       json[r'namespace'] = this.namespace;
@@ -189,6 +200,7 @@ class TestResultsFilterApiModel {
             ? (json[r'statusCodes'] as Iterable).cast<String>().toList(growable: false)
             : const [],
         statusTypes: TestStatusApiType.listFromJson(json[r'statusTypes']),
+        failureCategories: FailureCategoryModel.listFromJson(json[r'failureCategories']),
         namespace: mapValueOfType<String>(json, r'namespace'),
         className: mapValueOfType<String>(json, r'className'),
         autoTestGlobalIds: json[r'autoTestGlobalIds'] is Iterable
