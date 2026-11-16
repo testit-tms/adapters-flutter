@@ -68,7 +68,7 @@ void main() {
 
 ### Связывание с тест-кейсами и рабочими элементами
 
-Используйте `externalId` для связи с существующим тест-кейсом в Test IT и `workItemId` для связи с рабочим элементом (globalId).
+Используйте `externalId` для связи с существующим тест-кейсом в Test IT и `workItemId` / `workItemsIds` для связи с рабочим элементом (globalId). Если задан `workItemId`, он имеет приоритет над `workItemsIds`.
 
 ```dart
 tmsTest(
@@ -76,6 +76,13 @@ tmsTest(
   () { /* ... */ },
   externalId: 'my_project_auth_test_1',
   workItemId: 'PROJ-123',
+);
+
+tmsTest(
+  'Checkout test',
+  () { /* ... */ },
+  externalId: 'my_project_checkout_test_1',
+  workItemsIds: {'PROJ-123', 'PROJ-456'},
 );
 ```
 
