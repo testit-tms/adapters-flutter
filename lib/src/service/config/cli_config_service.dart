@@ -60,11 +60,49 @@ ConfigModel applyCliParameters(
   return config;
 }
 
+String _getCliEnvironmentValue(String name) {
+  switch (name) {
+    case 'tmsAdapterMode':
+      return const String.fromEnvironment('tmsAdapterMode');
+    case 'tmsAutomaticCreationTestCases':
+      return const String.fromEnvironment('tmsAutomaticCreationTestCases');
+    case 'tmsAutomaticUpdationLinksToTestCases':
+      return const String.fromEnvironment('tmsAutomaticUpdationLinksToTestCases');
+    case 'tmsCertValidation':
+      return const String.fromEnvironment('tmsCertValidation');
+    case 'tmsConfigurationId':
+      return const String.fromEnvironment('tmsConfigurationId');
+    case 'tmsIsDebug':
+      return const String.fromEnvironment('tmsIsDebug');
+    case 'tmsImportRealtime':
+      return const String.fromEnvironment('tmsImportRealtime');
+    case 'tmsPrivateToken':
+      return const String.fromEnvironment('tmsPrivateToken');
+    case 'tmsProjectId':
+      return const String.fromEnvironment('tmsProjectId');
+    case 'tmsTestIt':
+      return const String.fromEnvironment('tmsTestIt');
+    case 'tmsSyncStoragePort':
+      return const String.fromEnvironment('tmsSyncStoragePort');
+    case 'tmsTestRunId':
+      return const String.fromEnvironment('tmsTestRunId');
+    case 'tmsTestRunName':
+      return const String.fromEnvironment('tmsTestRunName');
+    case 'tmsTestRunTags':
+      return const String.fromEnvironment('tmsTestRunTags');
+    case 'tmsTestRunLinks':
+      return const String.fromEnvironment('tmsTestRunLinks');
+    case 'tmsUrl':
+      return const String.fromEnvironment('tmsUrl');
+    default:
+      return '';
+  }
+}
+
 @internal
 Future<ConfigModel> getConfigFromCliAsync() async {
   const filePath = String.fromEnvironment('tmsConfigFile', defaultValue: '');
   final config = await getConfigFromFileAsync(filePath);
 
-  return applyCliParameters(
-      config, (name) => String.fromEnvironment(name, defaultValue: ''));
+  return applyCliParameters(config, _getCliEnvironmentValue);
 }
