@@ -10,6 +10,16 @@ The format is based on Keep a Changelog and this project adheres to Semantic Ver
 * support TMS 6.0 (regenerated adapters API client).
 * bump sync-storage to `v0.3.12-tms-5.8`.
 
+### Fixed
+
+* TMS-42909: read `--dart-define` CLI parameters via `const String.fromEnvironment` (dynamic `fromEnvironment` silently returned empty on Flutter).
+
+## [5.1.2] - 2026-11-16
+
+### Fixed
+
+* TMS-42909: read `--dart-define` CLI parameters via `const String.fromEnvironment` (dynamic `fromEnvironment` silently returned empty on Flutter).
+
 ## [5.1.2-TMS-5.8] - 2026-09-24
 
 ### Fixed
