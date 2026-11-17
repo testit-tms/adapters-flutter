@@ -20,106 +20,6 @@ void main() {
       apiManager = ApiManager();
     });
 
-    group('getFirstNotFoundWorkItemIdAsync Tests -', () {
-      test('should_return_null_when_workItemsIds_is_null', () async {
-        // Arrange
-        final config = ConfigModel();
-        config.url = _unreachableApiUrl;
-        config.privateToken = 'test-token';
-        const Iterable<String>? workItemsIds = null;
-
-        // Act
-        final result =
-            await apiManager.getFirstNotFoundWorkItemIdAsync(config, workItemsIds);
-
-        // Assert
-        expect(result, isNull,
-            reason: 'Should return null when workItemsIds is null');
-      });
-
-      test('should_return_null_when_workItemsIds_is_empty', () async {
-        // Arrange
-        final config = ConfigModel();
-        config.url = _unreachableApiUrl;
-        config.privateToken = 'test-token';
-        const Iterable<String> workItemsIds = [];
-
-        // Act
-        final result =
-            await apiManager.getFirstNotFoundWorkItemIdAsync(config, workItemsIds);
-
-        // Assert
-        expect(result, isNull,
-            reason: 'Should return null when workItemsIds is empty');
-      });
-
-      test('should_handle_single_work_item_id_collection', () async {
-        // Arrange
-        final config = ConfigModel()
-          ..url = _unreachableApiUrl
-          ..privateToken = 'test-token';
-        final workItemsIds = ['single-item'];
-
-        // Act & Assert
-        // We expect an ApiException because a real network call is made.
-        // This confirms the method attempts to contact the server.
-        await expectLater(
-            apiManager.getFirstNotFoundWorkItemIdAsync(
-                config, workItemsIds),
-            throwsA(isA<Exception>()),
-            reason:
-                'Should attempt a network call and throw an exception in test environment');
-      });
-
-      test('should_handle_multiple_work_item_ids_collection', () async {
-        // Arrange
-        final config = ConfigModel()
-          ..url = _unreachableApiUrl
-          ..privateToken = 'test-token';
-        final workItemsIds = ['item-1', 'item-2', 'item-3'];
-
-        // Act & Assert
-        await expectLater(
-            apiManager.getFirstNotFoundWorkItemIdAsync(
-                config, workItemsIds),
-            throwsA(isA<Exception>()),
-            reason:
-                'Should attempt a network call and throw an exception in test environment');
-      });
-
-      test('should_handle_empty_strings_in_collection', () async {
-        // Arrange
-        final config = ConfigModel()
-          ..url = _unreachableApiUrl
-          ..privateToken = 'test-token';
-        final workItemsIds = ['', 'valid-id', ''];
-
-        // Act & Assert
-        await expectLater(
-            apiManager.getFirstNotFoundWorkItemIdAsync(
-                config, workItemsIds),
-            throwsA(isA<Exception>()),
-            reason:
-                'Should attempt a network call and throw an exception in test environment');
-      });
-
-      test('should_handle_unicode_work_item_ids', () async {
-        // Arrange
-        final config = ConfigModel()
-          ..url = _unreachableApiUrl
-          ..privateToken = 'test-token';
-        final workItemsIds = ['工作项-1', 'элемент_работы_🚀', 'عنصر_العمل'];
-
-        // Act & Assert
-        await expectLater(
-            apiManager.getFirstNotFoundWorkItemIdAsync(
-                config, workItemsIds),
-            throwsA(isA<Exception>()),
-            reason:
-                'Should attempt a network call and throw an exception in test environment');
-      });
-    });
-
     group('isTestNeedsToBeRunAsync Tests -', () {
       test('should_return_true_when_adapter_mode_is_1', () async {
         // Arrange
@@ -399,45 +299,6 @@ void main() {
         expect(result, isTrue,
             reason: 'Should return true for extreme positive adapter mode');
       });
-
-      test('should_handle_work_item_ids_with_special_formats', () async {
-        // Arrange
-        final config = ConfigModel();
-        config.url = _unreachableApiUrl;
-        config.privateToken = 'test-token';
-        final workItemsIds = [
-          'WI-123',
-          'work_item_456',
-          'WORK-ITEM-789',
-          'wi.123.456',
-          'работа-элемент-123',
-          '工作项_456',
-          'عنصر_العمل_789'
-        ];
-
-        // Act & Assert
-        await expectLater(
-            apiManager.getFirstNotFoundWorkItemIdAsync(
-                config, workItemsIds),
-            throwsA(isA<Exception>()),
-            reason: 'Should handle work item IDs with special formats');
-      });
-
-      test('should_handle_large_collections_efficiently', () async {
-        // Arrange
-        final config = ConfigModel();
-        config.url = _unreachableApiUrl;
-        config.privateToken = 'test-token';
-        final workItemsIds =
-            List.generate(100, (index) => 'work-item-\$index');
-
-        // Act & Assert
-        await expectLater(
-            apiManager.getFirstNotFoundWorkItemIdAsync(
-                config, workItemsIds),
-            throwsA(isA<Exception>()),
-            reason: 'Should handle large collections efficiently');
-      });
     });
 
     group('Boundary Value Tests -', () {
@@ -466,22 +327,6 @@ void main() {
 
         // Assert
         expect(result, isTrue, reason: 'Should handle minimum valid config');
-      });
-
-      test('should_handle_empty_work_items_list_explicitly', () async {
-        // Arrange
-        final config = ConfigModel();
-        config.url = _unreachableApiUrl;
-        config.privateToken = 'test-token';
-        final workItemsIds = <String>[];
-
-        // Act
-        final result =
-            await apiManager.getFirstNotFoundWorkItemIdAsync(config, workItemsIds);
-
-        // Assert
-        expect(result, isNull,
-            reason: 'Should return null for explicitly empty list');
       });
 
       test('should_handle_single_character_values', () async {

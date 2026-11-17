@@ -156,32 +156,5 @@ void main() {
             throwsA(isA<TmsConfigException>()));
       });
     });
-
-    group('validateWorkItemsIdsAsync', () {
-      test('should not throw if all work items are found', () async {
-        // Arrange
-        when(mockApiManager.getFirstNotFoundWorkItemIdAsync(
-                config, argThat(isA<Iterable<String>>())))
-            .thenAnswer((_) async => null);
-
-        // Act & Assert
-        await expectLater(
-            validationService.validateWorkItemsIdsAsync(config, ['id1', 'id2']),
-            completes);
-      });
-
-      test('should throw if a work item is not found', () async {
-        // Arrange
-        when(mockApiManager.getFirstNotFoundWorkItemIdAsync(
-                config, argThat(isA<Iterable<String>>())))
-            .thenAnswer((_) async => 'not-found-id');
-
-        // Act & Assert
-        await expectLater(
-            validationService.validateWorkItemsIdsAsync(
-                config, ['not-found-id']),
-            throwsA(isA<TmsConfigException>()));
-      });
-    });
   });
 } 

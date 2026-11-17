@@ -27,11 +27,6 @@ void validateUriArgument(final String name, final String? value) =>
     _validationService.validateUriArgument(name, value);
 
 @internal
-Future<void> validateWorkItemsIdsAsync(
-        final ConfigModel config, final Iterable<String>? workItemsIds) async =>
-    await _validationService.validateWorkItemsIdsAsync(config, workItemsIds);
-
-@internal
 class ValidationService {
   final IApiManager _apiManager;
   final bool _disableValidation;
@@ -119,18 +114,6 @@ class ValidationService {
     if (value == null || !(Uri.tryParse(value)?.isAbsolute ?? false)) {
       _logAndThrow('$name is invalid: "$value".');
     }
-  }
-
-  Future<void> validateWorkItemsIdsAsync(
-      final ConfigModel config, final Iterable<String>? workItemsIds) async {
-    final notFoundWorkItemId =
-        await _apiManager.getFirstNotFoundWorkItemIdAsync(config, workItemsIds);
-
-    if (notFoundWorkItemId == null) {
-      return;
-    }
-
-    _logAndThrow('WorkItem with id "$notFoundWorkItemId" not found.');
   }
 
   Future<void> _validateConfigUsingApiAsync(final ConfigModel config) async {

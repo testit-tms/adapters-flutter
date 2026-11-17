@@ -27,7 +27,7 @@ void main() {
         links: {Link('https://www.example.org/')},
         tags: {'example_tag'},
         title: 'example_title',
-        workItemId: '3083', () async {
+        workItemsIds: {'3083'}, () async {
       await step('success step', () {
         expect(0, 0);
       });
@@ -61,12 +61,20 @@ void main() {
       });
     });
 
+    tmsTest('example test with workItemId',
+        externalId: 'example_workItemId_externalId',
+        workItemId: '3083', () async {
+      await step('success step', () {
+        expect(0, 0);
+      });
+    });
+
     tmsTestWidgets('example widgets test',
         externalId: 'example_widgets_externalId',
         links: {Link('https://www.example.org/')},
         tags: {'example_tag_widgets'},
         title: 'example_title_widgets',
-        workItemId: '3083', (tester) async {
+        workItemsIds: {'3083'}, (tester) async {
       await step('success step', () {
         expect(0, 0);
       });
@@ -97,6 +105,14 @@ void main() {
 
       await step('failed step', () {
         throw Exception('example exception.');
+      });
+    });
+
+    tmsTestWidgets('example widgets test with workItemId',
+        externalId: 'example_widgets_workItemId_externalId',
+        workItemId: '3083', (tester) async {
+      await step('success step', () {
+        expect(0, 0);
       });
     });
 

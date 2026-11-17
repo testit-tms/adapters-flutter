@@ -50,6 +50,14 @@ void main() {
         expect(0, 1);
       });
 
+      tmsTest('with workItemsIds - success', workItemsIds: {'3083'}, () {
+        return {};
+      });
+
+      tmsTest('with workItemsIds - failed', workItemsIds: {'3083'}, () {
+        expect(0, 1);
+      });
+
       tmsTest('with workItemId - success', workItemId: '3083', () {
         return {};
       });
@@ -73,12 +81,32 @@ void main() {
             labels: {'label1'},
             tags: {'tag1'},
             title: 'title',
-            workItemId: '3083', () {
+            workItemsIds: {'3083'}, () {
           return {};
         });
 
         tmsTest('all arguments [$input] - failed',
             externalId: 'all_arguments_${input}_failed',
+            links: {Link('https://www.example.org/')},
+            labels: {'label1'},
+            tags: {'tag1'},
+            title: 'title',
+            workItemsIds: {'3083'}, () {
+          expect(0, 1);
+        });
+
+        tmsTest('all arguments workItemId [$input] - success',
+            externalId: 'all_arguments_workItemId_${input}_success',
+            links: {Link('https://www.example.org/')},
+            labels: {'label1'},
+            tags: {'tag1'},
+            title: 'title',
+            workItemId: '3083', () {
+          return {};
+        });
+
+        tmsTest('all arguments workItemId [$input] - failed',
+            externalId: 'all_arguments_workItemId_${input}_failed',
             links: {Link('https://www.example.org/')},
             labels: {'label1'},
             tags: {'tag1'},
@@ -134,6 +162,16 @@ void main() {
         expect(0, 1);
       });
 
+      tmsTestWidgets('with workItemsIds - success', workItemsIds: {'3083'},
+          (tester) async {
+        return;
+      });
+
+      tmsTestWidgets('with workItemsIds - failed', workItemsIds: {'3083'},
+          (tester) async {
+        expect(0, 1);
+      });
+
       tmsTestWidgets('with workItemId - success', workItemId: '3083',
           (tester) async {
         return;
@@ -161,12 +199,32 @@ void main() {
             labels: {'label1'},
             tags: {'tag1'},
             title: 'title',
-            workItemId: '3083', (tester) async {
+            workItemsIds: {'3083'}, (tester) async {
           return;
         });
 
         tmsTestWidgets('all arguments [$input] - failed',
             externalId: 'all_arguments_${input}_failed',
+            links: {Link('https://www.example.org/')},
+            labels: {'label1'},
+            tags: {'tag1'},
+            title: 'title',
+            workItemsIds: {'3083'}, (tester) async {
+          expect(0, 1);
+        });
+
+        tmsTestWidgets('all arguments workItemId [$input] - success',
+            externalId: 'all_arguments_workItemId_${input}_success',
+            links: {Link('https://www.example.org/')},
+            labels: {'label1'},
+            tags: {'tag1'},
+            title: 'title',
+            workItemId: '3083', (tester) async {
+          return;
+        });
+
+        tmsTestWidgets('all arguments workItemId [$input] - failed',
+            externalId: 'all_arguments_workItemId_${input}_failed',
             links: {Link('https://www.example.org/')},
             labels: {'label1'},
             tags: {'tag1'},

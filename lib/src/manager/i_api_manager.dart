@@ -4,9 +4,6 @@ import 'package:testit_adapter_flutter/src/model/config_model.dart';
 import 'package:testit_adapter_flutter/src/model/test_result_model.dart';
 
 abstract class IApiManager {
-  Future<String?> getFirstNotFoundWorkItemIdAsync(
-      ConfigModel config, Iterable<String>? workItemsIds);
-
   Future<Iterable<String>> getProjectConfigurationsAsync(ConfigModel config);
 
   Future<api.TestRunApiResult?> getTestRunOrNullByIdAsync(

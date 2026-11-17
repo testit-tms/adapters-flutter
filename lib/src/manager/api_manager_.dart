@@ -15,8 +15,6 @@ import 'package:testit_adapter_flutter/src/service/api/configuration_api_service
     as configuration_api;
 import 'package:testit_adapter_flutter/src/service/api/test_run_api_service.dart'
     as testrun_api;
-import 'package:testit_adapter_flutter/src/service/api/work_item_api_service.dart'
-    as workitem_api;
 import 'package:testit_adapter_flutter/src/service/sync_storage/sync_storage_runner.dart';
 import 'package:http/http.dart';
 import 'package:logger/logger.dart';
@@ -47,31 +45,6 @@ class ApiManager implements IApiManager {
 
   @visibleForTesting
   int get pendingResultsCount => _pendingResults.length;
-
-  // ---------------------------------------------------------------------------
-  // Work items
-  // ---------------------------------------------------------------------------
-
-  @override
-  Future<String?> getFirstNotFoundWorkItemIdAsync(
-      final ConfigModel config, final Iterable<String>? workItemsIds) async {
-    String? firstNotFoundWorkItemId;
-
-    if (workItemsIds == null || workItemsIds.isEmpty) {
-      return firstNotFoundWorkItemId;
-    }
-
-    for (final id in workItemsIds) {
-      final workItem = await workitem_api.getWorkItemById(config, id);
-
-      if (workItem == null) {
-        firstNotFoundWorkItemId = id;
-        break;
-      }
-    }
-
-    return firstNotFoundWorkItemId;
-  }
 
   // ---------------------------------------------------------------------------
   // Configuration

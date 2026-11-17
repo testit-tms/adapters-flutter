@@ -35,20 +35,6 @@ class MockIApiManager extends _i1.Mock implements _i2.IApiManager {
   }
 
   @override
-  _i3.Future<String?> getFirstNotFoundWorkItemIdAsync(
-    _i4.ConfigModel? config,
-    Iterable<String>? workItemsIds,
-  ) =>
-      (super.noSuchMethod(
-            Invocation.method(#getFirstNotFoundWorkItemIdAsync, [
-              config,
-              workItemsIds,
-            ]),
-            returnValue: _i3.Future<String?>.value(),
-          )
-          as _i3.Future<String?>);
-
-  @override
   _i3.Future<Iterable<String>> getProjectConfigurationsAsync(
     _i4.ConfigModel? config,
   ) =>

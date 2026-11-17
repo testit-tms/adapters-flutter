@@ -3,13 +3,34 @@
 All notable changes to this project will be documented in this file.  
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
 
-## [Unreleased]
+## [5.1.3-TMS-6.0] - 2026-11-17
 
-## [5.1.2] - 2026-11-16
+### Changed
+
+* support TMS 6.0 (regenerated adapters API client).
+* bump sync-storage to `v0.3.12-tms-5.8`.
+* no longer pre-check work items via GET before the test; link by id when uploading the result.
 
 ### Fixed
 
 * TMS-42909: read `--dart-define` CLI parameters via `const String.fromEnvironment` (dynamic `fromEnvironment` silently returned empty on Flutter).
+
+## [5.1.2] - 2026-11-17
+
+### Changed
+
+* bump sync-storage to `v0.3.12`.
+* no longer pre-check work items via GET before the test; link by id when uploading the result.
+
+### Fixed
+
+* TMS-42909: read `--dart-define` CLI parameters via `const String.fromEnvironment` (dynamic `fromEnvironment` silently returned empty on Flutter).
+
+## [5.1.2-TMS-5.8] - 2026-09-24
+
+### Fixed
+
+* Test run metadata merge (mode 0/1): read existing links/attachments/description/launchSource via `GET /api/v2/testRuns/{id}` — adapters GET on TMS 5.8 returns empty links/attachments and omits description/launchSource, which caused overwrite on update.
 
 ## [5.1.1] - 2026-09-16
 
@@ -23,6 +44,21 @@ The format is based on Keep a Changelog and this project adheres to Semantic Ver
 
 * pub.dev dry-run: exclude generated OpenAPI sources from `dart analyze`.
 * do not publish `*.backup` files.
+
+## [5.1.0-TMS-5.8] - 2026-08-12
+
+### Added
+
+* **`importRealtime`** (`importRealtime` / `TMS_IMPORT_REALTIME` / `tmsImportRealtime`). Default `true` — same behaviour as before (send each result right after the test).
+  * `false` — buffer results and flush on group/file `tearDownAll`.
+  * `tmsConfigureBatchImport()` — call at the start of `main()` in batch mode.
+  * `tmsFlushPendingResultsAsync()` — optional explicit flush for CI / multi-file runs.
+* **Test run tags and links** (run-level, not per-autotest):
+  * `testRunTags` / `TMS_TEST_RUN_TAGS` / `tmsTestRunTags` — comma-separated or JSON array.
+  * `testRunLinks` / `TMS_TEST_RUN_LINKS` / `tmsTestRunLinks` — JSON array (`url` required; `title` / `description` / `type` optional).
+  * Link types: `Related`, `BlockedBy`, `Defect`, `Issue`, `Requirement`, `Repository`.
+  * `adapterMode=2`: sent on test run **create**.
+  * `adapterMode=0|1`: **merged early** at startup (existing tags/links kept; duplicates by tag name / link URL skipped).
 
 ## [5.1.0] - 2026-08-12
 
@@ -54,6 +90,10 @@ The format is based on Keep a Changelog and this project adheres to Semantic Ver
 * HTML escaping is applied before test result submission.
 * Async unit tests that hit the network now use `await expectLater` (no more “failed after test completion”).
 * Batch mode: register `tearDownAll` at test declaration time so all groups flush correctly.
+
+## [5.0.0-TMS-5.8] - 2026-07-22
+
+* support the Adapters API.
 
 ## [5.0.0] - 2026-07-22
 
