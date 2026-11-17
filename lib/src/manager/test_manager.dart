@@ -214,7 +214,6 @@ Future<void> testAsync(
     }
     tags?.forEach((final tag) => validateStringArgument('Tag', tag));
     final resolvedWorkItemIds = resolveWorkItemIds(workItemId, workItemsIds);
-    await validateWorkItemsIdsAsync(config, resolvedWorkItemIds);
 
     await _apiManager.tryCreateTestRunOnceAsync(config);
     await _apiManager.tryUpdateTestRunAsync(config);
