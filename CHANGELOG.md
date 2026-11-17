@@ -15,7 +15,12 @@ The format is based on Keep a Changelog and this project adheres to Semantic Ver
 
 * TMS-42909: read `--dart-define` CLI parameters via `const String.fromEnvironment` (dynamic `fromEnvironment` silently returned empty on Flutter).
 
-## [5.1.2] - 2026-11-16
+## [5.1.2] - 2026-11-17
+
+### Changed
+
+* bump sync-storage to `v0.3.12`.
+* no longer pre-check work items via GET before the test; link by id when uploading the result.
 
 ### Fixed
 
