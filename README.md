@@ -41,6 +41,7 @@ flutter pub add testit_adapter_flutter
 | 5.6     | 3.3.0-TMS-5.6          |
 | 5.7     | 4.0.0-TMS-5.7          |
 | 5.8     | 4.1.0-TMS-5.8          |
+| 6.0     | 5.1.3-TMS-6.0          |
 | Cloud   | 3.4.2 +                | 
 
 1. For current versions, see the releases tab. 
