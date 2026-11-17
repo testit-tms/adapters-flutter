@@ -3,12 +3,13 @@
 All notable changes to this project will be documented in this file.  
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
 
-## [5.1.3-TMS-6.0] - 2026-11-16
+## [5.1.3-TMS-6.0] - 2026-11-17
 
 ### Changed
 
 * support TMS 6.0 (regenerated adapters API client).
 * bump sync-storage to `v0.3.12-tms-5.8`.
+* no longer pre-check work items via GET before the test (align with Kotlin); link by id when uploading the result.
 
 ### Fixed
 
